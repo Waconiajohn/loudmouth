@@ -1,28 +1,56 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-.Python
-*.egg-info/
-.venv/
-venv/
-env/
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
 
-# Environment / secrets
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native builds
+ios/
+android/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Environment
 .env
-.env.*
+.env.local
+.env.*.local
 
-# Runtime dirs — never commit audio files
-api/uploads/
-api/outputs/
-api/separated/
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-# macOS
+# OS
 .DS_Store
-**/.DS_Store
+Thumbs.db
 
-# Office temp files
-~$*
+# Testing
+coverage/
 
-# Zip archives
-*.zip
+# Supabase
+supabase/.temp/
+supabase/.branches/
+
+# Build artifacts
+*.tsbuildinfo
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Audio test fixtures (large files)
+__fixtures__/*.mp3
+__fixtures__/*.wav
+__fixtures__/*.aac

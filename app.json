@@ -1,0 +1,71 @@
+{
+  "expo": {
+    "name": "LOUDMOUTH",
+    "slug": "loudmouth",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "scheme": "loudmouth",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.loudmouth.app",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "LOUDMOUTH needs microphone access to record your singing and score your performance.",
+        "NSAppleMusicUsageDescription": "LOUDMOUTH needs access to your music library to import songs for karaoke.",
+        "UIBackgroundModes": ["audio"]
+      },
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.loudmouth.app",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_AUDIO"
+      ],
+      "versionCode": 1
+    },
+    "plugins": [
+      "expo-router",
+      "expo-av",
+      "expo-document-picker",
+      "expo-file-system",
+      "expo-secure-store",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "15.1"
+          },
+          "android": {
+            "minSdkVersion": 26,
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "YOUR_EAS_PROJECT_ID"
+      },
+      "router": {
+        "origin": false
+      }
+    }
+  }
+}
