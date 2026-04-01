@@ -8,6 +8,17 @@
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
+        "simulator": false
+      },
+      "env": {
+        "LOUDMOUTH_MOCK_STEMS": "true",
+        "LOUDMOUTH_BYPASS_PAYWALL": "true"
+      }
+    },
+    "development-simulator": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
         "simulator": true
       },
       "env": {
