@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOUDMOUTH — Investor Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f2ec;--black:#080808;--red:#d42020;--yellow:#f5c400;--green:#2ecc71;--white:#f0ede8;--mid:#e0ddd8;--dim:rgba(8,8,8,0.5);--purple:#a78bfa;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--black);font-family:'Barlow',sans-serif;overflow-x:hidden;}
+
+.topbar{background:var(--black);padding:20px 60px;display:flex;justify-content:space-between;align-items:center;}
+.tlogo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.12em;color:var(--white);}
+.tlogo span{color:var(--red);}
+.tnote{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(240,237,232,0.3);}
+.tconfidential{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--red);border:1px solid rgba(212,32,32,0.4);border-radius:4px;padding:6px 12px;}
+
+/* HERO */
+.hero{background:var(--black);padding:80px 60px 100px;position:relative;overflow:hidden;border-bottom:6px solid var(--red);}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 80% at 100% 50%,rgba(212,32,32,0.08),transparent);pointer-events:none;}
+.hero-kicker{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.32em;text-transform:uppercase;color:var(--red);margin-bottom:20px;}
+.hero-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,96px);line-height:0.9;color:var(--white);margin-bottom:24px;max-width:800px;}
+.hero-headline em{color:var(--red);font-style:normal;}
+.hero-sub{font-size:19px;color:rgba(240,237,232,0.55);max-width:620px;line-height:1.7;margin-bottom:40px;}
+.hero-sub strong{color:var(--white);}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap;}
+.hero-stat{border-left:3px solid var(--red);padding-left:16px;}
+.hs-num{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--yellow);line-height:1;}
+.hs-label{font-size:12px;color:rgba(240,237,232,0.4);letter-spacing:0.06em;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;margin-top:2px;}
+
+/* SECTIONS */
+.section{padding:80px 60px;}
+.section-inner{max-width:1040px;margin:0 auto;}
+.slabel{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.32em;text-transform:uppercase;color:var(--red);margin-bottom:16px;}
+.section-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,4.5vw,60px);line-height:1;color:var(--black);margin-bottom:16px;}
+.section-headline em{color:var(--red);font-style:normal;}
+.section-sub{font-size:16px;color:var(--dim);max-width:580px;line-height:1.7;margin-bottom:48px;}
+
+/* PROBLEM / SOLUTION */
+.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px;}
+.ps-card{border-radius:12px;padding:28px 24px;}
+.ps-card.problem{background:#1a1212;border:1px solid rgba(212,32,32,0.25);}
+.ps-card.solution{background:#121a14;border:1px solid rgba(46,204,113,0.2);}
+.ps-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;}
+.ps-card.problem .ps-label{color:var(--red);}
+.ps-card.solution .ps-label{color:var(--green);}
+.ps-headline{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;margin-bottom:10px;color:var(--white);}
+.ps-body{font-size:14px;color:rgba(240,237,232,0.5);line-height:1.65;}
+.ps-body strong{color:var(--white);}
+
+/* MARKET */
+.market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.market-card{background:var(--white);border:1px solid var(--mid);border-radius:12px;padding:24px;}
+.mc-num{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--red);line-height:1;margin-bottom:6px;}
+.mc-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--black);margin-bottom:6px;}
+.mc-desc{font-size:13px;color:var(--dim);line-height:1.5;}
+
+/* TECH STACK */
+.tech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.tech-card{background:var(--white);border:1px solid var(--mid);border-radius:10px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start;}
+.tc-icon{font-size:22px;flex-shrink:0;}
+.tc-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:3px;}
+.tc-desc{font-size:13px;color:var(--dim);line-height:1.4;}
+.tc-badge{display:inline-block;margin-top:6px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;}
+.tc-badge.live{background:rgba(46,204,113,0.15);color:var(--green);border:1px solid rgba(46,204,113,0.3);}
+.tc-badge.pending{background:rgba(245,196,0,0.1);color:#b8960a;border:1px solid rgba(245,196,0,0.3);}
+
+/* REVENUE MODEL */
+.rev-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;}
+.rev-card{background:var(--white);border:1px solid var(--mid);border-radius:12px;padding:20px 16px;text-align:center;}
+.rev-amt{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;margin-bottom:6px;}
+.rev-who{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;}
+.rev-desc{font-size:11px;color:var(--dim);line-height:1.4;}
+.rev-note{background:var(--white);border:1px solid var(--mid);border-radius:10px;padding:16px 20px;font-size:14px;color:var(--dim);line-height:1.6;}
+.rev-note strong{color:var(--black);}
+
+/* TRACTION */
+.traction-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.tr-card{background:var(--white);border:1px solid var(--mid);border-radius:12px;padding:22px 20px;}
+.tr-icon{font-size:28px;margin-bottom:10px;}
+.tr-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.06em;text-transform:uppercase;color:var(--black);margin-bottom:6px;}
+.tr-body{font-size:13px;color:var(--dim);line-height:1.55;}
+.tr-body strong{color:var(--black);}
+.tr-tag{display:inline-block;margin-top:8px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.25);color:var(--green);border-radius:4px;padding:3px 8px;}
+
+/* COMPETITIVE */
+.comp-table{border:1px solid var(--mid);border-radius:2px;overflow:hidden;width:100%;}
+.ct-row{display:grid;grid-template-columns:180px 1fr 1fr 1fr 1fr 1fr;}
+.ct-row.header{background:var(--black);}
+.ct-cell{padding:12px 14px;font-size:13px;border-right:1px solid var(--mid);border-bottom:1px solid var(--mid);}
+.ct-row:last-child .ct-cell{border-bottom:none;}
+.ct-cell:last-child{border-right:none;}
+.ct-row.header .ct-cell{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,237,232,0.5);border-color:rgba(255,255,255,0.06);}
+.ct-row.loudmouth{border-left:4px solid var(--red);}
+.ct-row.loudmouth .ct-cell:first-child{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--red);}
+.ct-yes{color:var(--green);}
+.ct-no{color:rgba(8,8,8,0.25);}
+.ct-partial{color:var(--yellow);}
+
+/* ASK */
+.ask-section{background:var(--black);padding:80px 60px;}
+.ask-inner{max-width:1040px;margin:0 auto;}
+.ask-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,68px);line-height:0.9;color:var(--white);margin-bottom:20px;}
+.ask-headline em{color:var(--yellow);font-style:normal;}
+.ask-sub{font-size:17px;color:rgba(240,237,232,0.5);max-width:560px;line-height:1.7;margin-bottom:48px;}
+.ask-sub strong{color:var(--white);}
+.use-of-funds{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px;}
+.uof-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:22px 20px;}
+.uof-pct{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--yellow);line-height:1;margin-bottom:6px;}
+.uof-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:var(--white);margin-bottom:6px;}
+.uof-desc{font-size:13px;color:rgba(240,237,232,0.4);line-height:1.5;}
+.contact-row{display:flex;gap:20px;flex-wrap:wrap;}
+.c-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:18px 22px;flex:1;min-width:200px;}
+.c-type{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(240,237,232,0.35);margin-bottom:6px;}
+.c-val{font-size:15px;color:var(--white);}
+
+footer{background:#040404;padding:28px 60px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.05);}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.08em;color:var(--white);}
+.flogo span{color:var(--red);}
+.fdisc{font-size:11px;color:rgba(240,237,232,0.2);max-width:500px;line-height:1.5;}
+
+@media(max-width:768px){
+  .topbar,.hero,.section,.ask-section,footer{padding-left:24px;padding-right:24px;}
+  .ps-grid,.market-grid,.tech-grid,.rev-grid,.traction-grid,.use-of-funds{grid-template-columns:1fr;}
+  .ct-row{grid-template-columns:120px repeat(5,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tlogo">LOUD<span>MOUTH</span></div>
+  <div class="tnote">Investor Overview · Confidential</div>
+  <div class="tconfidential">Confidential</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-kicker">Vocal Training & Karaoke — Reinvented</div>
+  <div class="hero-headline">
+    THE ONLY KARAOKE APP<br>
+    THAT USES THE <em>REAL</em> RECORDINGS.
+  </div>
+  <p class="hero-sub">
+    LOUDMOUTH lets users sing against actual artist recordings — not covers — and uses cutting-edge vocal science to make them genuinely better. <strong>A subscription product with a charity angle, artist revenue sharing, and a viral social mechanic built in.</strong>
+  </p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hs-num">$6B+</div>
+      <div class="hs-label">Global Karaoke Market</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-num">$1.2B</div>
+      <div class="hs-label">Mobile Music Apps Market</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-num">Live</div>
+      <div class="hs-label">myloudmouth.app</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-num">Working</div>
+      <div class="hs-label">Prototype Running</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM & SOLUTION -->
+<section class="section" style="background:#0d0d0d;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);">
+  <div class="section-inner">
+    <div class="slabel" style="color:var(--red);">The Opportunity</div>
+    <div class="section-headline" style="color:var(--white);">BIG PROBLEM.<br><em>CLEAR</em> SOLUTION.</div>
+    <div class="ps-grid">
+      <div class="ps-card problem">
+        <div class="ps-label">The Problem</div>
+        <div class="ps-headline">Karaoke Ruins Parties.</div>
+        <div class="ps-body">
+          <p>Someone always ruins karaoke night. They don't know they can't sing — and there's no fix. Every existing app plays fake re-recordings, has no real coaching, and no mechanism to help bad singers sound good in the moment.</p>
+          <p style="margin-top:10px;"><strong>$6B market. Zero products that actually solve the core user problem.</strong></p>
+        </div>
+      </div>
+      <div class="ps-card solution">
+        <div class="ps-label">The Solution</div>
+        <div class="ps-headline">Borrow a Superstar's Voice.</div>
+        <div class="ps-body">
+          <p>LOUDMOUTH's Vocal Assist Slider lets users blend a real artist's voice with theirs — up to 90%. Sound incredible tonight. Then, with AI coaching backed by real vocal science, gradually reduce the assist until they're singing solo.</p>
+          <p style="margin-top:10px;"><strong>Tonight's fix. Tomorrow's training. One product.</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET -->
+<section class="section" style="background:var(--white);padding-top:0;">
+  <div class="section-inner">
+    <div class="slabel">Market Size</div>
+    <div class="section-headline">A LARGE MARKET<br>WITH NO <em>REAL</em> LEADER</div>
+    <p class="section-sub">The global karaoke and music learning markets are massive — and the current leaders haven't solved the core problem.</p>
+    <div class="market-grid">
+      <div class="market-card">
+        <div class="mc-num">$6B+</div>
+        <div class="mc-label">Global Karaoke Market</div>
+        <div class="mc-desc">Growing 4.5% annually. Dominated by venue hardware and apps with no coaching or quality differentiation.</div>
+      </div>
+      <div class="market-card">
+        <div class="mc-num">$1.2B</div>
+        <div class="mc-label">Mobile Music Learning</div>
+        <div class="mc-desc">Yousician, Smule, SingSharp. None use real recordings. None have the "beat the artist" competitive mechanic.</div>
+      </div>
+      <div class="market-card">
+        <div class="mc-num">50M+</div>
+        <div class="mc-label">Karaoke Participants (US)</div>
+        <div class="mc-desc">Regular karaoke participants in the US alone. Show choir participants, vocal students, and social singers add tens of millions more.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="section" style="background:var(--bg);padding-top:0;">
+  <div class="section-inner">
+    <div class="slabel">Technology</div>
+    <div class="section-headline">BUILT ON<br><em>BEST-IN-CLASS</em> TECH</div>
+    <p class="section-sub">Every component is the best available option in its category — not compromises.</p>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tc-icon">🎵</div>
+        <div>
+          <div class="tc-name">AudioShake AI</div>
+          <div class="tc-desc">Best-in-class stem separation. SDR 13.5dB — highest score in industry benchmarks. Used by Universal, Sony, Warner. Real artist vocal isolation from purchased recordings.</div>
+          <div class="tc-badge pending">Onboarding</div>
+        </div>
+      </div>
+      <div class="tech-card">
+        <div class="tc-icon">🎤</div>
+        <div>
+          <div class="tc-name">OpenAI Whisper</div>
+          <div class="tc-desc">Word-level timestamp extraction for Smart Lyric Display. Tested and operational on full song pipeline.</div>
+          <div class="tc-badge live">Live in Prototype</div>
+        </div>
+      </div>
+      <div class="tech-card">
+        <div class="tc-icon">⚡</div>
+        <div>
+          <div class="tc-name">FastAPI + Python</div>
+          <div class="tc-desc">Backend API operational. 4-step pipeline: stem separation, lyric extraction, word mapping, pitch analysis.</div>
+          <div class="tc-badge live">Live in Prototype</div>
+        </div>
+      </div>
+      <div class="tech-card">
+        <div class="tc-icon">🗄️</div>
+        <div>
+          <div class="tc-name">Supabase</div>
+          <div class="tc-desc">PostgreSQL + Auth + Storage. Full schema designed: 11 tables, RLS policies, views. Ready to deploy.</div>
+          <div class="tc-badge pending">Ready to Deploy</div>
+        </div>
+      </div>
+      <div class="tech-card">
+        <div class="tc-icon">🍎</div>
+        <div>
+          <div class="tc-name">iTunes / Apple Music</div>
+          <div class="tc-desc">BYO-MP3 model. Users buy real songs on iTunes ($0.69–$1.29). App processes their purchased files. Legal, defensible, no licensing fees to LOUDMOUTH.</div>
+          <div class="tc-badge live">Model Validated</div>
+        </div>
+      </div>
+      <div class="tech-card">
+        <div class="tc-icon">🤖</div>
+        <div>
+          <div class="tc-name">Claude AI (Anthropic)</div>
+          <div class="tc-desc">Powers the AI vocal coaching agent. Auto-summaries after every session, chat interface, dynamic lesson plan generation.</div>
+          <div class="tc-badge pending">In Design</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVENUE MODEL -->
+<section class="section" style="background:var(--white);padding-top:0;">
+  <div class="section-inner">
+    <div class="slabel">Revenue Model</div>
+    <div class="section-headline">MULTIPLE<br><em>CLEAN</em> STREAMS</div>
+    <p class="section-sub">A monthly subscription anchors the model. Every dollar of revenue is accounted for before it's collected.</p>
+    <div class="rev-grid">
+      <div class="rev-card">
+        <div class="rev-amt" style="color:var(--white);background:var(--black);border-radius:8px;padding:8px;">TBD</div>
+        <div class="rev-who">LOUDMOUTH</div>
+        <div class="rev-desc">App subscription revenue after all distributions. Pending AudioShake pricing confirmation.</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-amt" style="color:var(--yellow);">$1.00</div>
+        <div class="rev-who">The Artist</div>
+        <div class="rev-desc">Direct to the artist per subscriber per month. No label split. Drives artist promotion incentive.</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-amt" style="color:var(--green);">$0.50</div>
+        <div class="rev-who">Feeding America</div>
+        <div class="rev-desc">Per subscriber per month. 11 meals. Built-in charity differentiator and PR story.</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-amt" style="color:var(--purple);">$1.00</div>
+        <div class="rev-who">Community</div>
+        <div class="rev-desc">User chooses: local show choir program or local food shelf. Personalization and community loyalty.</div>
+      </div>
+    </div>
+    <div class="rev-note">
+      <strong>The BYO iTunes model eliminates music licensing costs entirely.</strong> Users purchase their own songs on iTunes ($0.69–$1.29 per track, owned permanently). LOUDMOUTH processes their files locally — no per-track royalty exposure, no catalog subscription fees. This is the same legal model as personal audio tools on the App Store.
+    </div>
+  </div>
+</section>
+
+<!-- TRACTION -->
+<section class="section" style="background:var(--bg);padding-top:0;">
+  <div class="section-inner">
+    <div class="slabel">Traction</div>
+    <div class="section-headline">WHERE WE<br>ARE <em>TODAY</em></div>
+    <p class="section-sub">Early stage — but moving fast. Core technology proven, product designed, infrastructure decisions made.</p>
+    <div class="traction-grid">
+      <div class="tr-card">
+        <div class="tr-icon">✅</div>
+        <div class="tr-title">Working Prototype</div>
+        <div class="tr-body">Full pipeline operational. <strong>387 words mapped with timestamps</strong> on "Down With The Sickness." Smart Lyric Display v1.2 running. Real pitch extraction confirmed.</div>
+        <div class="tr-tag">Verified</div>
+      </div>
+      <div class="tr-card">
+        <div class="tr-icon">🌐</div>
+        <div class="tr-title">Domain & Website Live</div>
+        <div class="tr-body"><strong>myloudmouth.app registered and deployed.</strong> Consumer page live with full product story, email capture, and founding member waitlist.</div>
+        <div class="tr-tag">Live Today</div>
+      </div>
+      <div class="tr-card">
+        <div class="tr-icon">🔬</div>
+        <div class="tr-title">AudioShake Partnership</div>
+        <div class="tr-body">Outreach sent to AudioShake — best-in-class stem separation (SDR 13.5dB). <strong>Used by Universal, Sony, Warner.</strong> Pricing conversation in progress.</div>
+        <div class="tr-tag">In Progress</div>
+      </div>
+      <div class="tr-card">
+        <div class="tr-icon">📋</div>
+        <div class="tr-title">Full Dev Spec Written</div>
+        <div class="tr-body"><strong>11-section developer specification</strong> covering architecture, API, database schema, scoring engine, business model, and build phases. Ready for engineering team.</div>
+        <div class="tr-tag">Complete</div>
+      </div>
+      <div class="tr-card">
+        <div class="tr-icon">🧠</div>
+        <div class="tr-title">AI Coaching Engine Spec</div>
+        <div class="tr-body">Complete specification for three-tier AI coaching architecture, notification system, lesson plan engine, and social sharing mechanics. <strong>Science-backed, peer-reviewed methods.</strong></div>
+        <div class="tr-tag">Complete</div>
+      </div>
+      <div class="tr-card">
+        <div class="tr-icon">💰</div>
+        <div class="tr-title">Business Model Validated</div>
+        <div class="tr-body">Legal model confirmed (BYO iTunes). Revenue splits decided. Charity partners identified (Feeding America). <strong>No music licensing liability.</strong> Clean cap table story.</div>
+        <div class="tr-tag">Validated</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETITIVE -->
+<section class="section" style="background:var(--white);padding-top:0;">
+  <div class="section-inner">
+    <div class="slabel">Competitive Landscape</div>
+    <div class="section-headline">NOTHING ELSE<br>DOES <em>ALL OF THIS</em></div>
+    <div class="comp-table">
+      <div class="ct-row header">
+        <div class="ct-cell">App</div>
+        <div class="ct-cell">Real Recordings</div>
+        <div class="ct-cell">Beat The Artist</div>
+        <div class="ct-cell">AI Coaching</div>
+        <div class="ct-cell">Vocal Assist</div>
+        <div class="ct-cell">Charity</div>
+      </div>
+      <div class="ct-row loudmouth">
+        <div class="ct-cell">LOUDMOUTH</div>
+        <div class="ct-cell ct-yes">✓ Real artist stems</div>
+        <div class="ct-cell ct-yes">✓ Real score vs artist</div>
+        <div class="ct-cell ct-yes">✓ Science-backed AI</div>
+        <div class="ct-cell ct-yes">✓ Blend & wean off</div>
+        <div class="ct-cell ct-yes">✓ Feeding America</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-cell" style="color:var(--dim);">Smule</div>
+        <div class="ct-cell ct-no">✗ Cover recordings</div>
+        <div class="ct-cell ct-no">✗ No</div>
+        <div class="ct-cell ct-no">✗ No coaching</div>
+        <div class="ct-cell ct-no">✗ No</div>
+        <div class="ct-cell ct-no">✗ No</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-cell" style="color:var(--dim);">Yousician</div>
+        <div class="ct-cell ct-no">✗ Generic exercises</div>
+        <div class="ct-cell ct-no">✗ No</div>
+        <div class="ct-cell ct-partial">~ Basic lessons</div>
+        <div class="ct-cell ct-no">✗ No</div>
+        <div class="ct-cell ct-no">✗ No</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-cell" style="color:var(--dim);">SingSharp</div>
+        <div class="ct-cell ct-no">✗ No real songs</div>
+        <div class="ct-cell ct-no">✗ No</div>
+        <div class="ct-cell ct-partial">~ Good AI tools</div>
+        <div class="ct-cell ct-no">✗ No</div>
+        <div class="ct-cell ct-no">✗ No</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-cell" style="color:var(--dim);">Karafun</div>
+        <div class="ct-cell ct-no">✗ Cover recordings</div>
+        <div class="ct-cell ct-no">✗ No</div>
+        <div class="ct-cell ct-no">✗ No coaching</div>
+        <div class="ct-cell ct-no">✗ No</div>
+        <div class="ct-cell ct-no">✗ No</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE ASK -->
+<section class="ask-section">
+  <div class="ask-inner">
+    <div class="slabel" style="color:var(--yellow);">The Ask</div>
+    <div class="ask-headline">SEED ROUND.<br>UNDER <em>$500K.</em></div>
+    <p class="ask-sub">We have the concept validated, the prototype running, and the product fully specced. <strong>We need capital to build the mobile app and reach the first 10,000 subscribers.</strong></p>
+    <div class="use-of-funds">
+      <div class="uof-card">
+        <div class="uof-pct">40%</div>
+        <div class="uof-title">Mobile App Development</div>
+        <div class="uof-desc">iOS and Android build. UI designs complete. AudioShake SDK integration. Supabase backend deployment. App Store submission.</div>
+      </div>
+      <div class="uof-card">
+        <div class="uof-pct">25%</div>
+        <div class="uof-title">AI Coaching Engine</div>
+        <div class="uof-desc">Three-tier AI architecture. Lesson plan generation. Post-session analysis. Chat interface. Notification system.</div>
+      </div>
+      <div class="uof-card">
+        <div class="uof-pct">20%</div>
+        <div class="uof-title">Marketing & Artist Outreach</div>
+        <div class="uof-desc">Founding artist partnerships. Launch campaign. Influencer karaoke challenge. PR around the real-recordings story.</div>
+      </div>
+      <div class="uof-card">
+        <div class="uof-pct">15%</div>
+        <div class="uof-title">Operations & Legal</div>
+        <div class="uof-desc">Entertainment lawyer review. Terms of service. Trademark (LOUDMOUTH, Class 9 + 41). AudioShake contract. 6 months runway.</div>
+      </div>
+    </div>
+    <div class="contact-row">
+      <div class="c-card">
+        <div class="c-type">Website</div>
+        <div class="c-val">myloudmouth.app</div>
+      </div>
+      <div class="c-card">
+        <div class="c-type">Email</div>
+        <div class="c-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="650c0b030a25081c090a1001080a10110d4b041515">[email&#160;protected]</a></div>
+      </div>
+      <div class="c-card">
+        <div class="c-type">Stage</div>
+        <div class="c-val">Pre-seed · Prototype Ready</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="flogo">LOUD<span>MOUTH</span></div>
+    <div style="font-size:12px;color:rgba(240,237,232,0.3);margin-top:3px;">myloudmouth.app</div>
+  </div>
+  <div class="fdisc">Confidential and proprietary. This document contains forward-looking statem

@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>LOUDMOUTH — Master Your First Song</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Barlow:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   LOUDMOUTH — FOUR-STEP PROCESS
+   "Master Your First Song"
+   Design: Deliberate. Warm. A journey that feels achievable.
+   Each step has its own color temperature.
+   Step 1 (Listen)  — deep blue/indigo — contemplation
+   Step 2 (Breathe) — teal/forest     — preparation
+   Step 3 (Blend)   — amber/ember     — training
+   Step 4 (Own)     — red/gold        — triumph
+═══════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #060606;
+  --surface: #0e0e0e;
+  --surface2: #151515;
+  --surface3: #1c1c1c;
+  --red: #c8151b;
+  --red-hot: #ff2020;
+  --amber: #f59e0b;
+  --ember: #e85d04;
+  --gold: #d4a017;
+
+  /* Step colors */
+  --s1: #4f6ef7;        /* Listen — indigo */
+  --s1-soft: rgba(79,110,247,0.12);
+  --s1-dim: rgba(79,110,247,0.25);
+  --s2: #0d9488;        /* Breathe — teal */
+  --s2-soft: rgba(13,148,136,0.12);
+  --s2-dim: rgba(13,148,136,0.25);
+  --s3: #e85d04;        /* Blend — ember */
+  --s3-soft: rgba(232,93,4,0.12);
+  --s3-dim: rgba(232,93,4,0.25);
+  --s4: #c8151b;        /* Own — red */
+  --s4-soft: rgba(200,21,27,0.12);
+  --s4-dim: rgba(200,21,27,0.25);
+
+  --white: #f4f0ea;
+  --dim: rgba(244,240,234,0.88);
+  --dimmer: rgba(244,240,234,0.60);
+  --dimmest: rgba(244,240,234,0.35);
+  --border: rgba(255,255,255,0.07);
+  --border-bright: rgba(255,255,255,0.13);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: 80px;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ══════════════════════════════
+   INTRO SCREEN
+══════════════════════════════ */
+#screen-intro {
+  min-height: 100vh;
+  display: none;
+  flex-direction: column;
+}
+#screen-intro.active { display: flex; }
+
+.intro-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 28px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.intro-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(200,21,27,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 80% 80%, rgba(245,158,11,0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+.intro-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px, 14vw, 80px);
+  letter-spacing: 0.04em;
+  line-height: 0.9;
+  position: relative;
+  margin-bottom: 6px;
+}
+.intro-logo em { color: var(--red); font-style: normal; }
+.intro-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 18px;
+  position: relative;
+}
+.intro-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 7vw, 42px);
+  letter-spacing: 0.03em;
+  line-height: 1.05;
+  color: var(--white);
+  position: relative;
+  margin-bottom: 16px;
+}
+.intro-headline em { color: var(--amber); font-style: normal; }
+.intro-sub {
+  font-size: 15px;
+  color: var(--dim);
+  line-height: 1.65;
+  max-width: 340px;
+  position: relative;
+  margin-bottom: 36px;
+}
+.intro-sub strong { color: var(--white); font-weight: 500; }
+
+/* Four step preview pills */
+.step-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 40px;
+}
+.step-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 100px;
+  border: 1px solid;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.step-pill.s1 { border-color: var(--s1-dim); background: var(--s1-soft); color: var(--s1); }
+.step-pill.s2 { border-color: var(--s2-dim); background: var(--s2-soft); color: var(--s2); }
+.step-pill.s3 { border-color: var(--s3-dim); background: var(--s3-soft); color: var(--s3); }
+.step-pill.s4 { border-color: var(--s4-dim); background: var(--s4-soft); color: var(--s4); }
+.pill-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.intro-cta {
+  width: 100%;
+  max-width: 320px;
+  position: relative;
+}
+.cta-btn {
+  width: 100%;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.1em;
+  padding: 20px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 6px 32px rgba(200,21,27,0.35);
+}
+.cta-btn:hover { background: var(--red-hot); box-shadow: 0 6px 40px rgba(255,32,32,0.45); }
+.cta-btn:active { transform: scale(0.97); }
+.cta-sub-label {
+  font-size: 12px;
+  color: var(--dimmer);
+  text-align: center;
+  margin-top: 10px;
+  letter-spacing: 0.04em;
+}
+
+/* Daily meditation badge */
+.meditation-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  margin: 0;
+}
+.mb-icon { font-size: 18px; }
+.mb-text {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.4;
+}
+.mb-text strong { color: var(--amber); font-weight: 500; }
+
+/* ══════════════════════════════
+   SONG PICKER SCREEN
+══════════════════════════════ */
+#screen-song { padding: 0; }
+
+.song-picker-header {
+  padding: 52px 24px 24px;
+  text-align: center;
+  background: linear-gradient(to bottom, rgba(79,110,247,0.06), transparent);
+  border-bottom: 1px solid var(--border);
+}
+.sph-step {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--s1);
+  margin-bottom: 10px;
+}
+.sph-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 7vw, 40px);
+  letter-spacing: 0.03em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.sph-sub {
+  font-size: 14px;
+  color: var(--dim);
+  line-height: 1.6;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.sph-sub strong { color: var(--white); font-weight: 500; }
+
+.song-search-wrap {
+  padding: 20px 20px 0;
+}
+.song-search {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  background: var(--surface2);
+  border: 1px solid var(--border-bright);
+  border-radius: 12px;
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s;
+  position: relative;
+}
+.song-search:focus { border-color: var(--s1); }
+.song-search::placeholder { color: var(--dimmer); }
+.search-icon {
+  position: absolute;
+  left: 36px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+  color: var(--dimmer);
+}
+.search-wrap-inner { position: relative; }
+
+.song-list {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.song-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.song-item:hover { border-color: var(--border-bright); background: var(--surface2); }
+.song-item.selected { border-color: var(--s1); background: rgba(79,110,247,0.08); }
+.song-art {
+  width: 48px; height: 48px;
+  border-radius: 8px;
+  background: var(--surface3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.song-info { flex: 1; min-width: 0; }
+.song-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: var(--white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.song-artist {
+  font-size: 12px;
+  color: var(--dimmer);
+  letter-spacing: 0.04em;
+  margin-top: 1px;
+}
+.song-diff {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Barlow Condensed', sans-serif;
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.diff-easy { background: rgba(13,148,136,0.12); color: var(--s2); border: 1px solid var(--s2-dim); }
+.diff-medium { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.22); }
+.diff-hard { background: rgba(200,21,27,0.1); color: var(--red); border: 1px solid rgba(200,21,27,0.22); }
+.song-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--s1);
+  display: none;
+  align-items: center; justify-content: center;
+  font-size: 12px;
+  color: white;
+  flex-shrink: 0;
+}
+.song-item.selected .song-check { display: flex; }
+.song-item.selected .song-art { border-color: var(--s1); }
+
+.song-confirm-bar {
+  position: sticky;
+  bottom: 0;
+  padding: 16px 20px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+.confirm-btn {
+  width: 100%;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  padding: 18px;
+  background: var(--s1);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 4px 24px rgba(79,110,247,0.3);
+  opacity: 0.4;
+  pointer-events: none;
+}
+.confirm-btn.enabled {
+  opacity: 1;
+  pointer-events: all;
+}
+.confirm-btn.enabled:hover { filter: brightness(1.1); }
+.confirm-btn.enabled:active { transform: scale(0.97); }
+
+/* ══════════════════════════════
+   FOUR-STEP JOURNEY
+══════════════════════════════ */
+#screen-journey { padding: 0; }
+
+/* Top progress tracker */
+.journey-progress {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(6,6,6,0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+}
+.jp-song-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.jp-song-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+.jp-song-artist {
+  font-size: 11px;
+  color: var(--dimmer);
+}
+.jp-daily-badge {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.22);
+  color: var(--amber);
+}
+.jp-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.jp-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 6px 4px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  border: 1px solid transparent;
+}
+.jp-step:hover { background: rgba(255,255,255,0.04); }
+.jp-step.current { border-color: var(--border); background: rgba(255,255,255,0.03); }
+.jp-step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  transition: all 0.25s;
+  border: 1.5px solid;
+}
+.jp-step.locked .jp-step-num { border-color: var(--border); color: var(--dimmer); background: transparent; }
+.jp-step.current.s1 .jp-step-num { border-color: var(--s1); color: var(--s1); background: var(--s1-soft); }
+.jp-step.current.s2 .jp-step-num { border-color: var(--s2); color: var(--s2); background: var(--s2-soft); }
+.jp-step.current.s3 .jp-step-num { border-color: var(--s3); color: var(--s3); background: var(--s3-soft); }
+.jp-step.current.s4 .jp-step-num { border-color: var(--s4); color: var(--s4); background: var(--s4-soft); }
+.jp-step.done .jp-step-num { border-color: transparent; background: var(--surface3); color: var(--amber); }
+.jp-step-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  transition: color 0.25s;
+}
+.jp-step.current.s1 .jp-step-label { color: var(--s1); }
+.jp-step.current.s2 .jp-step-label { color: var(--s2); }
+.jp-step.current.s3 .jp-step-label { color: var(--s3); }
+.jp-step.current.s4 .jp-step-label { color: var(--s4); }
+.jp-step.done .jp-step-label { color: var(--amber); }
+
+/* Step panels */
+.step-panel {
+  display: none;
+  animation: step-in 0.3s ease forwards;
+}
+.step-panel.active { display: block; }
+@keyframes step-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Step hero */
+.step-hero {
+  padding: 40px 24px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.step-number-bg {
+  position: absolute;
+  top: -20px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 180px;
+  line-height: 1;
+  opacity: 0.04;
+  pointer-events: none;
+  letter-spacing: -0.02em;
+}
+.step-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  position: relative;
+}
+.step-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(44px, 11vw, 64px);
+  letter-spacing: 0.03em;
+  line-height: 0.9;
+  position: relative;
+  margin-bottom: 10px;
+}
+.step-tagline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-size: clamp(16px, 4vw, 20px);
+  color: var(--dim);
+  line-height: 1.4;
+  max-width: 320px;
+  margin: 0 auto 20px;
+  position: relative;
+}
+.step-tagline em { font-style: normal; font-weight: 600; }
+
+/* Color schemes per step */
+.step-1 .step-eyebrow { color: var(--s1); }
+.step-1 .step-title   { color: var(--s1); }
+.step-1 .step-hero::before { background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(79,110,247,0.1), transparent 60%); content: ''; position: absolute; inset: 0; pointer-events: none; }
+
+.step-2 .step-eyebrow { color: var(--s2); }
+.step-2 .step-title   { color: var(--s2); }
+.step-2 .step-hero::before { background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(13,148,136,0.1), transparent 60%); content: ''; position: absolute; inset: 0; pointer-events: none; }
+
+.step-3 .step-eyebrow { color: var(--s3); }
+.step-3 .step-title   { color: var(--s3); }
+.step-3 .step-hero::before { background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(232,93,4,0.1), transparent 60%); content: ''; position: absolute; inset: 0; pointer-events: none; }
+
+.step-4 .step-eyebrow { color: var(--s4); }
+.step-4 .step-title   { color: var(--s4); }
+.step-4 .step-hero::before { background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(200,21,27,0.12), transparent 60%); content: ''; position: absolute; inset: 0; pointer-events: none; }
+
+/* Task cards */
+.tasks-section {
+  padding: 0 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.task-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: border-color 0.15s;
+  cursor: pointer;
+}
+.task-card.done { opacity: 0.55; }
+.task-card.done .task-check { border-color: var(--amber); background: var(--amber); }
+.task-card.done .task-check::after { content: '✓'; font-size: 11px; color: #000; }
+.task-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-bright);
+  background: transparent;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.task-info { flex: 1; }
+.task-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 3px;
+}
+.task-desc {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.55;
+}
+.task-desc strong { color: var(--white); font-weight: 500; }
+.task-action {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  color: var(--dimmer);
+  flex-shrink: 0;
+  transition: all 0.12s;
+  margin-top: 1px;
+  background: transparent;
+  cursor: pointer;
+}
+.task-action:hover { color: var(--white); border-color: var(--border-bright); }
+
+/* Context / coaching note */
+.step-coaching {
+  margin: 0 20px 24px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.step-1 .step-coaching { background: var(--s1-soft); border: 1px solid rgba(79,110,247,0.2); }
+.step-2 .step-coaching { background: var(--s2-soft); border: 1px solid rgba(13,148,136,0.2); }
+.step-3 .step-coaching { background: var(--s3-soft); border: 1px solid rgba(232,93,4,0.2); }
+.step-4 .step-coaching { background: var(--s4-soft); border: 1px solid rgba(200,21,27,0.2); }
+.coaching-avatar {
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center;
+}
+.coaching-text {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.6;
+}
+.coaching-text strong { color: var(--white); font-weight: 500; }
+
+/* VAS preview for step 3/4 */
+.vas-preview {
+  margin: 0 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+.vp-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.step-3 .vp-label { color: var(--s3); }
+.step-4 .vp-label { color: var(--s4); }
+.vp-track {
+  height: 8px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  position: relative;
+  margin-bottom: 8px;
+}
+.vp-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.34,1.3,0.64,1);
+}
+.step-3 .vp-fill { background: linear-gradient(to right, var(--s2), var(--s3)); width: 75%; }
+.step-4 .vp-fill { background: linear-gradient(to right, var(--s2), var(--s4)); width: 20%; }
+.vp-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  transition: left 0.6s cubic-bezier(0.34,1.3,0.64,1);
+}
+.step-3 .vp-thumb { background: var(--s3); left: 75%; }
+.step-4 .vp-thumb { background: var(--s4); left: 20%; }
+.vp-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--dimmer);
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.vp-target-label {
+  font-size: 13px;
+  color: var(--dim);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+.vp-target-label strong { color: var(--white); font-weight: 500; }
+
+/* Complete step button */
+.step-footer {
+  padding: 16px 20px;
+  position: sticky;
+  bottom: 0;
+  background: rgba(6,6,6,0.96);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(6px);
+}
+.complete-btn {
+  width: 100%;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  padding: 18px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: white;
+}
+.complete-btn:active { transform: scale(0.97); }
+.step-1 .complete-btn { background: var(--s1); box-shadow: 0 4px 24px rgba(79,110,247,0.3); }
+.step-1 .complete-btn:hover { filter: brightness(1.1); }
+.step-2 .complete-btn { background: var(--s2); box-shadow: 0 4px 24px rgba(13,148,136,0.3); }
+.step-2 .complete-btn:hover { filter: brightness(1.1); }
+.step-3 .complete-btn { background: var(--s3); box-shadow: 0 4px 24px rgba(232,93,4,0.3); }
+.step-3 .complete-btn:hover { filter: brightness(1.1); }
+.step-4 .complete-btn { background: var(--s4); box-shadow: 0 4px 24px rgba(200,21,27,0.4); }
+.step-4 .complete-btn:hover { background: var(--red-hot); }
+
+/* ══════════════════════════════
+   COMPLETION SCREEN
+══════════════════════════════ */
+#screen-complete {
+  min-height: 100vh;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 28px;
+  position: relative;
+  overflow: hidden;
+}
+#screen-complete.active { display: flex; }
+#screen-complete::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200,21,27,0.12), transparent 60%),
+    radial-gradient(ellipse 40% 30% at 20% 80%, rgba(245,158,11,0.06), transparent 50%);
+  pointer-events: none;
+}
+
+.complete-trophy {
+  font-size: 64px;
+  margin-bottom: 20px;
+  position: relative;
+  animation: trophy-in 0.6s cubic-bezier(0.34,1.5,0.64,1) forwards;
+}
+@keyframes trophy-in {
+  from { transform: scale(0.4) rotate(-10deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0); opacity: 1; }
+}
+.complete-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 10vw, 60px);
+  letter-spacing: 0.04em;
+  line-height: 0.95;
+  color: var(--white);
+  position: relative;
+  margin-bottom: 8px;
+}
+.complete-title em { color: var(--amber); font-style: normal; }
+.complete-song {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  color: var(--dim);
+  margin-bottom: 28px;
+  position: relative;
+}
+.complete-song strong { color: var(--white); }
+
+/* Four step recap */
+.complete-steps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 340px;
+  margin-bottom: 32px;
+  position: relative;
+}
+.cs-cell {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.cs-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.cs-cell.s1 .cs-num { color: var(--s1); }
+.cs-cell.s2 .cs-num { color: var(--s2); }
+.cs-cell.s3 .cs-num { color: var(--s3); }
+.cs-cell.s4 .cs-num { color: var(--s4); }
+.cs-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 2px;
+}
+.cs-check { font-size: 14px; }
+
+.complete-message {
+  font-size: 15px;
+  color: var(--dim);
+  line-height: 1.7;
+  max-width: 320px;
+  position: relative;
+  margin-bottom: 32px;
+}
+.complete-message strong { color: var(--white); font-weight: 500; }
+.complete-message em { color: var(--amber); font-style: italic; }
+
+.complete-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  position: relative;
+}
+.action-next {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  padding: 18px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 4px 24px rgba(200,21,27,0.35);
+}
+.action-next:hover { background: var(--red-hot); }
+.action-share {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 16px;
+  background: transparent;
+  color: var(--dim);
+  border: 1px solid var(--border-bright);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.action-share:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
+
+/* Daily Meditation reminder */
+.daily-reminder {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  background: var(--surface);
+  border: 1px solid rgba(245,158,11,0.22);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+.dr-icon { font-size: 22px; }
+.dr-text {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.5;
+}
+.dr-text strong { color: var(--amber); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     SCREEN 1 — INTRO
+══════════════════════════════════ -->
+<div id="screen-intro" class="screen active">
+  <div class="intro-hero">
+    <div class="intro-eyebrow">Your Journey Starts Here</div>
+    <div class="intro-logo">LOUD<em>MOUTH</em></div>
+    <div style="margin-bottom:32px;"></div>
+    <div class="intro-headline">
+      Follow Our<br><em>Four-Step Process</em><br>to Rocking<br>a Single Song
+    </div>
+    <div class="intro-sub">
+      Once you've <strong>nailed that one song completely</strong> — the rest come easy. Start with your favorite. Own it. Then conquer the world.
+    </div>
+
+    <div class="step-pills">
+      <div class="step-pill s1"><span class="pill-num">1</span> Listen</div>
+      <div class="step-pill s2"><span class="pill-num">2</span> Breathe</div>
+      <div class="step-pill s3"><span class="pill-num">3</span> Blend</div>
+      <div class="step-pill s4"><span class="pill-num">4</span> Own</div>
+    </div>
+
+    <div class="intro-cta">
+      <button class="cta-btn" onclick="showScreen('song')">Pick My Song →</button>
+      <div class="cta-sub-label">Takes 30 seconds. No pressure. You can change it later.</div>
+    </div>
+  </div>
+
+  <div class="meditation-badge">
+    <div class="mb-icon">🧘</div>
+    <div class="mb-text">
+      Each session begins with <strong>Your Daily Music Meditation</strong> — 5 minutes of breathwork that prepares your instrument before you sing a single note.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 2 — SONG PICKER
+══════════════════════════════════ -->
+<div id="screen-song" class="screen">
+  <div class="song-picker-header">
+    <div class="sph-step">Step Zero · Choose Your Song</div>
+    <div class="sph-title">Pick Your<br>Favorite Song</div>
+    <div class="sph-sub">
+      <strong>The one you sing in the car when nobody's watching.</strong> That song. This whole process is built around mastering one song completely before moving to the next.
+    </div>
+  </div>
+
+  <div class="song-search-wrap">
+    <div class="search-wrap-inner">
+      <div class="search-icon">🔍</div>
+      <input type="text" class="song-search" placeholder="Search songs, artists…" oninput="filterSongs(this.value)">
+    </div>
+  </div>
+
+  <div class="song-list" id="song-list"></div>
+
+  <div class="song-confirm-bar">
+    <button class="confirm-btn" id="confirm-song-btn" onclick="confirmSong()">
+      This Is My Song →
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SCREEN 3 — FOUR STEP JOURNEY
+══════════════════════════════════ -->
+<div id="screen-journey" class="screen">
+
+  <!-- Sticky Progress Bar -->
+  <div class="journey-progress">
+    <div class="jp-song-row">
+      <div>
+        <div class="jp-song-name" id="jp-song-name">Take Me to Church</div>
+        <div class="jp-song-artist" id="jp-song-artist">Hozier</div>
+      </div>
+      <div class="jp-daily-badge">Daily Meditation</div>
+    </div>
+    <div class="jp-steps">
+      <div class="jp-step s1 current" id="jp-step-1" onclick="goToStep(1)">
+        <div class="jp-step-num">1</div>
+        <div class="jp-step-label">Listen</div>
+      </div>
+      <div class="jp-step locked" id="jp-step-2" onclick="goToStep(2)">
+        <div class="jp-step-num">2</div>
+        <div class="jp-step-label">Breathe</div>
+      </div>
+      <div class="jp-step locked" id="jp-step-3" onclick="goToStep(3)">
+        <div class="jp-step-num">3</div>
+        <div class="jp-step-label">Blend</div>
+      </div>
+      <div class="jp-step locked" id="jp-step-4" onclick="goToStep(4)">
+        <div class="jp-step-num">4</div>
+        <div class="jp-step-label">Own</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 1: LISTEN ── -->
+  <div id="step-panel-1" class="step-panel step-1 active">
+    <div class="step-hero">
+      <div class="step-number-bg">1</div>
+      <div class="step-eyebrow">Step One</div>
+      <div class="step-title">Listen</div>
+      <div class="step-tagline">
+        Really hear it. <em>Before you sing a single note.</em>
+      </div>
+    </div>
+
+    <div class="step-coaching">
+      <div class="coaching-avatar">🎙️</div>
+      <div class="coaching-text">
+        Most singers skip this step entirely. Don't. <strong>The professionals who make it look effortless spent hours just listening.</strong> They know where every breath happens, where the artist's voice cracks, what makes the chorus explode. You're about to know your song like that.
+      </div>
+    </div>
+
+    <div class="tasks-section">
+      <div class="task-card" id="t1-1" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">Listen through once — just enjoy it</div>
+          <div class="task-desc">No analyzing. No singing along. <strong>Just let it wash over you.</strong> Remind yourself why you love this song.</div>
+        </div>
+        <button class="task-action" onclick="openPlayer(event)">Play</button>
+      </div>
+      <div class="task-card" id="t1-2" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">Find the hardest moment</div>
+          <div class="task-desc">Every song has one phrase that trips people up. <strong>Where is it?</strong> The big note, the key change, the fast verse. Name it. That's your target.</div>
+        </div>
+      </div>
+      <div class="task-card" id="t1-3" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">Notice where the artist breathes</div>
+          <div class="task-desc">Listen for the inhales between phrases. <strong>That's your roadmap.</strong> Breathing where the artist breathes is the single fastest way to sound like you belong in the song.</div>
+        </div>
+      </div>
+      <div class="task-card" id="t1-4" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">Read the lyrics once through</div>
+          <div class="task-desc">Out loud. Slowly. <strong>What is this song actually about?</strong> When you know the meaning, the emotion comes naturally. Judges don't score notes — they score feeling.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-footer step-1">
+      <button class="complete-btn" onclick="completeStep(1)">I've Listened — Next Step →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: BREATHE ── -->
+  <div id="step-panel-2" class="step-panel step-2">
+    <div class="step-hero">
+      <div class="step-number-bg">2</div>
+      <div class="step-eyebrow">Step Two · Your Daily Music Meditation</div>
+      <div class="step-title">Breathe</div>
+      <div class="step-tagline">
+        Prepare the instrument. <em>The lungs are the engine.</em>
+      </div>
+    </div>
+
+    <div class="step-coaching">
+      <div class="coaching-avatar">🧘</div>
+      <div class="coaching-text">
+        <strong>This is Your Daily Music Meditation.</strong> What you're about to do is what every professional does before they open their mouth — and almost no amateur does. Five minutes here will change what happens in five minutes when you sing. The voice you have right after breathwork is not the same voice you had before it.
+      </div>
+    </div>
+
+    <div class="tasks-section">
+      <div class="task-card" id="t2-1" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">2 min — Box Breathing</div>
+          <div class="task-desc"><strong>4 counts in. 4 hold. 4 out. 4 hold.</strong> Four rounds. This resets your nervous system. If you have stage fright, this is the cure that works in under two minutes.</div>
+        </div>
+        <button class="task-action" onclick="openBreathwork(event)">Start</button>
+      </div>
+      <div class="task-card" id="t2-2" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">2 min — Diaphragmatic Breathing</div>
+          <div class="task-desc">One hand on your chest. One on your belly. <strong>Only the belly moves.</strong> If your chest is rising, start over. This is how you access the engine.</div>
+        </div>
+      </div>
+      <div class="task-card" id="t2-3" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">1 min — Humming warmup</div>
+          <div class="task-desc">Sustained "Mmm" hum. <strong>Feel it in your chest, not your throat.</strong> Sixty seconds of this is worth more than twenty minutes of scales. Your folds are now warm. You're ready.</div>
+        </div>
+        <button class="task-action" onclick="openHumming(event)">Start</button>
+      </div>
+    </div>
+
+    <div class="step-footer step-2">
+      <button class="complete-btn" onclick="completeStep(2)">Meditation Complete — Next Step →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: BLEND ── -->
+  <div id="step-panel-3" class="step-panel step-3">
+    <div class="step-hero">
+      <div class="step-number-bg">3</div>
+      <div class="step-eyebrow">Step Three</div>
+      <div class="step-title">Blend</div>
+      <div class="step-tagline">
+        Sing with the artist. <em>Borrow their voice tonight.</em>
+      </div>
+    </div>
+
+    <div class="step-coaching">
+      <div class="coaching-avatar">🎚️</div>
+      <div class="coaching-text">
+        <strong>The Vocal Assist Slider is all the way to the right.</strong> The artist's real vocal is blended behind yours — not a cover version, the actual recording. Right now you're not trying to be a hero. You're learning the song from the inside. Let the artist carry you through it.
+      </div>
+    </div>
+
+    <div class="vas-preview">
+      <div class="vp-label">Your Slider — Start Here</div>
+      <div class="vp-track">
+        <div class="vp-fill"></div>
+        <div class="vp-thumb"></div>
+      </div>
+      <div class="vp-labels">
+        <span>← All You</span>
+        <span>Full Assist →</span>
+      </div>
+      <div class="vp-target-label">
+        Slider at <strong>75% assist</strong> for your first pass. You'll hear yourself singing. The artist is the safety net underneath you.
+      </div>
+    </div>
+
+    <div class="tasks-section">
+      <div class="task-card" id="t3-1" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">First sing-through — high assist</div>
+          <div class="task-desc"><strong>Slider at 75%.</strong> Sing the whole song. Don't stop, don't correct yourself mid-phrase. Just go. The goal is to finish the song, not to be perfect.</div>
+        </div>
+        <button class="task-action" onclick="openSinging(event)">Sing</button>
+      </div>
+      <div class="task-card" id="t3-2" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">Drop to 50% — sing again</div>
+          <div class="task-desc">Now you're in it. <strong>50/50 — you and the artist, equal partners.</strong> Notice what gets harder. That's useful information, not failure.</div>
+        </div>
+      </div>
+      <div class="task-card" id="t3-3" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">Drill the hard moment</div>
+          <div class="task-desc">Remember the hardest part from Step 1? <strong>Loop just that section.</strong> Repeat it five times. Let the assist help you through it until you know the shape of it.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-footer step-3">
+      <button class="complete-btn" onclick="completeStep(3)">I Can Feel It — Next Step →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: OWN ── -->
+  <div id="step-panel-4" class="step-panel step-4">
+    <div class="step-hero">
+      <div class="step-number-bg">4</div>
+      <div class="step-eyebrow">Step Four</div>
+      <div class="step-title">Own It</div>
+      <div class="step-tagline">
+        Pull the slider left. <em>This is your voice now.</em>
+      </div>
+    </div>
+
+    <div class="step-coaching">
+      <div class="coaching-avatar">🏆</div>
+      <div class="coaching-text">
+        <strong>The scaffold comes down.</strong> The artist's vocal is barely a whisper now. What you're hearing is almost entirely you. This is what the training has been building toward — a voice that knows the song from the inside, with the strength to deliver it. This is your Loudmouth.
+      </div>
+    </div>
+
+    <div class="vas-preview">
+      <div class="vp-label">Your Slider — Pull It Left</div>
+      <div class="vp-track">
+        <div class="vp-fill"></div>
+        <div class="vp-thumb"></div>
+      </div>
+      <div class="vp-labels">
+        <span>← All You</span>
+        <span>Full Assist →</span>
+      </div>
+      <div class="vp-target-label">
+        Slider at <strong>20% or less.</strong> That whisper of the artist is just a reference, not a crutch. You've got this.
+      </div>
+    </div>
+
+    <div class="tasks-section">
+      <div class="task-card" id="t4-1" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">The performance run</div>
+          <div class="task-desc"><strong>Slider at 20% or below.</strong> Sing the whole song like there's a crowd. Because there will be. This is the take. Don't stop for anything.</div>
+        </div>
+        <button class="task-action" onclick="openSinging(event)">Perform</button>
+      </div>
+      <div class="task-card" id="t4-2" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">Review your score</div>
+          <div class="task-desc"><strong>Four dimensions: Pitch, Timing, Clarity, Dynamics.</strong> Look at which dimension is lowest. That's your one thing to work on. Not five things. One.</div>
+        </div>
+      </div>
+      <div class="task-card" id="t4-3" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-info">
+          <div class="task-name">Beat the artist</div>
+          <div class="task-desc">The artist's score is right there. <strong>Beat it.</strong> It's their song — and you're singing it better than they do at their own casual bar performance level. That's the point. You own it now.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-footer step-4">
+      <button class="complete-btn" onclick="completeStep(4)">This Song Is Mine 🏆</button>
+    </div>
+  </div>
+
+</div><!-- /screen-journey -->
+
+<!-- ══════════════════════════════════
+     SCREEN 4 — COMPLETE
+══════════════════════════════════ -->
+<div id="screen-complete" class="screen">
+  <div class="complete-trophy">🏆</div>
+  <div class="complete-title">You <em>Own</em><br>This Song</div>
+  <div class="complete-song" id="complete-song-label">Take Me to Church · Hozier</div>
+
+  <div class="complete-steps">
+    <div class="cs-cell s1">
+      <div class="cs-num">1</div>
+      <div class="cs-name">Listen</div>
+      <div class="cs-check">✓</div>
+    </div>
+    <div class="cs-cell s2">
+      <div class="cs-num">2</div>
+      <div class="cs-name">Breathe</div>
+      <div class="cs-check">✓</div>
+    </div>
+    <div class="cs-cell s3">
+      <div class="cs-num">3</div>
+      <div class="cs-name">Blend</div>
+      <div class="cs-check">✓</div>
+    </div>
+    <div class="cs-cell s4">
+      <div class="cs-num">4</div>
+      <div class="cs-name">Own It</div>
+      <div class="cs-check">✓</div>
+    </div>
+  </div>
+
+  <div class="complete-message">
+    That's how it works. <strong>One song. Four steps. Completely owned.</strong><br><br>
+    <em>Now pick your next song.</em> You already know the process. The second one takes half the time. The tenth one, you'll barely need the steps at all.
+  </div>
+
+  <div class="complete-actions">
+    <button class="action-next" onclick="pickNextSong()">Pick My Next Song →</button>
+    <button class="action-share" onclick="sharePerformance()">📤 Share This Performance</button>
+  </div>
+
+  <div class="daily-reminder">
+    <div class="dr-icon">🧘</div>
+    <div class="dr-text">
+      Come back tomorrow for <strong>Your Daily Music Meditation</strong> — 10 minutes keeps the momentum going.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════ -->
+<script>
+// ─── DATA ────────────────────────────────────────────────────────
+const SONGS = [
+  { title: 'Take Me to Church',      artist: 'Hozier',          emoji: '🎸', diff: 'medium' },
+  { title: 'Shallow',                artist: 'Lady Gaga',       emoji: '🎭', diff: 'hard'   },
+  { title: 'Someone Like You',       artist: 'Adele',           emoji: '💙', diff: 'medium' },
+  { title: 'Jolene',                 artist: 'Dolly Parton',    emoji: '🌸', diff: 'easy'   },
+  { title: 'Bohemian Rhapsody',      artist: 'Queen',           emoji: '👑', diff: 'hard'   },
+  { title: 'Killing Me Softly',      artist: 'Fugees',          emoji: '🎶', diff: 'easy'   },
+  { title: 'Black Bird',             artist: 'The Beatles',     emoji: '🪶', diff: 'easy'   },
+  { title: 'Titanium',               artist: 'David Guetta',    emoji: '⚡', diff: 'medium' },
+  { title: 'Livin\' on a Prayer',   artist: 'Bon Jovi',        emoji: '🔥', diff: 'medium' },
+  { title: 'I Will Always Love You', artist: 'Whitney Houston', emoji: '❤️', diff: 'hard'   },
+  { title: 'September',              artist: 'Earth Wind & Fire', emoji: '🌟', diff: 'easy' },
+  { title: 'Don\'t Stop Believin\'', artist: 'Journey',         emoji: '🎵', diff: 'easy'   },
+];
+
+// ─── STATE ───────────────────────────────────────────────────────
+let appState = {
+  currentScreen: 'intro',
+  selectedSong: null,
+  currentStep: 1,
+  completedSteps: [],
+  tasksDone: {},
+};
+
+// ─── NAVIGATION ──────────────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  appState.currentScreen = name;
+  window.scrollTo(0, 0);
+}
+
+// ─── SONG PICKER ─────────────────────────────────────────────────
+function renderSongs(filter = '') {
+  const list = document.getElementById('song-list');
+  list.innerHTML = '';
+  const filtered = SONGS.filter(s =>
+    s.title.toLowerCase().includes(filter.toLowerCase()) ||
+    s.artist.toLowerCase().includes(filter.toLowerCase())
+  );
+  filtered.forEach((song, i) => {
+    const div = document.createElement('div');
+    div.className = 'song-item' + (appState.selectedSong?.title === song.title ? ' selected' : '');
+    div.innerHTML = `
+      <div class="song-art">${song.emoji}</div>
+      <div class="song-info">
+        <div class="song-title">${song.title}</div>
+        <div class="song-artist">${song.artist}</div>
+      </div>
+      <div class="song-diff diff-${song.diff}">${song.diff}</div>
+      <div class="song-check">✓</div>
+    `;
+    div.onclick = () => selectSong(song, div);
+    list.appendChild(div);
+  });
+}
+
+function selectSong(song, el) {
+  appState.selectedSong = song;
+  document.querySelectorAll('.song-item').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  const btn = document.getElementById('confirm-song-btn');
+  btn.classList.add('enabled');
+  btn.textContent = `This Is My Song — ${song.title} →`;
+}
+
+function filterSongs(val) { renderSongs(val); }
+
+function confirmSong() {
+  if (!appState.selectedSong) return;
+  const s = appState.selectedSong;
+  document.getElementById('jp-song-name').textContent = s.title;
+  document.getElementById('jp-song-artist').textContent = s.artist;
+  document.getElementById('complete-song-label').textContent = `${s.title} · ${s.artist}`;
+  showScreen('journey');
+  goToStep(1);
+}
+
+// ─── STEP NAVIGATION ─────────────────────────────────────────────
+function goToStep(n) {
+  // Can only go to completed steps or current step
+  if (n > appState.currentStep && !appState.completedSteps.includes(n - 1) && n > 1) return;
+
+  appState.currentStep = n;
+
+  // Show correct panel
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('step-panel-' + n).classList.add('active');
+
+  // Update nav
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('jp-step-' + i);
+    el.className = 'jp-step';
+    if (appState.completedSteps.includes(i)) {
+      el.classList.add('done');
+      el.querySelector('.jp-step-num').textContent = '✓';
+    } else if (i === n) {
+      el.classList.add('current', 's' + i);
+      el.querySelector('.jp-step-num').textContent = i;
+    } else if (i <= appState.currentStep || appState.completedSteps.includes(i - 1)) {
+      el.classList.add('locked');
+      el.querySelector('.jp-step-num').textContent = i;
+    } else {
+      el.classList.add('locked');
+      el.querySelector('.jp-step-num').textContent = i;
+    }
+  }
+  window.scrollTo(0, 0);
+}
+
+function completeStep(n) {
+  if (!appState.completedSteps.includes(n)) {
+    appState.completedSteps.push(n);
+  }
+
+  if (n === 4) {
+    showScreen('complete');
+    return;
+  }
+
+  // Advance to next step
+  appState.currentStep = n + 1;
+  goToStep(n + 1);
+
+  // Small delight — scroll to new step title
+  setTimeout(() => {
+    const panel = document.getElementById('step-panel-' + (n + 1));
+    if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+// ─── TASK TOGGLE ─────────────────────────────────────────────────
+function toggleTask(card) {
+  card.classList.toggle('done');
+}
+
+// ─── DEEP LINKS (stub — would open real screens in full app) ─────
+function openPlayer(e) {
+  e.stopPropagation();
+  showToast('Opening song player…');
+}
+function openBreathwork(e) {
+  e.stopPropagation();
+  showToast('Opening Daily Music Meditation…');
+}
+function openHumming(e) {
+  e.stopPropagation();
+  showToast('Opening Humming Session…');
+}
+function openSinging(e) {
+  e.stopPropagation();
+  showToast('Opening Singing Screen…');
+}
+function sharePerformance() {
+  showToast('Opening Share…');
+}
+function pickNextSong() {
+  appState.completedSteps = [];
+  appState.currentStep = 1;
+  appState.selectedSong = null;
+  renderSongs();
+  document.getElementById('confirm-song-btn').classList.remove('enabled');
+  document.getElementById('confirm-song-btn').textContent = 'This Is My Song →';
+  showScreen('song');
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────
+let toastEl = null;
+let toastTimeout = null;
+function showToast(msg) {
+  if (!toastEl) {
+    toastEl = document.createElement('div');
+    toastEl.style.cssText = `
+      position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);
+      background:rgba(14,14,14,0.95);border:1px solid rgba(255,255,255,0.1);
+      border-radius:10px;padding:11px 18px;font-family:'Barlow Condensed',sans-serif;
+      font-weight:600;font-size:14px;letter-spacing:0.06em;color:#f4f0ea;
+      opacity:0;transition:all 0.25s;z-index:9999;white-space:nowrap;
+    `;
+    document.body.appendChild(toastEl);
+  }
+  toastEl.textContent = msg;
+  toastEl.style.opacity = '1';
+  toastEl.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toastEl.style.opacity = '0';
+    toastEl.style.transform = 'translateX(-50%) translateY(10px)';
+  }, 2200);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+renderSongs();
+</script>
+</body>
+</html>

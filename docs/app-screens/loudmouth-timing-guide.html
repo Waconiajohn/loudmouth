@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>LOUDMOUTH — Timing Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Barlow:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   LOUDMOUTH — TIMING GUIDE
+   The timing guide is not a metronome.
+   It's a visual layer that makes the rhythm visible
+   without ever saying the word "metronome."
+   Invisible when you're right. Present when you need it.
+═══════════════════════════════════════════════════ */
+
+:root {
+  --bg: #050505;
+  --surface: #0d0d0d;
+  --surface2: #141414;
+  --surface3: #1c1c1c;
+  --red: #c8151b;
+  --amber: #f59e0b;
+  --green: #22c55e;
+  --blue: #3b82f6;
+  --white: #f4f0ea;
+  --dim: rgba(244,240,234,0.88);
+  --dimmer: rgba(244,240,234,0.60);
+  --border: rgba(255,255,255,0.07);
+  --border-bright: rgba(255,255,255,0.13);
+
+  /* Timing states */
+  --timing-early: #f59e0b;
+  --timing-good:  #22c55e;
+  --timing-late:  #3b82f6;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--white); font-family: 'Barlow', sans-serif; }
+body { padding-bottom: 60px; max-width: 480px; margin: 0 auto; }
+
+/* ── DEMO HEADER ── */
+.demo-header {
+  padding: 24px 20px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+.demo-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+}
+.demo-logo em { color: var(--red); font-style: normal; }
+.demo-badge {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.22);
+  color: var(--amber);
+}
+
+/* ── SONG HEADER ── */
+.sing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 12px;
+}
+.sing-song-info { flex: 1; text-align: center; }
+.sing-song-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+}
+.sing-artist-name { font-size: 12px; color: var(--dim); margin-top: 2px; }
+.sing-close {
+  font-size: 18px;
+  background: rgba(255,255,255,0.07);
+  border: none;
+  color: var(--dim);
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+
+/* ── PIANO ROLL ── */
+.piano-roll {
+  margin: 0 16px 0;
+  height: 120px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+.pr-grid-line {
+  position: absolute; left: 0; right: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.04);
+}
+/* Artist pitch line */
+.pr-artist-line {
+  position: absolute;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(240,237,232,0.3);
+  transition: all 0.08s;
+}
+/* User pitch line */
+.pr-user-line {
+  position: absolute;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--amber);
+  box-shadow: 0 0 8px rgba(245,158,11,0.5);
+  transition: all 0.08s;
+}
+
+/* ═══════════════════════════════════════════════════
+   THE TIMING GUIDE LAYER
+   Lives between the piano roll and lyrics.
+   Three components:
+   1. Phrase runway — shows upcoming words as dots
+   2. Timing cursor — a vertical line showing "now"
+   3. Word anticipation glow — previews the next word
+═══════════════════════════════════════════════════ */
+
+.timing-guide-wrap {
+  margin: 0 16px;
+  position: relative;
+  height: 48px;
+  background: rgba(255,255,255,0.015);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* The "runway" — a subtle horizontal rail */
+.tg-rail {
+  position: absolute;
+  top: 50%;
+  left: 0; right: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-50%);
+}
+
+/* NOW line — vertical cursor at 30% from left */
+.tg-cursor {
+  position: absolute;
+  top: 6px; bottom: 6px;
+  width: 2px;
+  left: 30%;
+  background: rgba(255,255,255,0.2);
+  border-radius: 1px;
+}
+.tg-cursor::before {
+  content: 'NOW';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.18);
+  white-space: nowrap;
+}
+
+/* Word dots — upcoming words on the runway */
+.tg-word-dot {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.12);
+  transition: all 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.tg-word-dot.phrase-start {
+  background: rgba(255,255,255,0.22);
+  height: 10px;
+}
+/* The approaching word glows as it nears the cursor */
+.tg-word-dot.approaching {
+  background: rgba(245,158,11,0.5);
+  box-shadow: 0 0 12px rgba(245,158,11,0.4);
+  height: 12px;
+}
+/* The current word — right at the cursor */
+.tg-word-dot.current {
+  background: var(--amber);
+  box-shadow: 0 0 16px rgba(245,158,11,0.6);
+  height: 14px;
+  border-radius: 7px;
+}
+/* Past words — fading behind the cursor */
+.tg-word-dot.past {
+  background: rgba(255,255,255,0.05);
+  height: 6px;
+}
+
+/* Timing feedback flash — overlays the cursor briefly */
+.tg-timing-flash {
+  position: absolute;
+  top: 4px; bottom: 4px;
+  width: 4px;
+  left: calc(30% - 1px);
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+.tg-timing-flash.early { background: var(--timing-early); box-shadow: 0 0 10px var(--timing-early); }
+.tg-timing-flash.good  { background: var(--timing-good);  box-shadow: 0 0 10px var(--timing-good); }
+.tg-timing-flash.late  { background: var(--timing-late);  box-shadow: 0 0 10px var(--timing-late); }
+.tg-timing-flash.show  { opacity: 1; }
+
+/* Phrase breath markers — tiny gaps between phrases */
+.tg-breath-marker {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 20px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 1px;
+}
+.tg-breath-marker::after {
+  content: '↓';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  color: rgba(255,255,255,0.15);
+}
+
+/* ── LYRICS AREA ── */
+.lyrics-area {
+  padding: 14px 20px;
+  min-height: 160px;
+  position: relative;
+}
+.lyric-line {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: var(--dimmer);
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+.lyric-line.past { color: rgba(244,240,234,0.18); }
+.lyric-line.active {
+  font-size: 22px;
+  color: var(--white);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+.lyric-line.next { color: var(--dim); font-size: 17px; }
+
+.lyric-word { transition: all 0.1s; }
+.lyric-word.sung { color: var(--amber); }
+.lyric-word.current {
+  color: var(--white);
+  font-size: 28px;
+  text-shadow: 0 0 20px rgba(245,196,0,0.4);
+}
+
+/* Word anticipation — the NEXT word subtly brightens before it's time */
+.lyric-word.incoming {
+  color: rgba(244,240,234,0.6);
+  font-size: 24px;
+  transition: all 0.2s;
+}
+
+/* Timing nudge — tiny icon that appears when consistently off */
+.timing-nudge {
+  position: absolute;
+  right: 20px;
+  top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.timing-nudge.show { opacity: 1; }
+.timing-nudge.early { color: var(--timing-early); }
+.timing-nudge.late  { color: var(--timing-late); }
+.tn-icon { font-size: 14px; }
+.tn-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ── PROGRESS BAR ── */
+.sing-progress {
+  margin: 0 20px;
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.sing-progress-fill {
+  height: 100%;
+  background: var(--red);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.2s linear;
+}
+.sing-time {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 20px 0;
+  font-size: 11px;
+  color: var(--dimmer);
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.06em;
+}
+
+/* ── VAS SECTION ── */
+.vas-section { padding: 10px 20px 12px; }
+.vas-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.vas-label span {
+  font-size: 11px;
+  color: var(--dimmer);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'Barlow Condensed', sans-serif;
+}
+.vas-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(to right, var(--amber) 30%, rgba(255,255,255,0.1) 30%);
+  margin-bottom: 6px;
+}
+.vas-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 0 4px rgba(245,158,11,0.2);
+  cursor: pointer;
+}
+.vas-tier-label {
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  color: var(--amber);
+}
+
+/* ── CONTROLS ── */
+.sing-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px 20px 20px;
+}
+.ctrl-btn {
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.2);
+  color: rgba(245,158,11,0.65);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  transition: all 0.12s;
+}
+.ctrl-btn:hover { border-color: rgba(245,158,11,0.4); color: var(--amber); }
+.ctrl-btn:active { transform: scale(0.92); }
+.ctrl-btn.sm { width: 44px; height: 44px; }
+.ctrl-btn.lg {
+  width: 64px; height: 64px; font-size: 24px;
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+  box-shadow: 0 0 24px rgba(200,21,27,0.4);
+}
+
+/* ── SETTINGS PANEL ── */
+.tg-settings {
+  margin: 12px 16px 0;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.tg-settings-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  white-space: nowrap;
+}
+.tg-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tg-toggle-label {
+  font-size: 11px;
+  color: var(--dimmer);
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.tg-toggle {
+  width: 32px; height: 18px;
+  background: var(--surface3);
+  border-radius: 9px;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.tg-toggle::after {
+  content: '';
+  position: absolute;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--dimmer);
+  top: 2px; left: 2px;
+  transition: left 0.2s, background 0.2s;
+}
+.tg-toggle.on { background: rgba(245,158,11,0.2); border-color: rgba(245,158,11,0.35); }
+.tg-toggle.on::after { left: 16px; background: var(--amber); }
+
+/* ── TIMING SCORE CARD ── */
+.timing-score-card {
+  margin: 20px 16px 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.tsc-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tsc-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+}
+.tsc-overall {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: var(--green);
+  letter-spacing: 0.04em;
+}
+.tsc-bars {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.tsc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tsc-row-label {
+  font-size: 11px;
+  color: var(--dimmer);
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.06em;
+  width: 56px;
+  flex-shrink: 0;
+}
+.tsc-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.tsc-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(0.34,1.2,0.64,1);
+}
+.tsc-bar-fill.good  { background: var(--green); }
+.tsc-bar-fill.early { background: var(--timing-early); }
+.tsc-bar-fill.late  { background: var(--timing-late); }
+.tsc-row-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  min-width: 36px;
+  text-align: right;
+}
+.tsc-row-val.good  { color: var(--green); }
+.tsc-row-val.early { color: var(--timing-early); }
+.tsc-row-val.late  { color: var(--timing-late); }
+
+.tsc-coach {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: rgba(255,255,255,0.01);
+}
+.tsc-coach-icon { font-size: 16px; flex-shrink: 0; }
+.tsc-coach-text {
+  font-size: 12px;
+  color: var(--dim);
+  line-height: 1.55;
+}
+.tsc-coach-text strong { color: var(--white); font-weight: 500; }
+.tsc-coach-text em { color: var(--amber); font-style: italic; }
+
+/* ── EXPLAINER ── */
+.explainer {
+  margin: 20px 16px 0;
+  padding: 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.explainer-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 10px;
+}
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.legend-dot {
+  width: 28px; height: 6px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.legend-text {
+  font-size: 12px;
+  color: var(--dim);
+  line-height: 1.4;
+}
+.legend-text strong { color: var(--white); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<!-- DEMO HEADER -->
+<div class="demo-header">
+  <div class="demo-logo">LOUD<em>MOUTH</em></div>
+  <div class="demo-badge">Timing Guide · Live Demo</div>
+</div>
+
+<!-- SONG HEADER -->
+<div class="sing-header">
+  <button class="sing-close">✕</button>
+  <div class="sing-song-info">
+    <div class="sing-song-name">Take Me to Church</div>
+    <div class="sing-artist-name">Hozier · Original Recording</div>
+  </div>
+  <div style="width:34px;"></div>
+</div>
+
+<!-- PIANO ROLL -->
+<div class="piano-roll" id="piano-roll">
+  <div class="pr-grid-line" style="top:20%"></div>
+  <div class="pr-grid-line" style="top:40%"></div>
+  <div class="pr-grid-line" style="top:60%"></div>
+  <div class="pr-grid-line" style="top:80%"></div>
+  <div class="pr-artist-line" id="pr-artist" style="top:35%;left:0;width:0;"></div>
+  <div class="pr-user-line"   id="pr-user"   style="top:38%;left:0;width:0;"></div>
+</div>
+
+<!-- ══════════════════════════════
+     THE TIMING GUIDE
+══════════════════════════════ -->
+<div class="timing-guide-wrap" id="timing-guide">
+  <div class="tg-rail"></div>
+  <div class="tg-cursor" id="tg-cursor"></div>
+  <div class="tg-timing-flash" id="tg-flash"></div>
+  <!-- Word dots and breath markers injected by JS -->
+</div>
+
+<!-- TIMING GUIDE SETTINGS -->
+<div class="tg-settings">
+  <div class="tg-settings-label">Timing Guide</div>
+  <div class="tg-toggle-row">
+    <div class="tg-toggle-label">Visual</div>
+    <div class="tg-toggle on" id="toggle-visual" onclick="toggleSetting('visual')"></div>
+  </div>
+  <div class="tg-toggle-row">
+    <div class="tg-toggle-label">Anticipate</div>
+    <div class="tg-toggle on" id="toggle-anticipate" onclick="toggleSetting('anticipate')"></div>
+  </div>
+  <div class="tg-toggle-row">
+    <div class="tg-toggle-label">Nudges</div>
+    <div class="tg-toggle on" id="toggle-nudges" onclick="toggleSetting('nudges')"></div>
+  </div>
+</div>
+
+<!-- LYRICS AREA -->
+<div class="lyrics-area">
+  <div class="lyric-line past">My lover's got humor</div>
+  <div class="lyric-line past">She's the giggle at a funeral</div>
+  <div class="lyric-line active" id="active-line">
+    <span class="lyric-word sung">Take</span>
+    <span class="lyric-word sung">me</span>
+    <span class="lyric-word sung">to</span>
+    <span class="lyric-word current" id="current-word">church</span>
+    <span class="lyric-word incoming" id="incoming-word">I'll</span>
+    <span class="lyric-word" id="word-worship">worship</span>
+  </div>
+  <div class="lyric-line next" id="next-line">like a dog at the shrine of your lies</div>
+
+  <!-- Timing nudge indicator -->
+  <div class="timing-nudge" id="timing-nudge">
+    <span class="tn-icon" id="tn-icon">⏰</span>
+    <span class="tn-text" id="tn-text">A TOUCH EARLY</span>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="sing-progress">
+  <div class="sing-progress-fill" id="progress-fill" style="width:38%"></div>
+</div>
+<div class="sing-time">
+  <span id="time-current">1:24</span>
+  <span>3:48</span>
+</div>
+
+<!-- VAS -->
+<div class="vas-section">
+  <div class="vas-label">
+    <span>← All You</span>
+    <span style="color:var(--amber);font-family:'Bebas Neue',sans-serif;font-size:14px;" id="vas-tier-name">FRONT MAN</span>
+    <span>Full Assist →</span>
+  </div>
+  <input type="range" class="vas-slider" min="0" max="100" value="30" id="vas-input" oninput="updateVas(this.value)">
+  <div class="vas-tier-label" id="vas-tier-label">Mostly you — a whisper of Hozier behind you.</div>
+</div>
+
+<!-- CONTROLS -->
+<div class="sing-controls">
+  <button class="ctrl-btn sm">⏮</button>
+  <button class="ctrl-btn sm" id="play-btn" onclick="togglePlay()">▶</button>
+  <button class="ctrl-btn lg" onclick="togglePlay()">⏹</button>
+  <button class="ctrl-btn sm">📊</button>
+  <button class="ctrl-btn sm">⏭</button>
+</div>
+
+<!-- TIMING SCORE CARD (revealed after session) -->
+<div class="timing-score-card" id="score-card">
+  <div class="tsc-header">
+    <div class="tsc-title">Timing Breakdown</div>
+    <div class="tsc-overall" id="tsc-overall">8.2</div>
+  </div>
+  <div class="tsc-bars">
+    <div class="tsc-row">
+      <div class="tsc-row-label">On time</div>
+      <div class="tsc-bar-track">
+        <div class="tsc-bar-fill good" id="bar-good" style="width:0%"></div>
+      </div>
+      <div class="tsc-row-val good" id="val-good">—</div>
+    </div>
+    <div class="tsc-row">
+      <div class="tsc-row-label">Early</div>
+      <div class="tsc-bar-track">
+        <div class="tsc-bar-fill early" id="bar-early" style="width:0%"></div>
+      </div>
+      <div class="tsc-row-val early" id="val-early">—</div>
+    </div>
+    <div class="tsc-row">
+      <div class="tsc-row-label">Late</div>
+      <div class="tsc-bar-track">
+        <div class="tsc-bar-fill late" id="bar-late" style="width:0%"></div>
+      </div>
+      <div class="tsc-row-val late" id="val-late">—</div>
+    </div>
+  </div>
+  <div class="tsc-coach">
+    <div class="tsc-coach-icon">🎙️</div>
+    <div class="tsc-coach-text" id="tsc-coach-text">
+      Play the song to see your timing breakdown.
+    </div>
+  </div>
+</div>
+
+<!-- EXPLAINER -->
+<div class="explainer">
+  <div class="explainer-title">How the Timing Guide Works</div>
+  <div class="legend-row">
+    <div class="legend-dot" style="background:rgba(255,255,255,0.12)"></div>
+    <div class="legend-text"><strong>Word dots</strong> — each upcoming word appears on the runway ahead of the now-line. They flow left toward you like a conveyor belt.</div>
+  </div>
+  <div class="legend-row">
+    <div class="legend-dot" style="background:var(--amber)"></div>
+    <div class="legend-text"><strong>Amber glow</strong> — the next word brightens as it approaches the now-line. This is your anticipation cue — your cue to open your mouth.</div>
+  </div>
+  <div class="legend-row">
+    <div class="legend-dot" style="background:var(--green)"></div>
+    <div class="legend-text"><strong>Green flash</strong> — you entered right on time. You'll barely notice it when you're in the zone.</div>
+  </div>
+  <div class="legend-row">
+    <div class="legend-dot" style="background:var(--timing-early)"></div>
+    <div class="legend-text"><strong>Amber flash + "A touch early"</strong> — you came in slightly before the beat. Common on choruses you know well.</div>
+  </div>
+  <div class="legend-row">
+    <div class="legend-dot" style="background:var(--timing-late)"></div>
+    <div class="legend-text"><strong>Blue flash + "Just behind"</strong> — you came in slightly late. Usually means you hesitated. The runway gives you the visual countdown to fix it.</div>
+  </div>
+  <div class="legend-row">
+    <div class="legend-dot" style="background:rgba(255,255,255,0.08); width:2px; height:20px; border-radius:1px;"></div>
+    <div class="legend-text"><strong>Breath markers</strong> — vertical tick marks show where the phrase ends and you should breathe. They match where the artist breathes.</div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  LOUDMOUTH TIMING GUIDE ENGINE
+//  Visual timing layer — invisible when right, helpful when not
+// ══════════════════════════════════════════════════════════════
+
+// ─── SETTINGS STATE ──────────────────────────────────────────
+const settings = { visual: true, anticipate: true, nudges: true };
+
+function toggleSetting(key) {
+  settings[key] = !settings[key];
+  const el = document.getElementById('toggle-' + key);
+  el.classList.toggle('on', settings[key]);
+  updateGuideVisibility();
+}
+
+function updateGuideVisibility() {
+  document.getElementById('timing-guide').style.opacity = settings.visual ? '1' : '0.15';
+}
+
+// ─── LYRIC DATA ───────────────────────────────────────────────
+// In production this comes from lyric_map.json
+// Format: { w: word, t: start_sec, d: duration_sec, phrase: bool (first word of phrase) }
+// For demo: simulated timing around current playhead (1:24 = 84s)
+
+const LYRICS = [
+  // Phrase 1
+  { w: 'My',      t: 70.0, d: 0.3, phrase: true  },
+  { w: 'lover\'s', t: 70.4, d: 0.4, phrase: false },
+  { w: 'got',     t: 70.9, d: 0.25,phrase: false },
+  { w: 'humor',   t: 71.2, d: 0.6, phrase: false },
+  // Phrase 2
+  { w: 'She\'s',  t: 72.5, d: 0.3, phrase: true  },
+  { w: 'the',     t: 72.9, d: 0.2, phrase: false },
+  { w: 'giggle',  t: 73.1, d: 0.5, phrase: false },
+  { w: 'at',      t: 73.7, d: 0.2, phrase: false },
+  { w: 'a',       t: 73.9, d: 0.15,phrase: false },
+  { w: 'funeral', t: 74.1, d: 0.7, phrase: false },
+  // Phrase 3 — current
+  { w: 'Take',    t: 75.8, d: 0.35, phrase: true  },
+  { w: 'me',      t: 76.2, d: 0.25, phrase: false },
+  { w: 'to',      t: 76.5, d: 0.2,  phrase: false },
+  { w: 'church',  t: 76.8, d: 0.55, phrase: false },
+  { w: 'I\'ll',   t: 77.5, d: 0.3,  phrase: false },
+  { w: 'worship', t: 77.9, d: 0.5,  phrase: false },
+  // Phrase 4
+  { w: 'like',    t: 79.2, d: 0.2,  phrase: true  },
+  { w: 'a',       t: 79.4, d: 0.15, phrase: false },
+  { w: 'dog',     t: 79.6, d: 0.35, phrase: false },
+  { w: 'at',      t: 80.0, d: 0.2,  phrase: false },
+  { w: 'the',     t: 80.2, d: 0.15, phrase: false },
+  { w: 'shrine',  t: 80.4, d: 0.4,  phrase: false },
+  { w: 'of',      t: 80.9, d: 0.15, phrase: false },
+  { w: 'your',    t: 81.1, d: 0.2,  phrase: false },
+  { w: 'lies',    t: 81.4, d: 0.7,  phrase: false },
+];
+
+// ─── PLAYBACK STATE ──────────────────────────────────────────
+let playState = {
+  playing: false,
+  time: 84.0,       // start at 1:24
+  interval: null,
+  timingHistory: [], // { delta: ms, word: string }
+  wordIdx: 14,       // index into LYRICS for current position
+};
+
+// ─── RUNWAY CONFIG ────────────────────────────────────────────
+// The timing guide shows a window of ±N seconds around "now"
+// NOW_X is the % position of the cursor on the runway
+const NOW_X = 30;         // cursor at 30% from left
+const WINDOW_SECS = 6;    // show words ±6 seconds from now
+const RUNWAY_PX_PER_SEC = 340 / WINDOW_SECS; // ~57px per second on 480px screen
+
+// ─── BUILD RUNWAY ─────────────────────────────────────────────
+function buildRunway() {
+  const wrap = document.getElementById('timing-guide');
+  // Remove existing dots and markers
+  wrap.querySelectorAll('.tg-word-dot, .tg-breath-marker').forEach(el => el.remove());
+
+  if (!settings.visual) return;
+
+  const now = playState.time;
+  const wrapW = wrap.offsetWidth || 440;
+  const nowPx = wrapW * (NOW_X / 100);
+
+  LYRICS.forEach((lyric, i) => {
+    const dt = lyric.t - now; // seconds from now (positive = future)
+    const wordPx = nowPx + dt * RUNWAY_PX_PER_SEC;
+    const wordW = Math.max(16, lyric.w.length * 6);
+
+    // Only render if visible in window
+    if (wordPx < -wordW - 10 || wordPx > wrapW + 10) return;
+
+    // Is this word current, approaching, sung, or upcoming?
+    const isPast       = lyric.t + lyric.d < now;
+    const isCurrent    = lyric.t <= now && now < lyric.t + lyric.d;
+    const isApproaching = !isCurrent && !isPast && dt < 1.2 && dt > 0;
+
+    const dot = document.createElement('div');
+    dot.className = 'tg-word-dot';
+    if (isPast) dot.classList.add('past');
+    else if (isCurrent) dot.classList.add('current');
+    else if (isApproaching && settings.anticipate) dot.classList.add('approaching');
+    else if (lyric.phrase) dot.classList.add('phrase-start');
+
+    dot.style.left = wordPx + 'px';
+    dot.style.width = wordW + 'px';
+    wrap.appendChild(dot);
+
+    // Breath markers at phrase boundaries (upcoming only)
+    if (lyric.phrase && !isPast && dt > 0 && dt < WINDOW_SECS) {
+      const breath = document.createElement('div');
+      breath.className = 'tg-breath-marker';
+      breath.style.left = (wordPx - 6) + 'px';
+      wrap.appendChild(breath);
+    }
+  });
+}
+
+// ─── TIMING FEEDBACK ─────────────────────────────────────────
+// Called when user sings a word (in production: from FFT onset detection)
+// delta: ms early (negative) or late (positive)
+function onWordSung(wordIdx, deltaMs) {
+  playState.timingHistory.push({ delta: deltaMs, word: LYRICS[wordIdx]?.w || '' });
+
+  const flash = document.getElementById('tg-flash');
+  flash.className = 'tg-timing-flash';
+
+  let state = 'good';
+  if (deltaMs < -80)  state = 'early';
+  if (deltaMs > 120)  state = 'late';
+
+  flash.classList.add(state, 'show');
+  setTimeout(() => flash.classList.remove('show'), 220);
+
+  // Nudge text — only show if consistently off
+  if (settings.nudges) {
+    updateNudge();
+  }
+}
+
+function updateNudge() {
+  const recent = playState.timingHistory.slice(-5);
+  if (recent.length < 3) return;
+  const avgDelta = recent.reduce((s, e) => s + e.delta, 0) / recent.length;
+
+  const nudge = document.getElementById('timing-nudge');
+  const icon  = document.getElementById('tn-icon');
+  const text  = document.getElementById('tn-text');
+
+  if (avgDelta < -100) {
+    nudge.className = 'timing-nudge show early';
+    icon.textContent = '⏩';
+    text.textContent = 'A Touch Early';
+    setTimeout(() => nudge.classList.remove('show'), 2500);
+  } else if (avgDelta > 150) {
+    nudge.className = 'timing-nudge show late';
+    icon.textContent = '⏳';
+    text.textContent = 'Just Behind';
+    setTimeout(() => nudge.classList.remove('show'), 2500);
+  }
+}
+
+// ─── SCORING ──────────────────────────────────────────────────
+// Timing score = 10 × max(0, 1 - |delta_ms| / 300)
+function timingScore(deltaMs) {
+  return Math.max(0, 10 * (1 - Math.abs(deltaMs) / 300));
+}
+
+function updateScoreCard() {
+  const h = playState.timingHistory;
+  if (h.length === 0) return;
+
+  const onTime = h.filter(e => Math.abs(e.delta) < 100).length;
+  const early  = h.filter(e => e.delta < -100).length;
+  const late   = h.filter(e => e.delta > 100).length;
+  const total  = h.length;
+
+  const onTimePct = Math.round((onTime / total) * 100);
+  const earlyPct  = Math.round((early  / total) * 100);
+  const latePct   = Math.round((late   / total) * 100);
+
+  document.getElementById('bar-good').style.width  = onTimePct + '%';
+  document.getElementById('bar-early').style.width = earlyPct  + '%';
+  document.getElementById('bar-late').style.width  = latePct   + '%';
+  document.getElementById('val-good').textContent  = onTimePct + '%';
+  document.getElementById('val-early').textContent = earlyPct  + '%';
+  document.getElementById('val-late').textContent  = latePct   + '%';
+
+  const avgScore = h.reduce((s, e) => s + timingScore(e.delta), 0) / h.length;
+  document.getElementById('tsc-overall').textContent = avgScore.toFixed(1);
+  document.getElementById('tsc-overall').style.color =
+    avgScore >= 8 ? 'var(--green)' :
+    avgScore >= 6 ? 'var(--amber)' : 'var(--red)';
+
+  // Coach feedback
+  let msg = '';
+  if (earlyPct > latePct && earlyPct > 25) {
+    msg = `You tend to come in <em>${earlyPct}% of the time slightly early</em> — most common on choruses you know well. <strong>Let the word dot reach the line before you sing it.</strong>`;
+  } else if (latePct > earlyPct && latePct > 25) {
+    msg = `You're running a bit behind on <em>${latePct}% of words</em> — usually means a slight hesitation before committing to the note. <strong>Watch the approaching word light up and open your mouth before it hits the line.</strong>`;
+  } else {
+    msg = `<strong>Solid timing — ${onTimePct}% of words right on the beat.</strong> The timing guide is doing its job. Keep watching the runway and it'll keep getting better.`;
+  }
+  document.getElementById('tsc-coach-text').innerHTML = msg;
+}
+
+// ─── PLAYBACK SIMULATION ──────────────────────────────────────
+const SONG_TOTAL = 228; // 3:48
+
+function togglePlay() {
+  playState.playing = !playState.playing;
+  document.getElementById('play-btn').textContent = playState.playing ? '⏸' : '▶';
+
+  if (playState.playing) {
+    playState.interval = setInterval(tick, 50); // 20fps
+  } else {
+    clearInterval(playState.interval);
+    updateScoreCard();
+  }
+}
+
+function tick() {
+  playState.time += 0.05;
+
+  // Update progress bar and time display
+  const pct = (playState.time / SONG_TOTAL) * 100;
+  document.getElementById('progress-fill').style.width = Math.min(100, pct) + '%';
+  document.getElementById('time-current').textContent = fmtTime(playState.time);
+
+  // Check if current word changed
+  const nowWordIdx = LYRICS.findIndex(l =>
+    l.t <= playState.time && playState.time < l.t + l.d
+  );
+
+  if (nowWordIdx !== -1 && nowWordIdx !== playState.wordIdx) {
+    playState.wordIdx = nowWordIdx;
+    // Simulate timing — mostly good, occasionally slightly off
+    const simulatedDelta = (Math.random() - 0.45) * 220;
+    onWordSung(nowWordIdx, simulatedDelta);
+    animateLyricWord(nowWordIdx);
+  }
+
+  // Rebuild runway at 20fps
+  buildRunway();
+
+  // Piano roll animation
+  animatePianoRoll();
+
+  if (playState.time >= SONG_TOTAL) {
+    playState.playing = false;
+    clearInterval(playState.interval);
+    updateScoreCard();
+  }
+}
+
+function animateLyricWord(idx) {
+  // In the live lyric display, mark current/upcoming words
+  const currentWord  = document.getElementById('current-word');
+  const incomingWord = document.getElementById('incoming-word');
+  if (currentWord && incomingWord) {
+    currentWord.className  = 'lyric-word current';
+    incomingWord.className = settings.anticipate ? 'lyric-word incoming' : 'lyric-word';
+  }
+}
+
+// Piano roll simulation
+let prPhase = 0;
+function animatePianoRoll() {
+  prPhase += 0.04;
+  const artist = document.getElementById('pr-artist');
+  const user   = document.getElementById('pr-user');
+  const pct = ((playState.time - 84) / (SONG_TOTAL - 84)) * 100;
+
+  artist.style.left  = '0';
+  artist.style.width = Math.min(100, pct + 5) + '%';
+  artist.style.top   = (35 + Math.sin(prPhase * 0.7) * 18) + '%';
+
+  user.style.left  = '0';
+  user.style.width = Math.min(100, pct + 2) + '%';
+  user.style.top   = (38 + Math.sin(prPhase * 0.7 + 0.15) * 17) + '%';
+}
+
+// ─── VAS ──────────────────────────────────────────────────────
+const VAS_TIERS = [
+  { max: 15,  name: 'LEGEND',        label: 'Pure you. No safety net.' },
+  { max: 35,  name: 'FRONT MAN',     label: 'Mostly you — a whisper of Hozier behind you.' },
+  { max: 65,  name: 'KARAOKE HERO',  label: 'You and Hozier, side by side.' },
+  { max: 85,  name: 'SHOWER SINGER', label: 'Hozier carries most of the melody.' },
+  { max: 101, name: 'TRAIN WRECK',   label: 'Maximum assist. Start here. No judgment.' },
+];
+
+function updateVas(val) {
+  val = parseInt(val);
+  const tier = VAS_TIERS.find(t => val < t.max);
+  document.getElementById('vas-tier-name').textContent  = tier.name;
+  document.getElementById('vas-tier-label').textContent = tier.label;
+  const el = document.getElementById('vas-input');
+  el.style.background = `linear-gradient(to right, var(--amber) ${val}%, rgba(255,255,255,0.1) ${val}%)`;
+}
+
+// ─── UTILS ────────────────────────────────────────────────────
+function fmtTime(s) {
+  const m   = Math.floor(s / 60);
+  const sec = Math.floor(s % 60).toString().padStart(2, '0');
+  return `${m}:${sec}`;
+}
+
+// ─── INIT ────────────────────────────────────────────────────
+buildRunway();
+// Start building runway in idle mode (not playing)
+setInterval(() => { if (!playState.playing) buildRunway(); }, 200);
+</script>
+</body>
+</html>

@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>LOUDMOUTH — Age & Language Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Barlow:ital,wght@0,400;0,500;1,400&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   LOUDMOUTH — AGE-APPROPRIATE + LANGUAGE LEARNING SYSTEM
+   Four age modes, each with distinct visual language:
+   Rising Stars — Nunito, warm, bouncy, stars and color
+   Teens   — Current LOUDMOUTH aesthetic, social-forward
+   Adults  — Full LOUDMOUTH, performance-focused
+   Seniors — Larger, warmer, wellness-forward
+   Language Learning — All ages, immersion mode
+═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #060606;
+  --surface: #0e0e0e;
+  --surface2: #151515;
+  --surface3: #1c1c1c;
+  --red: #c8151b;
+  --amber: #f59e0b;
+  --ember: #e85d04;
+  --white: #f4f0ea;
+  --dim: rgba(244,240,234,0.88);
+  --dimmer: rgba(244,240,234,0.60);
+  --border: rgba(255,255,255,0.07);
+  --border-bright: rgba(255,255,255,0.13);
+
+  /* Age mode accent colors */
+  --rising-primary: #f472b6;
+  --rising-secondary: #a78bfa;
+  --rising-accent: #34d399;
+  --teen-primary: #c8151b;
+  --teen-secondary: #f59e0b;
+  --adult-primary: #c8151b;
+  --adult-secondary: #f59e0b;
+  --senior-primary: #0d9488;
+  --senior-secondary: #d4a017;
+
+  /* Language mode */
+  --lang-primary: #6366f1;
+  --lang-secondary: #34d399;
+  --lang-accent: #f59e0b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: 80px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ══════════════════════════════════
+   SCREEN 1 — MODE SELECTOR
+══════════════════════════════════ */
+.mode-header {
+  padding: 48px 24px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.mode-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200,21,27,0.07), transparent 65%);
+  pointer-events: none;
+}
+.mode-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  letter-spacing: 0.04em;
+  line-height: 0.9;
+  position: relative;
+  margin-bottom: 6px;
+}
+.mode-logo em { color: var(--red); font-style: normal; }
+.mode-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--amber);
+  position: relative;
+  margin-bottom: 0;
+}
+
+.mode-question {
+  padding: 20px 24px 12px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 0.04em;
+  line-height: 1.05;
+  color: var(--white);
+}
+.mode-sub {
+  padding: 0 24px 20px;
+  font-size: 14px;
+  color: var(--dimmer);
+  line-height: 1.6;
+}
+
+/* Age cards */
+.age-grid {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.age-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.age-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.age-card:hover { border-color: var(--border-bright); }
+.age-card:hover::before { opacity: 1; }
+.age-card:active { transform: scale(0.98); }
+
+.age-card.rising::before  { background: linear-gradient(135deg, rgba(244,114,182,0.08), transparent); }
+.age-card.teen::before  { background: linear-gradient(135deg, rgba(200,21,27,0.08), transparent); }
+.age-card.adult::before { background: linear-gradient(135deg, rgba(245,158,11,0.06), transparent); }
+.age-card.senior::before{ background: linear-gradient(135deg, rgba(13,148,136,0.08), transparent); }
+
+.age-emoji {
+  font-size: 32px;
+  flex-shrink: 0;
+  position: relative;
+}
+.age-info { flex: 1; position: relative; }
+.age-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.age-card.rising  .age-name { color: var(--rising-primary); }
+.age-card.teen  .age-name { color: var(--teen-primary); }
+.age-card.adult .age-name { color: var(--amber); }
+.age-card.senior .age-name { color: var(--senior-primary); }
+
+.age-range {
+  font-size: 11px;
+  color: var(--dimmer);
+  letter-spacing: 0.08em;
+  font-family: 'Barlow Condensed', sans-serif;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.age-desc { font-size: 12px; color: var(--dim); line-height: 1.4; }
+.age-arrow {
+  font-size: 18px;
+  color: var(--dimmer);
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Language learning banner */
+.lang-banner {
+  margin: 0 20px 24px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(52,211,153,0.08));
+  border: 1.5px solid rgba(99,102,241,0.3);
+  border-radius: 16px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.lang-banner:hover { border-color: rgba(99,102,241,0.5); }
+.lang-banner:active { transform: scale(0.98); }
+.lang-banner-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--lang-secondary);
+  margin-bottom: 6px;
+}
+.lang-banner-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.lang-banner-title em { color: var(--lang-primary); font-style: normal; }
+.lang-banner-sub {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.lang-banner-sub strong { color: var(--white); font-weight: 500; }
+.lang-flags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.lang-flag {
+  font-size: 22px;
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.lang-new-badge {
+  position: absolute;
+  top: 14px; right: 14px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: var(--lang-primary);
+  color: white;
+  border-radius: 100px;
+}
+
+/* ══════════════════════════════════
+   SCREEN 2 — LANGUAGE PICKER
+══════════════════════════════════ */
+.lang-pick-header {
+  padding: 48px 24px 24px;
+  text-align: center;
+}
+.lang-pick-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--lang-primary);
+  margin-bottom: 10px;
+}
+.lang-pick-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.lang-pick-title em { color: var(--lang-primary); font-style: normal; }
+.lang-pick-sub {
+  font-size: 14px;
+  color: var(--dim);
+  line-height: 1.6;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.lang-pick-sub strong { color: var(--white); font-weight: 500; }
+
+.native-section {
+  padding: 0 20px 8px;
+}
+.section-micro-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-bottom: 10px;
+}
+.native-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.native-chip {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.native-chip:hover { border-color: rgba(99,102,241,0.4); }
+.native-chip.selected {
+  border-color: var(--lang-primary);
+  background: rgba(99,102,241,0.1);
+}
+.nc-flag { font-size: 24px; margin-bottom: 4px; }
+.nc-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+.nc-native { font-size: 10px; color: var(--dimmer); margin-top: 1px; }
+
+.learning-section { padding: 0 20px 8px; }
+.learning-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.learn-chip {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.learn-chip:hover { border-color: rgba(52,211,153,0.4); }
+.learn-chip.selected {
+  border-color: var(--lang-secondary);
+  background: rgba(52,211,153,0.08);
+}
+.learn-chip .popularity {
+  position: absolute;
+  top: 5px; right: 5px;
+  font-size: 8px;
+  color: var(--lang-accent);
+}
+
+.lang-cta-bar {
+  position: sticky;
+  bottom: 0;
+  padding: 16px 20px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+.lang-cta-btn {
+  width: 100%;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  padding: 18px;
+  background: var(--lang-primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 4px 24px rgba(99,102,241,0.3);
+  opacity: 0.4;
+  pointer-events: none;
+}
+.lang-cta-btn.enabled {
+  opacity: 1;
+  pointer-events: all;
+}
+.lang-cta-btn.enabled:hover { filter: brightness(1.1); }
+
+/* ══════════════════════════════════
+   SHARED LESSON PLAN COMPONENTS
+══════════════════════════════════ */
+.lesson-header {
+  padding: 48px 24px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.lesson-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  cursor: pointer;
+  margin-bottom: 20px;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: color 0.12s;
+}
+.lesson-back:hover { color: var(--white); }
+
+.lh-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.lh-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(32px, 8vw, 48px);
+  letter-spacing: 0.03em;
+  line-height: 0.95;
+  margin-bottom: 8px;
+}
+.lh-sub {
+  font-size: 14px;
+  color: var(--dim);
+  line-height: 1.6;
+  max-width: 340px;
+}
+.lh-sub strong { color: var(--white); font-weight: 500; }
+
+/* Lesson plan cards */
+.lesson-plans {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.lp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.lp-card:hover { border-color: var(--border-bright); }
+.lp-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+}
+.lp-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.lp-info { flex: 1; min-width: 0; }
+.lp-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+.lp-meta {
+  font-size: 11px;
+  color: var(--dimmer);
+  letter-spacing: 0.06em;
+  font-family: 'Barlow Condensed', sans-serif;
+}
+.lp-chevron { color: var(--dimmer); font-size: 16px; flex-shrink: 0; }
+
+.lp-body {
+  border-top: 1px solid var(--border);
+  padding: 14px 18px 16px;
+  background: var(--surface2);
+  display: none;
+}
+.lp-card.open .lp-body { display: block; }
+.lp-desc {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.lp-desc strong { color: var(--white); font-weight: 500; }
+.lp-desc em { font-style: italic; color: var(--amber); }
+
+.lp-sessions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.lp-session {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface3);
+  border-radius: 8px;
+}
+.lps-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+.lps-info { flex: 1; }
+.lps-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 1px;
+}
+.lps-desc { font-size: 11px; color: var(--dimmer); line-height: 1.4; }
+.lps-duration {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  color: var(--amber);
+  flex-shrink: 0;
+}
+
+.lp-start-btn {
+  width: 100%;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: white;
+}
+.lp-start-btn:active { transform: scale(0.97); }
+
+/* ══════════════════════════════════
+   KIDS MODE OVERRIDES
+   Friendlier font, bigger elements,
+   stars instead of scores
+══════════════════════════════════ */
+body.mode-rising {
+  --accent: var(--rising-primary);
+}
+.rising-wrapper .lh-title { font-family: 'Nunito', sans-serif; font-weight: 900; color: var(--rising-primary); }
+.rising-wrapper .lp-title { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--white); letter-spacing: 0; text-transform: none; font-size: 18px; }
+.rising-wrapper .lps-title { font-family: 'Nunito', sans-serif; font-weight: 700; text-transform: none; letter-spacing: 0; }
+.rising-wrapper .lp-start-btn { background: var(--rising-primary); box-shadow: 0 4px 20px rgba(244,114,182,0.3); font-family: 'Nunito', sans-serif; font-size: 16px; }
+.rising-wrapper .lh-mode-badge { background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.3); color: var(--rising-primary); }
+.rising-wrapper .lp-card { border-radius: 18px; }
+.rising-wrapper .lp-icon { background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.2); }
+.rising-wrapper .lps-num { color: var(--rising-primary); }
+
+/* Star rating instead of score */
+.star-rating {
+  display: flex;
+  gap: 3px;
+  font-size: 18px;
+}
+.star { opacity: 0.25; }
+.star.lit { opacity: 1; }
+
+/* ══════════════════════════════════
+   SENIOR MODE OVERRIDES
+   Larger text, warmer palette,
+   wellness emphasis
+══════════════════════════════════ */
+.senior-wrapper .lh-title { color: var(--senior-primary); }
+.senior-wrapper .lp-title { font-size: 19px; color: var(--white); }
+.senior-wrapper .lp-desc { font-size: 15px; line-height: 1.75; }
+.senior-wrapper .lps-title { font-size: 15px; }
+.senior-wrapper .lps-desc { font-size: 13px; }
+.senior-wrapper .lp-start-btn { background: var(--senior-primary); box-shadow: 0 4px 20px rgba(13,148,136,0.3); }
+.senior-wrapper .lh-mode-badge { background: rgba(13,148,136,0.15); border: 1px solid rgba(13,148,136,0.3); color: var(--senior-primary); }
+.senior-wrapper .lp-icon { background: rgba(13,148,136,0.12); border: 1px solid rgba(13,148,136,0.2); }
+.senior-wrapper .lps-num { color: var(--senior-primary); }
+
+/* ══════════════════════════════════
+   TEEN MODE OVERRIDES
+══════════════════════════════════ */
+.teen-wrapper .lp-start-btn { background: var(--red); box-shadow: 0 4px 20px rgba(200,21,27,0.3); }
+.teen-wrapper .lh-mode-badge { background: rgba(200,21,27,0.12); border: 1px solid rgba(200,21,27,0.3); color: var(--red); }
+.teen-wrapper .lp-icon { background: rgba(200,21,27,0.1); border: 1px solid rgba(200,21,27,0.18); }
+.teen-wrapper .lps-num { color: var(--red); }
+
+/* ══════════════════════════════════
+   LANGUAGE LEARNING MODE
+══════════════════════════════════ */
+.lang-wrapper .lh-title { color: var(--lang-primary); }
+.lang-wrapper .lp-start-btn { background: var(--lang-primary); box-shadow: 0 4px 20px rgba(99,102,241,0.3); }
+.lang-wrapper .lh-mode-badge { background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); color: var(--lang-primary); }
+.lang-wrapper .lp-icon { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); }
+.lang-wrapper .lps-num { color: var(--lang-primary); }
+
+/* Pronunciation guide pill */
+.pronun-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(52,211,153,0.1);
+  border: 1px solid rgba(52,211,153,0.25);
+  border-radius: 100px;
+  font-size: 11px;
+  color: var(--lang-secondary);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+/* Language lyric preview */
+.lang-lyric-preview {
+  margin: 0 20px 20px;
+  background: var(--surface);
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+.llp-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lang-primary);
+  margin-bottom: 12px;
+}
+.llp-line {
+  margin-bottom: 10px;
+}
+.llp-original {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+.llp-original .llp-word {
+  display: inline-block;
+  cursor: pointer;
+  padding: 1px 3px;
+  border-radius: 4px;
+  transition: background 0.12s;
+  position: relative;
+}
+.llp-original .llp-word:hover,
+.llp-original .llp-word.tapped {
+  background: rgba(99,102,241,0.2);
+}
+.llp-phonetic {
+  font-size: 12px;
+  color: var(--lang-primary);
+  letter-spacing: 0.04em;
+  margin-bottom: 3px;
+  font-style: italic;
+}
+.llp-translation {
+  font-size: 12px;
+  color: var(--dimmer);
+}
+.llp-divider { height: 1px; background: var(--border); margin: 10px 0; }
+
+/* Vocabulary pill cloud */
+.vocab-cloud {
+  margin: 0 20px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.vc-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-bottom: 10px;
+}
+.vc-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.vc-pill {
+  padding: 6px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.12s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.vc-pill:hover { border-color: rgba(99,102,241,0.4); background: rgba(99,102,241,0.06); }
+.vc-word { color: var(--white); font-weight: 500; }
+.vc-translation { color: var(--dimmer); font-size: 11px; }
+
+/* Progress rings for language */
+.lang-progress-row {
+  margin: 0 20px 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.lpr-cell {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+}
+.lpr-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px;
+  line-height: 1;
+  margin-bottom: 2px;
+  color: var(--lang-primary);
+}
+.lpr-label {
+  font-size: 10px;
+  color: var(--dimmer);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Barlow Condensed', sans-serif;
+  line-height: 1.3;
+}
+
+/* ── POSITIONING LINE ── */
+.positioning-strip {
+  margin: 0 20px 24px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(52,211,153,0.06));
+  border: 1px solid rgba(99,102,241,0.22);
+  border-radius: 14px;
+}
+.ps-quote {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.45;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.ps-quote em { color: var(--lang-secondary); font-style: normal; font-weight: 600; }
+.ps-attr {
+  font-size: 11px;
+  color: var(--dimmer);
+  letter-spacing: 0.08em;
+  font-family: 'Barlow Condensed', sans-serif;
+  text-transform: uppercase;
+}
+
+/* ── BACK / NAV ── */
+.screen-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--dimmer);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.12s;
+  margin-bottom: 16px;
+}
+.screen-back-btn:hover { color: var(--white); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     SCREEN 1 — MODE SELECTOR
+══════════════════════════════════════ -->
+<div id="screen-mode" class="screen active">
+
+  <div class="mode-header">
+    <div class="mode-eyebrow">Personalize Your Experience</div>
+    <div class="mode-logo">LOUD<em>MOUTH</em></div>
+  </div>
+
+  <div class="mode-question">Who's singing today?</div>
+  <div class="mode-sub">We'll adapt everything — lesson plans, coaching language, scoring, and song recommendations — to fit.</div>
+
+  <div class="age-grid">
+
+    <div class="age-card rising" onclick="showMode('rising')">
+      <div class="age-emoji">🌟</div>
+      <div class="age-info">
+        <div class="age-name">Rising Stars</div>
+        <div class="age-range">Ages 6–12</div>
+        <div class="age-desc">Stars, games, and friendly coaching. Short sessions that feel like play.</div>
+      </div>
+      <div class="age-arrow">›</div>
+    </div>
+
+    <div class="age-card teen" onclick="showMode('teen')">
+      <div class="age-emoji">🎤</div>
+      <div class="age-info">
+        <div class="age-name">Teens</div>
+        <div class="age-range">Ages 13–17</div>
+        <div class="age-desc">Trending songs, social sharing, show choir ready. Build the rep.</div>
+      </div>
+      <div class="age-arrow">›</div>
+    </div>
+
+    <div class="age-card adult" onclick="showMode('adult')">
+      <div class="age-emoji">🎸</div>
+      <div class="age-info">
+        <div class="age-name">Adults</div>
+        <div class="age-range">Ages 18–54</div>
+        <div class="age-desc">Full performance scoring, breathwork, the complete four-step process.</div>
+      </div>
+      <div class="age-arrow">›</div>
+    </div>
+
+    <div class="age-card senior" onclick="showMode('senior')">
+      <div class="age-emoji">🌿</div>
+      <div class="age-info">
+        <div class="age-name">Seniors</div>
+        <div class="age-range">Ages 55+</div>
+        <div class="age-desc">Wellness-forward, classic catalog, larger text. Singing for the joy of it.</div>
+      </div>
+      <div class="age-arrow">›</div>
+    </div>
+
+  </div>
+
+  <!-- Language Learning Banner -->
+  <div class="lang-banner" onclick="showScreen('lang-pick')">
+    <div class="lang-new-badge">New Feature</div>
+    <div class="lang-banner-eyebrow">Language Learning Mode</div>
+    <div class="lang-banner-title">Learn a Language <em>Through Music</em></div>
+    <div class="lang-banner-sub">
+      <strong>The way Shakira learned English. The way Celine Dion mastered it. The way BTS proved a language barrier is just another challenge to sing through.</strong> Sing in any language with a native speaker's voice guiding yours.
+    </div>
+    <div class="lang-flags">
+      <div class="lang-flag">🇪🇸</div>
+      <div class="lang-flag">🇫🇷</div>
+      <div class="lang-flag">🇩🇪</div>
+      <div class="lang-flag">🇮🇹</div>
+      <div class="lang-flag">🇯🇵</div>
+      <div class="lang-flag">🇵🇹</div>
+      <div class="lang-flag">🇰🇷</div>
+      <div class="lang-flag">🇨🇳</div>
+      <div class="lang-flag" style="font-size:14px;color:var(--dimmer);">+12</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 2 — LANGUAGE PICKER
+══════════════════════════════════════ -->
+<div id="screen-lang-pick" class="screen">
+
+  <div class="lang-pick-header">
+    <button class="screen-back-btn" onclick="showScreen('mode')">‹ Back</button>
+    <div class="lang-pick-eyebrow">Language Learning Mode</div>
+    <div class="lang-pick-title">I Speak<br><em>__</em> and Want<br>to Learn <em>__</em></div>
+    <div class="lang-pick-sub">
+      <strong>Pick your native language first, then the language you want to learn.</strong> We'll find songs that teach you the words you need to know.
+    </div>
+  </div>
+
+  <div class="native-section">
+    <div class="section-micro-label">I speak natively</div>
+    <div class="native-grid" id="native-grid">
+      <div class="native-chip" onclick="selectNative(this, 'en')">
+        <div class="nc-flag">🇺🇸</div>
+        <div class="nc-name">English</div>
+        <div class="nc-native">English</div>
+      </div>
+      <div class="native-chip" onclick="selectNative(this, 'es')">
+        <div class="nc-flag">🇪🇸</div>
+        <div class="nc-name">Spanish</div>
+        <div class="nc-native">Español</div>
+      </div>
+      <div class="native-chip" onclick="selectNative(this, 'fr')">
+        <div class="nc-flag">🇫🇷</div>
+        <div class="nc-name">French</div>
+        <div class="nc-native">Français</div>
+      </div>
+      <div class="native-chip" onclick="selectNative(this, 'de')">
+        <div class="nc-flag">🇩🇪</div>
+        <div class="nc-name">German</div>
+        <div class="nc-native">Deutsch</div>
+      </div>
+      <div class="native-chip" onclick="selectNative(this, 'pt')">
+        <div class="nc-flag">🇵🇹</div>
+        <div class="nc-name">Portuguese</div>
+        <div class="nc-native">Português</div>
+      </div>
+      <div class="native-chip" onclick="selectNative(this, 'zh')">
+        <div class="nc-flag">🇨🇳</div>
+        <div class="nc-name">Mandarin</div>
+        <div class="nc-native">普通话</div>
+      </div>
+    </div>
+
+    <div class="section-micro-label">I want to learn</div>
+    <div class="learning-grid" id="learning-grid">
+      <div class="learn-chip" onclick="selectLearn(this, 'es')">
+        <div class="nc-flag">🇪🇸</div>
+        <div class="nc-name">Spanish</div>
+        <div class="nc-native">Español</div>
+        <div class="popularity">🔥</div>
+      </div>
+      <div class="learn-chip" onclick="selectLearn(this, 'fr')">
+        <div class="nc-flag">🇫🇷</div>
+        <div class="nc-name">French</div>
+        <div class="nc-native">Français</div>
+      </div>
+      <div class="learn-chip" onclick="selectLearn(this, 'it')">
+        <div class="nc-flag">🇮🇹</div>
+        <div class="nc-name">Italian</div>
+        <div class="nc-native">Italiano</div>
+      </div>
+      <div class="learn-chip" onclick="selectLearn(this, 'de')">
+        <div class="nc-flag">🇩🇪</div>
+        <div class="nc-name">German</div>
+        <div class="nc-native">Deutsch</div>
+      </div>
+      <div class="learn-chip" onclick="selectLearn(this, 'ja')">
+        <div class="nc-flag">🇯🇵</div>
+        <div class="nc-name">Japanese</div>
+        <div class="nc-native">日本語</div>
+        <div class="popularity">📈</div>
+      </div>
+      <div class="learn-chip" onclick="selectLearn(this, 'ko')">
+        <div class="nc-flag">🇰🇷</div>
+        <div class="nc-name">Korean</div>
+        <div class="nc-native">한국어</div>
+        <div class="popularity">📈</div>
+      </div>
+      <div class="learn-chip" onclick="selectLearn(this, 'pt')">
+        <div class="nc-flag">🇵🇹</div>
+        <div class="nc-name">Portuguese</div>
+        <div class="nc-native">Português</div>
+      </div>
+      <div class="learn-chip" onclick="selectLearn(this, 'zh')">
+        <div class="nc-flag">🇨🇳</div>
+        <div class="nc-name">Mandarin</div>
+        <div class="nc-native">普通话</div>
+      </div>
+      <div class="learn-chip" onclick="selectLearn(this, 'en')">
+        <div class="nc-flag">🇺🇸</div>
+        <div class="nc-name">English</div>
+        <div class="nc-native">English</div>
+        <div class="popularity">🔥</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang-cta-bar">
+    <button class="lang-cta-btn" id="lang-cta" onclick="showMode('lang')">
+      Let's Learn →
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 3 — RISING STARS LESSON PLANS
+══════════════════════════════════════ -->
+<div id="screen-rising" class="screen">
+<div class="rising-wrapper">
+
+  <div class="lesson-header">
+    <button class="screen-back-btn" onclick="showScreen('mode')">‹ Back</button>
+    <div class="lh-mode-badge">🌟 Rising Stars · Ages 6–12</div>
+    <div class="lh-title">Your Voice<br>Is a Superpower</div>
+    <div class="lh-sub">
+      <strong>Every big singer started right where you are.</strong> Let's warm up, learn some songs, and have a ton of fun doing it.
+    </div>
+  </div>
+
+  <!-- Stars instead of score -->
+  <div style="padding: 0 20px 20px; display:flex; align-items:center; gap:12px;">
+    <div class="star-rating">
+      <span class="star lit">⭐</span><span class="star lit">⭐</span><span class="star lit">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
+    </div>
+    <div style="font-size:13px;color:var(--dim);">You've earned <strong style="color:var(--rising-primary);">3 stars</strong> this week. 2 more to unlock a new song!</div>
+  </div>
+
+  <div class="lesson-plans">
+
+    <div class="lp-card" onclick="togglePlan(this)">
+      <div class="lp-card-header">
+        <div class="lp-icon">🎵</div>
+        <div class="lp-info">
+          <div class="lp-title">My First Song</div>
+          <div class="lp-meta">Week 1 · 4 short sessions · 10 min each</div>
+        </div>
+        <div class="lp-chevron">›</div>
+      </div>
+      <div class="lp-body">
+        <div class="lp-desc">
+          We're going to learn <strong>one song all the way through</strong> — four fun steps, a little at a time. No pressure, no wrong answers. By the end of this week, you'll be able to sing it for your family! <em>Picked for your voice and what you love.</em>
+        </div>
+        <div class="lp-sessions">
+          <div class="lp-session">
+            <div class="lps-num" style="color:var(--rising-primary)">1</div>
+            <div class="lps-info">
+              <div class="lps-title">Let's Listen!</div>
+              <div class="lps-desc">Hear the whole song. Find your favorite part.</div>
+            </div>
+            <div class="lps-duration">8 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num" style="color:var(--rising-primary)">2</div>
+            <div class="lps-info">
+              <div class="lps-title">Wake Up Your Voice!</div>
+              <div class="lps-desc">Fun humming and breathing warmup games.</div>
+            </div>
+            <div class="lps-duration">10 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num" style="color:var(--rising-primary)">3</div>
+            <div class="lps-info">
+              <div class="lps-title">Sing Together!</div>
+              <div class="lps-desc">Sing with the artist — they help you through it.</div>
+            </div>
+            <div class="lps-duration">12 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num" style="color:var(--rising-primary)">4</div>
+            <div class="lps-info">
+              <div class="lps-title">Your Big Performance!</div>
+              <div class="lps-desc">Sing it yourself! Share it if you want to!</div>
+            </div>
+            <div class="lps-duration">10 min</div>
+          </div>
+        </div>
+        <button class="lp-start-btn" style="font-family:'Nunito',sans-serif;font-size:16px;">Let's Go! →</button>
+      </div>
+    </div>
+
+    <div class="lp-card" onclick="togglePlan(this)">
+      <div class="lp-card-header">
+        <div class="lp-icon">🌬️</div>
+        <div class="lp-info">
+          <div class="lp-title">Breathing Games</div>
+          <div class="lp-meta">Anytime · 5 min · Warmup</div>
+        </div>
+        <div class="lp-chevron">›</div>
+      </div>
+      <div class="lp-body">
+        <div class="lp-desc">
+          <strong>Your breath is the engine that powers your singing.</strong> These games teach your body how to breathe like a real singer — and they're actually fun!
+        </div>
+        <div class="lp-sessions">
+          <div class="lp-session">
+            <div class="lps-num" style="color:var(--rising-primary)">🎈</div>
+            <div class="lps-info">
+              <div class="lps-title">Balloon Breath</div>
+              <div class="lps-desc">Breathe in slowly like you're inflating a balloon in your belly.</div>
+            </div>
+            <div class="lps-duration">2 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num" style="color:var(--rising-primary)">🐝</div>
+            <div class="lps-info">
+              <div class="lps-title">Bee Hum</div>
+              <div class="lps-desc">Hum like a bee — feel your face tingle! That's your voice waking up.</div>
+            </div>
+            <div class="lps-duration">2 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num" style="color:var(--rising-primary)">🕯️</div>
+            <div class="lps-info">
+              <div class="lps-title">Candle Breath</div>
+              <div class="lps-desc">Exhale slowly — pretend you're blowing out a candle without the flame going out.</div>
+            </div>
+            <div class="lps-duration">2 min</div>
+          </div>
+        </div>
+        <button class="lp-start-btn" style="font-family:'Nunito',sans-serif;font-size:16px;">Play the Games →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 4 — TEEN LESSON PLANS
+══════════════════════════════════════ -->
+<div id="screen-teen" class="screen">
+<div class="teen-wrapper">
+
+  <div class="lesson-header">
+    <button class="screen-back-btn" onclick="showScreen('mode')">‹ Back</button>
+    <div class="lh-mode-badge">🎤 Teen Mode · Ages 13–17</div>
+    <div class="lh-title">Build the<br>Voice. Build<br>the Rep.</div>
+    <div class="lh-sub">
+      Trending songs, real scores, social unlocks. <strong>The show choir students use this.</strong> So do the ones who want to be.
+    </div>
+  </div>
+
+  <div class="lesson-plans">
+
+    <div class="lp-card" onclick="togglePlan(this)">
+      <div class="lp-card-header">
+        <div class="lp-icon">🔥</div>
+        <div class="lp-info">
+          <div class="lp-title">Trending Right Now</div>
+          <div class="lp-meta">Week 1 · 4 sessions · Updated weekly</div>
+        </div>
+        <div class="lp-chevron">›</div>
+      </div>
+      <div class="lp-body">
+        <div class="lp-desc">
+          <strong>Songs people are actually listening to right now.</strong> Master the ones that matter. Share when you score 9+. <em>New songs added every Friday.</em>
+        </div>
+        <div class="lp-sessions">
+          <div class="lp-session">
+            <div class="lps-num">1</div>
+            <div class="lps-info">
+              <div class="lps-title">Deep Listen</div>
+              <div class="lps-desc">Analyze the song — where does the artist show off? Where do they breathe?</div>
+            </div>
+            <div class="lps-duration">10 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">2</div>
+            <div class="lps-info">
+              <div class="lps-title">Daily Meditation</div>
+              <div class="lps-desc">Voice warmup before you sing a single note.</div>
+            </div>
+            <div class="lps-duration">10 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">3</div>
+            <div class="lps-info">
+              <div class="lps-title">Blend Mode</div>
+              <div class="lps-desc">High assist. Learn the song from the inside.</div>
+            </div>
+            <div class="lps-duration">15 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">4</div>
+            <div class="lps-info">
+              <div class="lps-title">Own It + Share</div>
+              <div class="lps-desc">Drop the assist. Score it. If you hit 9.0, share it.</div>
+            </div>
+            <div class="lps-duration">15 min</div>
+          </div>
+        </div>
+        <button class="lp-start-btn">Start This Week →</button>
+      </div>
+    </div>
+
+    <div class="lp-card" onclick="togglePlan(this)">
+      <div class="lp-card-header">
+        <div class="lp-icon">🎭</div>
+        <div class="lp-info">
+          <div class="lp-title">Show Choir Prep</div>
+          <div class="lp-meta">4-Week Plan · Audition Ready</div>
+        </div>
+        <div class="lp-chevron">›</div>
+      </div>
+      <div class="lp-body">
+        <div class="lp-desc">
+          <strong>Built specifically for auditions and ensemble performance.</strong> Blend, dynamics, breath control, holding your part when everyone's singing around you. <em>This is what directors are actually listening for.</em>
+        </div>
+        <div class="lp-sessions">
+          <div class="lp-session">
+            <div class="lps-num">W1</div>
+            <div class="lps-info">
+              <div class="lps-title">Breath Foundation</div>
+              <div class="lps-desc">Diaphragmatic control, sustained tones, breath mapping.</div>
+            </div>
+            <div class="lps-duration">5 days</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">W2</div>
+            <div class="lps-info">
+              <div class="lps-title">Dynamics</div>
+              <div class="lps-desc">Volume control, blend in ensemble, not competing.</div>
+            </div>
+            <div class="lps-duration">5 days</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">W3</div>
+            <div class="lps-info">
+              <div class="lps-title">Song Mastery</div>
+              <div class="lps-desc">Own your audition piece completely. All four steps.</div>
+            </div>
+            <div class="lps-duration">5 days</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">W4</div>
+            <div class="lps-info">
+              <div class="lps-title">Performance Runs</div>
+              <div class="lps-desc">Full run-throughs, zero assist, pressure simulation.</div>
+            </div>
+            <div class="lps-duration">5 days</div>
+          </div>
+        </div>
+        <button class="lp-start-btn">Start Audition Prep →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 5 — SENIOR LESSON PLANS
+══════════════════════════════════════ -->
+<div id="screen-senior" class="screen">
+<div class="senior-wrapper">
+
+  <div class="lesson-header">
+    <button class="screen-back-btn" onclick="showScreen('mode')">‹ Back</button>
+    <div class="lh-mode-badge">🌿 Wellness Mode · Ages 55+</div>
+    <div class="lh-title">Singing Is<br>Good for You.<br>Science Says So.</div>
+    <div class="lh-sub">
+      Not about performance. Not about perfection. <strong>About what singing does for your mind, your mood, and your mornings.</strong> No pressure. Just music.
+    </div>
+  </div>
+
+  <div class="lesson-plans">
+
+    <div class="lp-card" onclick="togglePlan(this)">
+      <div class="lp-card-header">
+        <div class="lp-icon">🌅</div>
+        <div class="lp-info">
+          <div class="lp-title">Morning Voice</div>
+          <div class="lp-meta">Daily · 10 minutes · Gentle start</div>
+        </div>
+        <div class="lp-chevron">›</div>
+      </div>
+      <div class="lp-body">
+        <div class="lp-desc">
+          <strong>Ten minutes every morning before the day gets busy.</strong> Gentle breathing, a little humming, one song you love. Research consistently shows daily singing improves mood, memory, and lung function. <em>This is your ten minutes.</em>
+        </div>
+        <div class="lp-sessions">
+          <div class="lp-session">
+            <div class="lps-num">1</div>
+            <div class="lps-info">
+              <div class="lps-title">Gentle Breath Warmup</div>
+              <div class="lps-desc">Slow diaphragmatic breathing. No rush. Wake up the lungs gently.</div>
+            </div>
+            <div class="lps-duration">3 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">2</div>
+            <div class="lps-info">
+              <div class="lps-title">Healing Hum</div>
+              <div class="lps-desc">Sustained gentle hum. Feel the vibration. This is your Daily Music Meditation.</div>
+            </div>
+            <div class="lps-duration">3 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">3</div>
+            <div class="lps-info">
+              <div class="lps-title">Sing Your Song</div>
+              <div class="lps-desc">One song you love. Assist slider wherever it's comfortable. Enjoy it.</div>
+            </div>
+            <div class="lps-duration">4 min</div>
+          </div>
+        </div>
+        <button class="lp-start-btn">Start My Morning →</button>
+      </div>
+    </div>
+
+    <div class="lp-card" onclick="togglePlan(this)">
+      <div class="lp-card-header">
+        <div class="lp-icon">🎼</div>
+        <div class="lp-info">
+          <div class="lp-title">The Classics</div>
+          <div class="lp-meta">4-Week · Songs You Already Know</div>
+        </div>
+        <div class="lp-chevron">›</div>
+      </div>
+      <div class="lp-body">
+        <div class="lp-desc">
+          Songs from the era when music was made to last. Sinatra. Ella Fitzgerald. Johnny Cash. Patsy Cline. Nat King Cole. <strong>Real songs, sung properly, with a voice that knows them.</strong> <em>No charts, no trends — just the songs that matter.</em>
+        </div>
+        <div class="lp-sessions">
+          <div class="lp-session">
+            <div class="lps-num">W1</div>
+            <div class="lps-info">
+              <div class="lps-title">Sinatra / Ella Warmup</div>
+              <div class="lps-desc">Gentle jazz standards. Perfect breath control training.</div>
+            </div>
+            <div class="lps-duration">Daily 10 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">W2</div>
+            <div class="lps-info">
+              <div class="lps-title">Country Classics</div>
+              <div class="lps-desc">Patsy Cline, Dolly Parton, Johnny Cash. Storytelling through song.</div>
+            </div>
+            <div class="lps-duration">Daily 10 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">W3</div>
+            <div class="lps-info">
+              <div class="lps-title">Motown & Soul</div>
+              <div class="lps-desc">Four Tops, Marvin Gaye, Aretha. Dynamics and feeling.</div>
+            </div>
+            <div class="lps-duration">Daily 10 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">W4</div>
+            <div class="lps-info">
+              <div class="lps-title">Your Recital Song</div>
+              <div class="lps-desc">Pick one song to truly own. Sing it for someone you love.</div>
+            </div>
+            <div class="lps-duration">Daily 10 min</div>
+          </div>
+        </div>
+        <button class="lp-start-btn">Start The Classics →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 6 — LANGUAGE LEARNING PLANS
+══════════════════════════════════════ -->
+<div id="screen-lang" class="screen">
+<div class="lang-wrapper">
+
+  <div class="lesson-header">
+    <button class="screen-back-btn" onclick="showScreen('lang-pick')">‹ Change Languages</button>
+    <div class="lh-mode-badge">🌍 Language Learning Mode</div>
+    <div class="lh-title" id="lang-plan-title">Learning Spanish<br>Through Music</div>
+    <div class="lh-sub" id="lang-plan-sub">
+      <strong>You already know how music makes language stick.</strong> Now there's an app built around that instinct. Sing with native speakers. Learn to pronounce before you learn to speak.
+    </div>
+  </div>
+
+  <!-- Positioning line -->
+  <div class="positioning-strip">
+    <div class="ps-quote">"Learn <em>Spanish</em> the way Shakira learned English. Through music."</div>
+    <div class="ps-attr">The most natural language learning method humans have ever used — finally, an app built around it</div>
+  </div>
+
+  <!-- Language progress stats -->
+  <div class="lang-progress-row">
+    <div class="lpr-cell">
+      <div class="lpr-num">0</div>
+      <div class="lpr-label">Words Learned</div>
+    </div>
+    <div class="lpr-cell">
+      <div class="lpr-num">0</div>
+      <div class="lpr-label">Songs Completed</div>
+    </div>
+    <div class="lpr-cell">
+      <div class="lpr-num">0</div>
+      <div class="lpr-label">Day Streak</div>
+    </div>
+  </div>
+
+  <!-- Lyric preview with translation and phonetics -->
+  <div class="lang-lyric-preview">
+    <div class="llp-title">How It Looks When You Sing</div>
+    <div class="llp-line">
+      <div class="llp-original">
+        <span class="llp-word" onclick="tapWord(this)">Yo</span>
+        <span class="llp-word" onclick="tapWord(this)">me</span>
+        <span class="llp-word" onclick="tapWord(this)">llamo</span>
+        <span class="llp-word" onclick="tapWord(this)">como</span>
+        <span class="llp-word" onclick="tapWord(this)">el</span>
+        <span class="llp-word" onclick="tapWord(this)">viento</span>
+      </div>
+      <div class="llp-phonetic">yoh meh YAH-moh KOH-moh el vee-EN-toh</div>
+      <div class="llp-translation">My name moves like the wind</div>
+    </div>
+    <div class="llp-divider"></div>
+    <div style="font-size:11px;color:var(--dimmer);font-family:'Barlow Condensed',sans-serif;letter-spacing:0.08em;text-transform:uppercase;">
+      Tap any word for pronunciation · Artist voice guides yours · VAS slider is your training wheels
+    </div>
+  </div>
+
+  <!-- Vocabulary cloud -->
+  <div class="vocab-cloud">
+    <div class="vc-title">Words You'll Learn in This Song</div>
+    <div class="vc-pills">
+      <div class="vc-pill"><span class="vc-word">viento</span><span class="vc-translation">wind</span></div>
+      <div class="vc-pill"><span class="vc-word">corazón</span><span class="vc-translation">heart</span></div>
+      <div class="vc-pill"><span class="vc-word">amor</span><span class="vc-translation">love</span></div>
+      <div class="vc-pill"><span class="vc-word">noche</span><span class="vc-translation">night</span></div>
+      <div class="vc-pill"><span class="vc-word">fuego</span><span class="vc-translation">fire</span></div>
+      <div class="vc-pill"><span class="vc-word">cielo</span><span class="vc-translation">sky</span></div>
+      <div class="vc-pill"><span class="vc-word">alma</span><span class="vc-translation">soul</span></div>
+      <div class="vc-pill"><span class="vc-word">siempre</span><span class="vc-translation">always</span></div>
+    </div>
+  </div>
+
+  <!-- Language lesson plans -->
+  <div class="lesson-plans">
+
+    <div class="lp-card" onclick="togglePlan(this)">
+      <div class="lp-card-header">
+        <div class="lp-icon">🎵</div>
+        <div class="lp-info">
+          <div class="lp-title">Beginner — Your First Spanish Song</div>
+          <div class="lp-meta">Week 1 · 4 sessions · High assist throughout</div>
+        </div>
+        <div class="lp-chevron">›</div>
+      </div>
+      <div class="lp-body">
+        <div class="lp-desc">
+          <strong>You don't need to speak a word of Spanish to start.</strong> You just need to be willing to try the sounds. The native speaker's voice blends behind yours — you literally hear how the words are supposed to sound as you sing them. <em>This is immersion. It just feels like karaoke.</em>
+        </div>
+        <div style="margin-bottom:12px;">
+          <span class="pronun-pill">🔊 Phonetic guides on every word</span>
+          <span class="pronun-pill">🎚️ Native voice blends in</span>
+          <span class="pronun-pill">📖 Tap any word to hear it</span>
+        </div>
+        <div class="lp-sessions">
+          <div class="lp-session">
+            <div class="lps-num">1</div>
+            <div class="lps-info">
+              <div class="lps-title">Listen + Read</div>
+              <div class="lps-desc">Hear the song. Read along. Don't sing yet. Just absorb.</div>
+            </div>
+            <div class="lps-duration">10 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">2</div>
+            <div class="lps-info">
+              <div class="lps-title">Phonetics Drill</div>
+              <div class="lps-desc">Tap through the vocabulary. Hear each word. Repeat it.</div>
+            </div>
+            <div class="lps-duration">10 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">3</div>
+            <div class="lps-info">
+              <div class="lps-title">Sing at 90% Assist</div>
+              <div class="lps-desc">Native voice carries you. You're finding the shapes of the sounds.</div>
+            </div>
+            <div class="lps-duration">15 min</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">4</div>
+            <div class="lps-info">
+              <div class="lps-title">Drop to 50% Assist</div>
+              <div class="lps-desc">Your pronunciation is starting to form. Notice what still trips you.</div>
+            </div>
+            <div class="lps-duration">15 min</div>
+          </div>
+        </div>
+        <button class="lp-start-btn">Start My First Spanish Song →</button>
+      </div>
+    </div>
+
+    <div class="lp-card" onclick="togglePlan(this)">
+      <div class="lp-card-header">
+        <div class="lp-icon">📈</div>
+        <div class="lp-info">
+          <div class="lp-title">Intermediate — Pronunciation Mastery</div>
+          <div class="lp-meta">Month 2 · 10 songs · Assist drops each week</div>
+        </div>
+        <div class="lp-chevron">›</div>
+      </div>
+      <div class="lp-body">
+        <div class="lp-desc">
+          By now you've built a vocabulary of 80+ words through song. <strong>This month is about pronunciation accuracy</strong> — the timing guide scores not just whether you sang the right note but whether your vowel sounds match the native speaker's. <em>Accent training through music. Nobody else does this.</em>
+        </div>
+        <div class="lp-sessions">
+          <div class="lp-session">
+            <div class="lps-num">📊</div>
+            <div class="lps-info">
+              <div class="lps-title">Pronunciation Score</div>
+              <div class="lps-desc">New dimension added: vowel accuracy scored separately from pitch.</div>
+            </div>
+            <div class="lps-duration">Ongoing</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">🎯</div>
+            <div class="lps-info">
+              <div class="lps-title">Rolling R Drill</div>
+              <div class="lps-desc">The one sound that trips up every English speaker. Dedicated exercises.</div>
+            </div>
+            <div class="lps-duration">5 min/day</div>
+          </div>
+          <div class="lp-session">
+            <div class="lps-num">🎵</div>
+            <div class="lps-info">
+              <div class="lps-title">10 Songs at 10% Assist</div>
+              <div class="lps-desc">You're singing Spanish. Not pretending. Actually singing it.</div>
+            </div>
+            <div class="lps-duration">Daily</div>
+          </div>
+        </div>
+        <button class="lp-start-btn">Start Pronunciation Mastery →</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────
+const appState = {
+  nativeLang: null,
+  learnLang: null,
+};
+
+// ─── NAVIGATION ──────────────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function showMode(mode) {
+  if (mode === 'adult') {
+    // Adult mode is the main app — just show a toast in this prototype
+    showToast('Opening LOUDMOUTH — Adult Mode…');
+    return;
+  }
+  showScreen(mode);
+}
+
+// ─── LANGUAGE SELECTION ──────────────────────────────────────────
+const LANG_NAMES = {
+  en: 'English', es: 'Spanish', fr: 'French', de: 'German',
+  it: 'Italian', ja: 'Japanese', ko: 'Korean', pt: 'Portuguese',
+  zh: 'Mandarin',
+};
+
+function selectNative(chip, lang) {
+  appState.nativeLang = lang;
+  document.querySelectorAll('#native-grid .native-chip').forEach(c => c.classList.remove('selected'));
+  chip.classList.add('selected');
+  checkLangReady();
+}
+
+function selectLearn(chip, lang) {
+  appState.learnLang = lang;
+  document.querySelectorAll('#learning-grid .learn-chip').forEach(c => c.classList.remove('selected'));
+  chip.classList.add('selected');
+  checkLangReady();
+}
+
+function checkLangReady() {
+  const btn = document.getElementById('lang-cta');
+  if (appState.nativeLang && appState.learnLang) {
+    btn.classList.add('enabled');
+    btn.textContent = `Learn ${LANG_NAMES[appState.learnLang]} →`;
+    // Update language plan title
+    document.getElementById('lang-plan-title').textContent =
+      `Learning ${LANG_NAMES[appState.learnLang]}\nThrough Music`;
+    const nativeName = LANG_NAMES[appState.nativeLang];
+    const learnName  = LANG_NAMES[appState.learnLang];
+    document.getElementById('lang-plan-sub').innerHTML =
+      `<strong>You already know how music makes language stick.</strong> Now there's an app built around that instinct. Sing with native ${learnName} speakers. Learn to pronounce before you learn to speak.`;
+  }
+}
+
+// ─── LESSON PLAN TOGGLE ──────────────────────────────────────────
+function togglePlan(card) {
+  const wasOpen = card.classList.contains('open');
+  card.closest('.lesson-plans').querySelectorAll('.lp-card').forEach(c => c.classList.remove('open'));
+  if (!wasOpen) card.classList.add('open');
+}
+
+// ─── TAP WORD ────────────────────────────────────────────────────
+function tapWord(el) {
+  el.classList.toggle('tapped');
+  setTimeout(() => el.classList.remove('tapped'), 600);
+  showToast('🔊 ' + el.textContent.trim());
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────
+let _toastEl, _toastTimer;
+function showToast(msg) {
+  if (!_toastEl) {
+    _toastEl = document.createElement('div');
+    _toastEl.style.cssText = `
+      position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(8px);
+      background:rgba(12,12,12,0.96);border:1px solid rgba(255,255,255,0.1);
+      border-radius:10px;padding:11px 18px;font-family:'Barlow Condensed',sans-serif;
+      font-weight:600;font-size:14px;letter-spacing:0.06em;color:#f4f0ea;
+      opacity:0;transition:all 0.22s;z-index:9999;white-space:nowrap;
+    `;
+    document.body.appendChild(_toastEl);
+  }
+  _toastEl.textContent = msg;
+  _toastEl.style.opacity = '1';
+  _toastEl.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => {
+    _toastEl.style.opacity = '0';
+    _toastEl.style.transform = 'translateX(-50%) translateY(8px)';
+  }, 2000);
+}
+</script>
+</body>
+</html>

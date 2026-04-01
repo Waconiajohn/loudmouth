@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LOUDMOUTH — Welcome</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,400&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #0a0a0a;
+  --red:    #d42020;
+  --yellow: #f5c400;
+  --white:  #f0ede8;
+  --dim:    rgba(240,237,232,0.40);
+  --dimmer: rgba(240,237,232,0.20);
+  --border: rgba(255,255,255,0.08);
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  overflow: hidden;
+}
+
+/* ── SCREENS ── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 28px;
+  opacity: 0;
+  transform: translateX(40px);
+  pointer-events: none;
+  transition: opacity 0.38s ease, transform 0.38s ease;
+}
+.screen.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+.screen.exit {
+  opacity: 0;
+  transform: translateX(-40px);
+  pointer-events: none;
+}
+
+/* ── PROGRESS DOTS ── */
+.dots {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 7px;
+  z-index: 100;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.25s, width 0.25s;
+}
+.dot.active { background: var(--red); width: 20px; border-radius: 3px; }
+.dot.done   { background: var(--dimmer); }
+
+/* ── SKIP ── */
+.skip-btn {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 100;
+}
+.skip-btn:hover { color: var(--dim); }
+
+/* ── SHARED TEXT STYLES ── */
+.eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 14px;
+}
+.headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(44px, 11vw, 72px);
+  letter-spacing: 0.03em;
+  line-height: 0.95;
+  text-align: center;
+  margin-bottom: 18px;
+}
+.headline em { color: var(--red); font-style: normal; }
+.headline .yellow { color: var(--yellow); }
+.body-text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--dim);
+  text-align: center;
+  max-width: 320px;
+  margin-bottom: 32px;
+}
+.body-text strong { color: var(--white); }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  width: 100%;
+  max-width: 320px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-primary:hover  { background: #e62525; }
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-ghost {
+  margin-top: 14px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.btn-ghost:hover { color: var(--dim); }
+
+/* ── SCREEN 1: WELCOME ── */
+.logo-lockup {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.logo-big {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+.logo-big span { color: var(--red); }
+.logo-tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-top: 4px;
+}
+
+/* ── SCREEN 2: HOW IT WORKS ── */
+.how-steps {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 32px;
+}
+.how-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.step-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(212,32,32,0.15);
+  border: 1px solid rgba(212,32,32,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.step-text { padding-top: 4px; }
+.step-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  margin-bottom: 3px;
+}
+.step-desc { font-size: 14px; color: var(--dim); line-height: 1.4; }
+
+/* ── SCREEN 3: SLIDER EXPLAINER ── */
+.slider-demo-wrap {
+  width: 100%;
+  max-width: 340px;
+  margin-bottom: 28px;
+}
+.slider-demo-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-bottom: 10px;
+}
+.slider-demo {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, var(--yellow) 50%, rgba(255,255,255,0.12) 50%);
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 14px;
+}
+.slider-demo::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  cursor: grab;
+}
+.slider-demo::-moz-range-thumb {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  cursor: grab;
+}
+.tier-display {
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  letter-spacing: 0.06em;
+  color: var(--yellow);
+  transition: color 0.2s;
+  min-height: 44px;
+}
+.tier-sub {
+  text-align: center;
+  font-size: 14px;
+  color: var(--dim);
+  min-height: 40px;
+  line-height: 1.4;
+  transition: opacity 0.2s;
+  margin-top: 6px;
+}
+
+.tiers-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 340px;
+  margin-bottom: 24px;
+}
+.tier-pip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+.tier-pip-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.2s, transform 0.2s;
+}
+.tier-pip.active .tier-pip-dot { background: var(--yellow); transform: scale(1.4); }
+.tier-pip-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  transition: color 0.2s;
+}
+.tier-pip.active .tier-pip-name { color: var(--yellow); }
+
+/* ── SCREEN 4: CHARITY ── */
+.charity-block {
+  width: 100%;
+  max-width: 320px;
+  background: rgba(245,196,0,0.06);
+  border: 1px solid rgba(245,196,0,0.2);
+  border-radius: 12px;
+  padding: 22px 20px;
+  text-align: center;
+  margin-bottom: 28px;
+}
+.charity-emoji { font-size: 48px; margin-bottom: 10px; }
+.charity-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  color: var(--yellow);
+  line-height: 1;
+}
+.charity-num-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 14px;
+}
+.charity-split {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.split-pill {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  color: var(--dim);
+}
+.split-pill.you    { border-color: rgba(245,196,0,0.3); color: var(--yellow); }
+.split-pill.artist { border-color: rgba(100,200,255,0.3); color: rgba(100,200,255,0.9); }
+.split-pill.charity{ border-color: rgba(100,220,100,0.3); color: rgba(100,220,100,0.9); }
+
+/* ── SCREEN 5: SIGNUP ── */
+.signup-options {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.sso-btn {
+  width: 100%;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  padding: 14px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.sso-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+.sso-icon { font-size: 20px; }
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 12px;
+}
+.divider-line { flex: 1; height: 1px; background: var(--border); }
+.divider-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+}
+
+.email-field {
+  width: 100%;
+  max-width: 320px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  padding: 13px 16px;
+  outline: none;
+  margin-bottom: 10px;
+  transition: border-color 0.15s;
+}
+.email-field::placeholder { color: var(--dimmer); }
+.email-field:focus { border-color: rgba(212,32,32,0.5); }
+
+.terms-note {
+  font-size: 11px;
+  color: var(--dimmer);
+  text-align: center;
+  max-width: 260px;
+  line-height: 1.5;
+}
+.terms-note a { color: var(--dim); text-decoration: underline; }
+
+/* ── CONFETTI ── */
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+}
+.confetti-piece {
+  position: absolute;
+  width: 8px; height: 8px;
+  border-radius: 1px;
+  animation: confetti-fall linear forwards;
+}
+@keyframes confetti-fall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- PROGRESS DOTS -->
+<div class="dots" id="dots"></div>
+<button class="skip-btn" onclick="skipToEnd()">Skip</button>
+
+<!-- ═══════════════════════ SCREEN 1: WELCOME ═══════════════════════ -->
+<div class="screen active" id="s0">
+  <div class="logo-lockup">
+    <div class="logo-big">LOUD<span>MOUTH</span></div>
+    <div class="logo-tag">Finally, a reason to be one.</div>
+  </div>
+  <p class="body-text">
+    AI-powered vocal training meets karaoke. <strong>Sing better tonight.</strong> Or just sound way better with a little help from the artist.
+  </p>
+  <button class="btn-primary" onclick="next()">Let's Go →</button>
+</div>
+
+<!-- ═══════════════════════ SCREEN 2: HOW IT WORKS ═══════════════════ -->
+<div class="screen" id="s1">
+  <div class="eyebrow">How it works</div>
+  <div class="headline">THREE <em>STEPS</em></div>
+  <div class="how-steps">
+    <div class="how-step">
+      <div class="step-icon">🎵</div>
+      <div class="step-text">
+        <div class="step-title">Pick a song</div>
+        <div class="step-desc">Browse the catalog. Buy once, own forever. AI-processed, pitch-mapped, ready to sing.</div>
+      </div>
+    </div>
+    <div class="how-step">
+      <div class="step-icon">🎚️</div>
+      <div class="step-text">
+        <div class="step-title">Set your assist level</div>
+        <div class="step-desc">The Vocal Assist Slider blends your voice with the artist's. Need help? Slide right. Going alone? Slide left.</div>
+      </div>
+    </div>
+    <div class="how-step">
+      <div class="step-icon">🎤</div>
+      <div class="step-text">
+        <div class="step-title">Sing — and see your score</div>
+        <div class="step-desc">Real-time pitch display shows every note. Scores revealed at the end. Beat the artist on their own song.</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-primary" onclick="next()">Next →</button>
+  <button class="btn-ghost" onclick="prev()">← Back</button>
+</div>
+
+<!-- ═══════════════════════ SCREEN 3: THE SLIDER ═════════════════════ -->
+<div class="screen" id="s2">
+  <div class="eyebrow">The Vocal Assist Slider</div>
+  <div class="headline">YOUR <em>CALL</em></div>
+
+  <div class="slider-demo-wrap">
+    <div class="slider-demo-label">
+      <span>Less help</span>
+      <span>More help</span>
+    </div>
+    <input type="range" class="slider-demo" id="vas-demo" min="0" max="100" value="50" oninput="updateTierDemo(this.value)">
+    <div class="tier-display" id="tier-name">KARAOKE HERO</div>
+    <div class="tier-sub" id="tier-desc">50/50 — you and the artist, together.</div>
+  </div>
+
+  <div class="tiers-row" id="tiers-row">
+    <div class="tier-pip" data-val="0"   onclick="setSlider(0)">
+      <div class="tier-pip-dot"></div>
+      <div class="tier-pip-name">Legend</div>
+    </div>
+    <div class="tier-pip" data-val="25"  onclick="setSlider(25)">
+      <div class="tier-pip-dot"></div>
+      <div class="tier-pip-name">Front Man</div>
+    </div>
+    <div class="tier-pip active" data-val="50"  onclick="setSlider(50)">
+      <div class="tier-pip-dot"></div>
+      <div class="tier-pip-name">Karaoke Hero</div>
+    </div>
+    <div class="tier-pip" data-val="75"  onclick="setSlider(75)">
+      <div class="tier-pip-dot"></div>
+      <div class="tier-pip-name">Shower Singer</div>
+    </div>
+    <div class="tier-pip" data-val="100" onclick="setSlider(100)">
+      <div class="tier-pip-dot"></div>
+      <div class="tier-pip-name">Train Wreck</div>
+    </div>
+  </div>
+
+  <button class="btn-primary" onclick="next()">Got It →</button>
+  <button class="btn-ghost" onclick="prev()">← Back</button>
+</div>
+
+<!-- ═══════════════════════ SCREEN 4: CHARITY ════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="eyebrow">Every month you subscribe</div>
+  <div class="headline">PEOPLE <em>EAT</em></div>
+  <div class="charity-block">
+    <div class="charity-emoji">🥫</div>
+    <div class="charity-num">11</div>
+    <div class="charity-num-label">meals donated to Feeding America</div>
+    <div class="charity-split">
+      <div class="split-pill you">$2.49 → LOUDMOUTH</div>
+      <div class="split-pill artist">$1.00 → Artist direct</div>
+      <div class="split-pill charity">$0.50 → Feeding America</div>
+    </div>
+  </div>
+  <p class="body-text" style="margin-bottom:24px">
+    At 10,000 subscribers — <strong>110,000 meals a month.</strong> The artist gets paid directly, no label split. You sing, people eat.
+  </p>
+  <button class="btn-primary" onclick="next()">Let's Do This →</button>
+  <button class="btn-ghost" onclick="prev()">← Back</button>
+</div>
+
+<!-- ═══════════════════════ SCREEN 5: SIGNUP ════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="eyebrow">Create your account</div>
+  <div class="headline">TIME TO <em>SING</em></div>
+  <div class="signup-options">
+    <button class="sso-btn" onclick="signupWith('Apple')">
+      <span class="sso-icon">🍎</span> Continue with Apple
+    </button>
+    <button class="sso-btn" onclick="signupWith('Google')">
+      <span class="sso-icon">🔵</span> Continue with Google
+    </button>
+  </div>
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-text">or</div>
+    <div class="divider-line"></div>
+  </div>
+  <input class="email-field" type="email" placeholder="your@email.com" id="email-field">
+  <button class="btn-primary" onclick="signupWithEmail()" style="max-width:320px;width:100%;margin-bottom:14px">
+    Continue with Email →
+  </button>
+  <div class="terms-note">
+    By continuing you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+    $3.99/month after free trial. Cancel anytime.
+  </div>
+  <button class="btn-ghost" onclick="prev()">← Back</button>
+</div>
+
+<!-- CONFETTI -->
+<div class="confetti-container" id="confetti"></div>
+
+<script>
+'use strict';
+const TOTAL = 5;
+let current = 0;
+
+const TIERS = [
+  { min:0,  max:15,  name:'LEGEND',        color:'#f5c400', desc:'All you. No safety net. Respect.' },
+  { min:15, max:35,  name:'FRONT MAN',     color:'#f5c400', desc:'Mostly you, a little ghost of the artist.' },
+  { min:35, max:65,  name:'KARAOKE HERO',  color:'#f5c400', desc:'50/50 — you and the artist, together.' },
+  { min:65, max:85,  name:'SHOWER SINGER', color:'#f5c400', desc:'Leaning on the artist. No shame in that.' },
+  { min:85, max:101, name:'TRAIN WRECK',   color:'#d42020', desc:'Maximum assist. The artist is doing the heavy lifting.' },
+];
+
+// Build dots
+const dotsEl = document.getElementById('dots');
+for (let i=0; i<TOTAL; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===0?' active':'');
+  dotsEl.appendChild(d);
+}
+
+function updateDots() {
+  document.querySelectorAll('.dot').forEach((d,i) => {
+    d.className = 'dot' + (i===current?' active':(i<current?' done':''));
+  });
+}
+
+function next() {
+  if (current >= TOTAL-1) return;
+  document.getElementById('s'+current).classList.add('exit');
+  setTimeout(()=>document.getElementById('s'+current).classList.remove('exit','active'), 400);
+  current++;
+  setTimeout(()=>document.getElementById('s'+current).classList.add('active'), 60);
+  updateDots();
+  if (current === TOTAL-1) launchConfetti();
+}
+
+function prev() {
+  if (current <= 0) return;
+  document.getElementById('s'+current).classList.remove('active');
+  current--;
+  document.getElementById('s'+current).classList.remove('exit');
+  document.getElementById('s'+current).classList.add('active');
+  updateDots();
+}
+
+function skipToEnd() {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active','exit'));
+  current = TOTAL-1;
+  document.getElementById('s'+current).classList.add('active');
+  updateDots();
+  launchConfetti();
+}
+
+// ── SLIDER DEMO
+function updateTierDemo(val) {
+  val = parseInt(val);
+  // Update gradient
+  const slider = document.getElementById('vas-demo');
+  slider.style.background = `linear-gradient(to right, var(--yellow) ${val}%, rgba(255,255,255,0.12) ${val}%)`;
+
+  const tier = TIERS.find(t => val >= t.min && val < t.max) || TIERS[TIERS.length-1];
+  document.getElementById('tier-name').textContent = tier.name;
+  document.getElementById('tier-name').style.color = tier.color;
+  document.getElementById('tier-desc').textContent = tier.desc;
+
+  // Update pip highlights
+  const pips = document.querySelectorAll('.tier-pip');
+  const pipVals = [0, 25, 50, 75, 100];
+  const closest = pipVals.reduce((a,b) => Math.abs(b-val) < Math.abs(a-val) ? b : a);
+  pips.forEach((p,i) => {
+    p.classList.toggle('active', pipVals[i] === closest);
+  });
+}
+
+function setSlider(val) {
+  document.getElementById('vas-demo').value = val;
+  updateTierDemo(val);
+}
+
+// ── AUTH STUBS
+function signupWith(provider) {
+  showSuccess(`Connecting to ${provider}…`);
+}
+function signupWithEmail() {
+  const email = document.getElementById('email-field').value.trim();
+  if (!email.includes('@')) {
+    document.getElementById('email-field').style.borderColor = 'rgba(212,32,32,0.7)';
+    return;
+  }
+  showSuccess(`Welcome! Check ${email} for your link.`);
+}
+function showSuccess(msg) {
+  const btn = document.querySelector('#s4 .btn-primary');
+  btn.textContent = msg;
+  btn.style.background = '#1a6b1a';
+  setTimeout(() => {
+    btn.textContent = 'Continue with Email →';
+    btn.style.background = '';
+  }, 2500);
+}
+
+// ── CONFETTI
+function launchConfetti() {
+  const container = document.getElementById('confetti');
+  container.innerHTML = '';
+  const colors = ['#d42020','#f5c400','#ffffff','#ff6b6b','#ffd700'];
+  for (let i=0; i<60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.cssText = `
+      left: ${Math.random()*100}%;
+      background: ${colors[Math.floor(Math.random()*colors.length)]};
+      width: ${4+Math.random()*8}px;
+      height: ${4+Math.random()*8}px;
+      border-radius: ${Math.random()>0.5?'50%':'2px'};
+      animation: confetti-fall ${1.5+Math.random()*2}s ${Math.random()*0.8}s linear forwards;
+    `;
+    container.appendChild(piece);
+  }
+  setTimeout(()=>container.innerHTML='', 4000);
+}
+</script>
+</body>
+</html>

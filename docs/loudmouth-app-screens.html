@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#080808;font-family:'Barlow',sans-serif;display:flex;gap:32px;padding:48px;justify-content:center;flex-wrap:wrap;align-items:flex-start;}
+
+.phone{
+  width:320px;height:640px;
+  background:#111;
+  border-radius:44px;
+  border:1.5px solid rgba(255,255,255,0.1);
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 40px 80px rgba(0,0,0,0.9),inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.status-bar{
+  height:44px;background:#000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.08em;
+  color:rgba(240,237,232,0.6);
+}
+.status-center{color:rgba(212,32,32,0.9);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;}
+.screen-label{
+  text-align:center;
+  color:rgba(240,237,232,0.35);
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;letter-spacing:0.18em;text-transform:uppercase;
+  margin-top:14px;width:320px;
+}
+
+/* ── SCREEN 1: BEAT THE ARTIST ── */
+.s1{background:#0a0a0a;height:596px;overflow:hidden;}
+.s1-top{padding:16px 18px 10px;}
+.s1-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(212,32,32,0.8);margin-bottom:4px;}
+.s1-song{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.04em;color:#f0ede8;line-height:1;}
+.s1-artist{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(240,237,232,0.45);letter-spacing:0.06em;margin-top:2px;}
+.s1-scores{display:flex;gap:10px;padding:12px 18px;}
+.s1-card{flex:1;background:#161616;border-radius:12px;padding:14px 12px;text-align:center;border:1px solid rgba(255,255,255,0.06);}
+.s1-card.them{border-color:rgba(212,32,32,0.2);}
+.s1-card.you{border-color:rgba(46,204,113,0.25);}
+.s1-who{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:6px;}
+.s1-card.them .s1-who{color:rgba(212,32,32,0.7);}
+.s1-card.you .s1-who{color:rgba(46,204,113,0.8);}
+.s1-num{font-family:'Bebas Neue',sans-serif;font-size:56px;line-height:1;}
+.s1-card.them .s1-num{color:#d42020;}
+.s1-card.you .s1-num{color:#2ecc71;}
+.s1-tier{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.08em;margin-top:4px;}
+.s1-card.them .s1-tier{color:rgba(212,32,32,0.6);}
+.s1-card.you .s1-tier{color:rgba(46,204,113,0.7);}
+.s1-vs{display:flex;align-items:center;padding:0 6px;font-family:'Bebas Neue',sans-serif;font-size:18px;color:rgba(255,255,255,0.15);}
+.s1-badge{margin:0 18px;background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.25);border-radius:8px;padding:8px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#2ecc71;}
+.s1-breakdown{padding:12px 18px 0;}
+.s1-bd-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(240,237,232,0.3);margin-bottom:8px;}
+.s1-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.s1-bn{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(240,237,232,0.45);width:46px;letter-spacing:0.04em;}
+.s1-bt{flex:1;height:5px;background:rgba(255,255,255,0.05);border-radius:3px;position:relative;overflow:hidden;}
+.s1-bf-a{position:absolute;left:0;top:0;height:100%;background:rgba(212,32,32,0.5);border-radius:3px;}
+.s1-bf-y{position:absolute;left:0;top:0;height:100%;border-radius:3px;}
+.s1-bv{font-family:'Bebas Neue',sans-serif;font-size:13px;width:26px;text-align:right;color:#2ecc71;}
+.s1-actions{display:flex;gap:8px;padding:12px 18px 0;}
+.s1-btn{flex:1;padding:11px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:0.08em;text-align:center;}
+.s1-share{background:#d42020;color:#fff;}
+.s1-again{background:#1c1c1c;color:rgba(240,237,232,0.7);border:1px solid rgba(255,255,255,0.08);}
+
+/* ── SCREEN 2: VAS SLIDER ── */
+.s2{background:#0a0a0a;height:596px;}
+.s2-top{padding:16px 18px 10px;}
+.s2-step{display:inline-block;background:rgba(212,32,32,0.1);border:1px solid rgba(212,32,32,0.25);border-radius:20px;padding:3px 12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#d42020;margin-bottom:8px;}
+.s2-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.03em;color:#f0ede8;line-height:1;margin-bottom:2px;}
+.s2-sub{font-family:'Barlow',sans-serif;font-size:12px;color:rgba(240,237,232,0.45);line-height:1.4;}
+.s2-wave{margin:12px 18px;height:48px;background:#111;border-radius:10px;display:flex;align-items:center;overflow:hidden;padding:0 10px;border:1px solid rgba(255,255,255,0.05);}
+.s2-blend{padding:12px 18px 8px;}
+.s2-blend-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(240,237,232,0.3);margin-bottom:10px;}
+.s2-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.s2-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;width:80px;letter-spacing:0.04em;}
+.s2-track{flex:1;height:7px;background:#1c1c1c;border-radius:4px;overflow:hidden;}
+.s2-fill{height:100%;border-radius:4px;}
+.s2-pct{font-family:'Bebas Neue',sans-serif;font-size:16px;width:36px;text-align:right;}
+.s2-slider-area{padding:4px 18px 12px;}
+.s2-track-outer{height:3px;background:#1c1c1c;border-radius:2px;position:relative;margin:16px 0 8px;}
+.s2-track-fill{height:100%;width:75%;background:#d42020;border-radius:2px;opacity:0.7;}
+.s2-thumb{width:20px;height:20px;background:#f0ede8;border-radius:50%;position:absolute;right:25%;top:50%;transform:translate(50%,-50%);box-shadow:0 2px 8px rgba(0,0,0,0.8);}
+.s2-ends{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:0.1em;color:rgba(240,237,232,0.25);}
+.s2-tier-card{margin:0 18px;background:#161616;border:1px solid rgba(245,158,11,0.15);border-radius:12px;padding:12px 14px;}
+.s2-tier-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.04em;color:#f59e0b;margin-bottom:2px;}
+.s2-tier-desc{font-family:'Barlow',sans-serif;font-size:11px;color:rgba(240,237,232,0.45);line-height:1.4;}
+.s2-mic{margin:12px 18px 0;background:#d42020;border-radius:12px;padding:13px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:0.1em;color:#fff;}
+
+/* ── SCREEN 3: PROGRESS ── */
+.s3{background:#0a0a0a;height:596px;}
+.s3-top{padding:16px 18px 8px;}
+.s3-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.03em;color:#f0ede8;line-height:1;}
+.s3-sub{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.12em;color:rgba(240,237,232,0.4);margin-top:3px;}
+.s3-reveal{margin:10px 18px;background:#161616;border:1px solid rgba(245,158,11,0.2);border-radius:14px;padding:14px;}
+.s3-rev-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#f59e0b;margin-bottom:10px;}
+.s3-compare{display:flex;gap:10px;align-items:stretch;}
+.s3-col{flex:1;}
+.s3-col-day{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;}
+.s3-before .s3-col-day{color:rgba(212,32,32,0.7);}
+.s3-after .s3-col-day{color:rgba(46,204,113,0.8);}
+.s3-col-score{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;}
+.s3-before .s3-col-score{color:#d42020;}
+.s3-after .s3-col-score{color:#2ecc71;}
+.s3-col-tier{font-family:'Barlow Condensed',sans-serif;font-size:11px;margin-top:2px;}
+.s3-before .s3-col-tier{color:rgba(212,32,32,0.6);}
+.s3-after .s3-col-tier{color:rgba(46,204,113,0.7);}
+.s3-divider{width:1px;background:rgba(255,255,255,0.06);}
+.s3-delta{text-align:center;margin-top:10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.1em;color:#f59e0b;}
+.s3-chart{margin:10px 18px 0;}
+.s3-chart-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(240,237,232,0.3);margin-bottom:8px;}
+.s3-bars{display:flex;align-items:flex-end;gap:5px;height:60px;}
+.s3-bw{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.s3-b{width:100%;border-radius:3px 3px 0 0;}
+.s3-bm{font-family:'Barlow Condensed',sans-serif;font-size:8px;color:rgba(240,237,232,0.3);letter-spacing:0.06em;}
+.s3-reactions{margin:10px 18px 0;}
+.s3-r{font-size:11px;color:rgba(240,237,232,0.6);padding:7px 10px;background:#161616;border-radius:6px;margin-bottom:5px;border-left:2px solid;}
+.s3-r em{font-style:normal;color:rgba(240,237,232,0.35);font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.06em;}
+.s3-r strong{color:#f0ede8;font-weight:500;}
+.s3-share{margin:10px 18px 0;background:#d42020;border-radius:12px;padding:12px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.1em;color:#fff;}
+</style>
+</head>
+<body>
+
+<!-- SCREEN 1: BEAT THE ARTIST -->
+<div>
+<div class="phone">
+  <div class="status-bar">
+    <span>9:41</span>
+    <span class="status-center">LOUDMOUTH</span>
+    <span>100%</span>
+  </div>
+  <div class="s1">
+    <div class="s1-top">
+      <div class="s1-eyebrow">Beat the Artist</div>
+      <div class="s1-song">Welcome to the Jungle</div>
+      <div class="s1-artist">Guns N' Roses · 4:33 · Session Complete</div>
+    </div>
+    <div class="s1-scores">
+      <div class="s1-card them">
+        <div class="s1-who">Axl Rose</div>
+        <div class="s1-num">6.7</div>
+        <div class="s1-tier">Front Man</div>
+      </div>
+      <div class="s1-vs">vs</div>
+      <div class="s1-card you">
+        <div class="s1-who">You</div>
+        <div class="s1-num">7.6</div>
+        <div class="s1-tier">Karaoke Hero</div>
+      </div>
+    </div>
+    <div class="s1-badge">🏆 &nbsp; YOU BEAT THE ARTIST</div>
+    <div class="s1-breakdown">
+      <div class="s1-bd-label">Score Breakdown</div>
+      <div class="s1-bar">
+        <div class="s1-bn">Pitch</div>
+        <div class="s1-bt">
+          <div class="s1-bf-a" style="width:68%"></div>
+          <div class="s1-bf-y" style="width:78%;background:rgba(46,204,113,0.6);"></div>
+        </div>
+        <div class="s1-bv">7.8</div>
+      </div>
+      <div class="s1-bar">
+        <div class="s1-bn">Timing</div>
+        <div class="s1-bt">
+          <div class="s1-bf-a" style="width:71%"></div>
+          <div class="s1-bf-y" style="width:80%;background:rgba(46,204,113,0.6);"></div>
+        </div>
+        <div class="s1-bv">8.0</div>
+      </div>
+      <div class="s1-bar">
+        <div class="s1-bn">Clarity</div>
+        <div class="s1-bt">
+          <div class="s1-bf-a" style="width:64%"></div>
+          <div class="s1-bf-y" style="width:70%;background:rgba(46,204,113,0.6);"></div>
+        </div>
+        <div class="s1-bv">7.0</div>
+      </div>
+      <div class="s1-bar">
+        <div class="s1-bn">Dynamics</div>
+        <div class="s1-bt">
+          <div class="s1-bf-a" style="width:60%"></div>
+          <div class="s1-bf-y" style="width:74%;background:rgba(46,204,113,0.6);"></div>
+        </div>
+        <div class="s1-bv">7.4</div>
+      </div>
+    </div>
+    <div class="s1-actions">
+      <div class="s1-btn s1-share">Share Score</div>
+      <div class="s1-btn s1-again">Sing Again</div>
+    </div>
+  </div>
+</div>
+<div class="screen-label">Beat the Artist</div>
+</div>
+
+<!-- SCREEN 2: VAS SLIDER -->
+<div>
+<div class="phone">
+  <div class="status-bar">
+    <span>9:41</span>
+    <span class="status-center">LOUDMOUTH</span>
+    <span>100%</span>
+  </div>
+  <div class="s2">
+    <div class="s2-top">
+      <div class="s2-step">Step 3 of 4 — Blend</div>
+      <div class="s2-title">Vocal Assist Slider</div>
+      <div class="s2-sub">Slide left as you improve. Goal: 0% assist.</div>
+    </div>
+    <div class="s2-wave">
+      <script>
+      var bars='';
+      for(var i=0;i<54;i++){
+        var h=6+Math.abs(Math.sin(i*0.38)*18)+Math.random()*10;
+        var isV=i>12&&i<42;
+        var col=isV?'rgba(212,32,32,0.7)':'rgba(255,255,255,0.08)';
+        bars+='<div style="width:3px;flex-shrink:0;border-radius:2px;margin:0 1px;height:'+h+'px;background:'+col+'"></div>';
+      }
+      document.write('<div style="display:flex;align-items:center;width:100%">'+bars+'</div>');
+      </script>
+    </div>
+    <div class="s2-blend">
+      <div class="s2-blend-label">Current Blend</div>
+      <div class="s2-row">
+        <div class="s2-name" style="color:#d42020;">Axl Rose</div>
+        <div class="s2-track"><div class="s2-fill" style="width:75%;background:rgba(212,32,32,0.6);"></div></div>
+        <div class="s2-pct" style="color:#d42020;">75%</div>
+      </div>
+      <div class="s2-row">
+        <div class="s2-name" style="color:#f0ede8;">Your Voice</div>
+        <div class="s2-track"><div class="s2-fill" style="width:25%;background:rgba(245,158,11,0.7);"></div></div>
+        <div class="s2-pct" style="color:#f59e0b;">25%</div>
+      </div>
+    </div>
+    <div class="s2-slider-area">
+      <div class="s2-track-outer">
+        <div class="s2-track-fill"></div>
+        <div class="s2-thumb"></div>
+      </div>
+      <div class="s2-ends">
+        <span>← All You (Legend)</span>
+        <span>(Train Wreck) Full Assist →</span>
+      </div>
+    </div>
+    <div class="s2-tier-card">
+      <div class="s2-tier-name">Shower Singer</div>
+      <div class="s2-tier-desc">Artist carries most of the weight. The party thrives. Start right, move left as you improve.</div>
+    </div>
+    <div class="s2-mic">🎤 &nbsp; TAP TO SING</div>
+  </div>
+</div>
+<div class="screen-label">Vocal Assist Slider</div>
+</div>
+
+<!-- SCREEN 3: PROGRESS REVEAL -->
+<div>
+<div class="phone">
+  <div class="status-bar">
+    <span>9:41</span>
+    <span class="status-center">LOUDMOUTH</span>
+    <span>100%</span>
+  </div>
+  <div class="s3">
+    <div class="s3-top">
+      <div class="s3-title">Your Progress</div>
+      <div class="s3-sub">90-Day Baseline Unlocked</div>
+    </div>
+    <div class="s3-reveal">
+      <div class="s3-rev-label">🔓 Day 90 Reveal — Welcome to the Jungle</div>
+      <div class="s3-compare">
+        <div class="s3-col s3-before">
+          <div class="s3-col-day">Day 1</div>
+          <div class="s3-col-score">3.8</div>
+          <div class="s3-col-tier">Train Wreck</div>
+        </div>
+        <div class="s3-divider"></div>
+        <div class="s3-col s3-after">
+          <div class="s3-col-day">Day 90</div>
+          <div class="s3-col-score">7.7</div>
+          <div class="s3-col-tier">Karaoke Hero</div>
+        </div>
+      </div>
+      <div class="s3-delta">↑ +3.9 points · 10 minutes a day · 90 days</div>
+    </div>
+    <div class="s3-chart">
+      <div class="s3-chart-label">Score History</div>
+      <div class="s3-bars">
+        <div class="s3-bw"><div class="s3-b" style="height:24px;background:rgba(212,32,32,0.4);"></div><div class="s3-bm">Day 1</div></div>
+        <div class="s3-bw"><div class="s3-b" style="height:33px;background:rgba(212,32,32,0.5);"></div><div class="s3-bm">Mo 1</div></div>
+        <div class="s3-bw"><div class="s3-b" style="height:41px;background:rgba(245,158,11,0.5);"></div><div class="s3-bm">Mo 2</div></div>
+        <div class="s3-bw"><div class="s3-b" style="height:50px;background:rgba(245,158,11,0.65);"></div><div class="s3-bm">Mo 3</div></div>
+        <div class="s3-bw"><div class="s3-b" style="height:60px;background:rgba(46,204,113,0.7);box-shadow:0 0 6px rgba(46,204,113,0.3);"></div><div class="s3-bm" style="color:#2ecc71;">Now</div></div>
+      </div>
+    </div>
+    <div class="s3-reactions">
+      <div class="s3-r" style="border-color:rgba(212,32,32,0.4);">
+        <em>Month 1</em> &nbsp; <strong>"Is she... getting better?"</strong>
+      </div>
+      <div class="s3-r" style="border-color:rgba(245,158,11,0.4);">
+        <em>Month 3</em> &nbsp; <strong>"He started turning it up."</strong>
+      </div>
+      <div class="s3-r" style="border-color:rgba(46,204,113,0.4);">
+        <em>Month 6</em> &nbsp; <strong style="color:#2ecc71;">"What's the name of that app?"</strong>
+      </div>
+    </div>
+    <div class="s3-share">📤 &nbsp; Share My Progress</div>
+  </div>
+</div>
+<div class="screen-label">Progress · Before / After Reveal</div>
+</div>
+
+</body>
+</html>

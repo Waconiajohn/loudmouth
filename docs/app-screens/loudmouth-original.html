@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOUDMOUTH 🎤</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --yellow: #FFD600;
+    --white: #f0f0f0;
+    --gray: #1a1a1a;
+    --mid: #2a2a2a;
+    --red: #ff3333;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated lightning background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 50%, rgba(255,214,0,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(255,214,0,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .logo {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: clamp(48px, 10vw, 96px);
+    color: var(--yellow);
+    letter-spacing: -2px;
+    line-height: 0.9;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+  }
+
+  .logo .bolt {
+    display: inline-block;
+    animation: bolt-flicker 3s infinite;
+  }
+
+  @keyframes bolt-flicker {
+    0%, 90%, 100% { opacity: 1; transform: scaleX(1); }
+    92% { opacity: 0.3; transform: scaleX(0.95); }
+    94% { opacity: 1; }
+    96% { opacity: 0.5; }
+    98% { opacity: 1; }
+  }
+
+  .tagline {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #555;
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+
+  /* Drop Zone */
+  .drop-zone {
+    border: 2px dashed #333;
+    border-radius: 4px;
+    padding: 60px 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    background: var(--gray);
+    overflow: hidden;
+  }
+
+  .drop-zone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,214,0,0.03) 100%);
+    pointer-events: none;
+  }
+
+  .drop-zone:hover, .drop-zone.dragover {
+    border-color: var(--yellow);
+    background: #1e1e1e;
+  }
+
+  .drop-zone.dragover {
+    transform: scale(1.01);
+  }
+
+  .drop-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .drop-text {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .drop-text strong {
+    color: var(--yellow);
+    display: block;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .file-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Processing State */
+  .processing {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    background: var(--gray);
+    border-radius: 4px;
+    border: 1px solid #222;
+  }
+
+  .processing.active { display: block; }
+
+  .processing-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 24px;
+    color: var(--yellow);
+    margin-bottom: 8px;
+  }
+
+  .processing-sub {
+    font-size: 11px;
+    color: #555;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 3px;
+    background: #222;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--yellow);
+    width: 0%;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px var(--yellow);
+    animation: progress-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes progress-pulse {
+    0%, 100% { box-shadow: 0 0 5px var(--yellow); }
+    50% { box-shadow: 0 0 20px var(--yellow), 0 0 40px rgba(255,214,0,0.3); }
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: #444;
+    letter-spacing: 1px;
+  }
+
+  /* Waveform animation */
+  .waveform {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 48px;
+    margin: 24px 0;
+  }
+
+  .wave-bar {
+    width: 4px;
+    background: var(--yellow);
+    border-radius: 2px;
+    opacity: 0.6;
+  }
+
+  .wave-bar:nth-child(1)  { animation: wave 1.0s ease-in-out infinite; }
+  .wave-bar:nth-child(2)  { animation: wave 1.0s ease-in-out infinite 0.1s; }
+  .wave-bar:nth-child(3)  { animation: wave 1.0s ease-in-out infinite 0.2s; }
+  .wave-bar:nth-child(4)  { animation: wave 1.0s ease-in-out infinite 0.3s; }
+  .wave-bar:nth-child(5)  { animation: wave 1.0s ease-in-out infinite 0.4s; }
+  .wave-bar:nth-child(6)  { animation: wave 1.0s ease-in-out infinite 0.3s; }
+  .wave-bar:nth-child(7)  { animation: wave 1.0s ease-in-out infinite 0.2s; }
+  .wave-bar:nth-child(8)  { animation: wave 1.0s ease-in-out infinite 0.1s; }
+  .wave-bar:nth-child(9)  { animation: wave 1.0s ease-in-out infinite 0s; }
+  .wave-bar:nth-child(10) { animation: wave 1.0s ease-in-out infinite 0.1s; }
+  .wave-bar:nth-child(11) { animation: wave 1.0s ease-in-out infinite 0.2s; }
+  .wave-bar:nth-child(12) { animation: wave 1.0s ease-in-out infinite 0.3s; }
+
+  @keyframes wave {
+    0%, 100% { height: 8px; }
+    50% { height: 40px; }
+  }
+
+  /* Results */
+  .results {
+    display: none;
+  }
+
+  .results.active { display: block; }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .results-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 20px;
+    color: var(--yellow);
+  }
+
+  .results-filename {
+    font-size: 11px;
+    color: #555;
+    letter-spacing: 1px;
+  }
+
+  .track-card {
+    background: var(--gray);
+    border: 1px solid #222;
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .track-card:hover { border-color: #444; }
+
+  .track-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .track-info {}
+
+  .track-label {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .track-label.vocals { color: var(--yellow); }
+  .track-label.backing { color: #888; }
+
+  .track-desc {
+    font-size: 11px;
+    color: #444;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .track-badge {
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  .track-badge.vocals {
+    background: rgba(255,214,0,0.1);
+    color: var(--yellow);
+    border: 1px solid rgba(255,214,0,0.3);
+  }
+
+  .track-badge.backing {
+    background: rgba(255,255,255,0.05);
+    color: #666;
+    border: 1px solid #333;
+  }
+
+  /* Custom Audio Player */
+  .audio-player {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .play-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+
+  .play-btn.vocals {
+    color: var(--yellow);
+  }
+
+  .play-btn.vocals:hover {
+    background: var(--yellow);
+    color: var(--black);
+  }
+
+  .play-btn.backing {
+    color: #666;
+  }
+
+  .play-btn.backing:hover {
+    background: #666;
+    color: var(--black);
+  }
+
+  .audio-timeline {
+    flex: 1;
+    position: relative;
+  }
+
+  .timeline-bar {
+    height: 3px;
+    background: #333;
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .timeline-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 2px;
+    transition: width 0.1s linear;
+  }
+
+  .timeline-fill.vocals { background: var(--yellow); }
+  .timeline-fill.backing { background: #666; }
+
+  .time-display {
+    font-size: 10px;
+    color: #444;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  .download-btn {
+    padding: 8px 16px;
+    border-radius: 2px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  .download-btn.vocals {
+    background: var(--yellow);
+    color: var(--black);
+    font-weight: 700;
+  }
+
+  .download-btn.vocals:hover {
+    background: #ffe033;
+    transform: translateY(-1px);
+  }
+
+  .download-btn.backing {
+    background: transparent;
+    color: #666;
+    border: 1px solid #333;
+  }
+
+  .download-btn.backing:hover {
+    border-color: #666;
+    color: #999;
+  }
+
+  /* Reset button */
+  .reset-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid #222;
+    border-radius: 4px;
+    color: #444;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: all 0.2s;
+  }
+
+  .reset-btn:hover {
+    border-color: #444;
+    color: #888;
+  }
+
+  /* Error */
+  .error-box {
+    display: none;
+    background: rgba(255,51,51,0.1);
+    border: 1px solid rgba(255,51,51,0.3);
+    border-radius: 4px;
+    padding: 16px 20px;
+    color: var(--red);
+    font-size: 13px;
+    margin-top: 16px;
+  }
+
+  .error-box.active { display: block; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 80px;
+    font-size: 10px;
+    color: #333;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="logo">LOUD<span class="bolt">🎤</span><br>MOUTH</div>
+    <div class="tagline">Finally, a reason to be a loudmouth.</div>
+  </div>
+
+  <!-- Drop Zone -->
+  <div class="drop-zone" id="dropZone">
+    <input type="file" class="file-input" id="fileInput" accept=".mp3,.wav,.flac,.m4a">
+    <span class="drop-icon">🎵</span>
+    <div class="drop-text">
+      <strong>Drop your song here</strong>
+      MP3, WAV, FLAC, M4A supported<br>
+      <span style="color:#444; font-size:12px; margin-top:8px; display:block;">AI will separate vocals from backing track in ~2 minutes</span>
+    </div>
+  </div>
+
+  <!-- Processing -->
+  <div class="processing" id="processing">
+    <div class="processing-title">SEPARATING VOCALS</div>
+    <div class="processing-sub" id="processingFile">—</div>
+    <div class="waveform">
+      <div class="wave-bar" style="height:20px"></div>
+      <div class="wave-bar" style="height:32px"></div>
+      <div class="wave-bar" style="height:16px"></div>
+      <div class="wave-bar" style="height:40px"></div>
+      <div class="wave-bar" style="height:24px"></div>
+      <div class="wave-bar" style="height:36px"></div>
+      <div class="wave-bar" style="height:28px"></div>
+      <div class="wave-bar" style="height:20px"></div>
+      <div class="wave-bar" style="height:32px"></div>
+      <div class="wave-bar" style="height:16px"></div>
+      <div class="wave-bar" style="height:40px"></div>
+      <div class="wave-bar" style="height:24px"></div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">INITIALIZING DEMUCS MODEL...</div>
+  </div>
+
+  <!-- Results -->
+  <div class="results" id="results">
+    <div class="results-header">
+      <div>
+        <div class="results-title">⚡ SEPARATION COMPLETE</div>
+        <div class="results-filename" id="resultsFilename">—</div>
+      </div>
+    </div>
+
+    <!-- Vocal Stem -->
+    <div class="track-card">
+      <div class="track-header">
+        <div class="track-info">
+          <div class="track-label vocals">VOCAL STEM</div>
+          <div class="track-desc">Isolated singer — use for Vocal Assist blend</div>
+        </div>
+        <span class="track-badge vocals">VOCALS</span>
+      </div>
+      <div class="audio-player">
+        <button class="play-btn vocals" id="playVocals" onclick="togglePlay('vocals')">▶</button>
+        <div class="audio-timeline">
+          <div class="timeline-bar" id="timelineVocals" onclick="seek(event, 'vocals')">
+            <div class="timeline-fill vocals" id="fillVocals"></div>
+          </div>
+          <div class="time-display" id="timeVocals">0:00 / 0:00</div>
+        </div>
+        <a class="download-btn vocals" id="downloadVocals" href="#" download>↓ Download</a>
+      </div>
+      <audio id="audioVocals" style="display:none"></audio>
+    </div>
+
+    <!-- Backing Track -->
+    <div class="track-card">
+      <div class="track-header">
+        <div class="track-info">
+          <div class="track-label backing">BACKING TRACK</div>
+          <div class="track-desc">Instruments only — sing over this</div>
+        </div>
+        <span class="track-badge backing">NO VOCALS</span>
+      </div>
+      <div class="audio-player">
+        <button class="play-btn backing" id="playBacking" onclick="togglePlay('backing')">▶</button>
+        <div class="audio-timeline">
+          <div class="timeline-bar" id="timelineBacking" onclick="seek(event, 'backing')">
+            <div class="timeline-fill backing" id="fillBacking"></div>
+          </div>
+          <div class="time-display" id="timeBacking">0:00 / 0:00</div>
+        </div>
+        <a class="download-btn backing" id="downloadBacking" href="#" download>↓ Download</a>
+      </div>
+      <audio id="audioBacking" style="display:none"></audio>
+    </div>
+
+    <button class="reset-btn" onclick="reset()">↩ Process Another Song</button>
+  </div>
+
+  <!-- Error -->
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="footer">Powered by Demucs AI · Local Processing · Your audio never leaves your machine</div>
+
+</div>
+
+<script>
+const API = 'http://localhost:8000';
+let currentStemName = null;
+let progressInterval = null;
+
+// ── Drag and Drop ──────────────────────────────────────────────────────────
+
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
+
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+});
+
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+});
+
+// ── Process File ───────────────────────────────────────────────────────────
+
+async function processFile(file) {
+  showProcessing(file.name);
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch(`${API}/process`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || 'Processing failed');
+    }
+
+    const data = await response.json();
+    currentStemName = data.files.backing_track.split('/')[2];
+    showResults(file.name, data);
+
+  } catch (err) {
+    showError(err.message);
+  }
+}
+
+// ── UI States ──────────────────────────────────────────────────────────────
+
+function showProcessing(filename) {
+  document.getElementById('dropZone').style.display = 'none';
+  document.getElementById('processing').classList.add('active');
+  document.getElementById('results').classList.remove('active');
+  document.getElementById('errorBox').classList.remove('active');
+  document.getElementById('processingFile').textContent = filename;
+
+  // Fake progress animation
+  let progress = 0;
+  const labels = [
+    'LOADING HTDEMUCS MODEL...',
+    'ANALYZING AUDIO SPECTRUM...',
+    'SEPARATING FREQUENCY BANDS...',
+    'ISOLATING VOCAL HARMONICS...',
+    'RECONSTRUCTING STEMS...',
+    'FINALIZING OUTPUT...',
+  ];
+  let labelIndex = 0;
+
+  progressInterval = setInterval(() => {
+    progress = Math.min(progress + Math.random() * 2, 95);
+    document.getElementById('progressFill').style.width = progress + '%';
+
+    if (progress > (labelIndex + 1) * 15 && labelIndex < labels.length - 1) {
+      labelIndex++;
+      document.getElementById('progressLabel').textContent = labels[labelIndex];
+    }
+  }, 800);
+}
+
+function showResults(filename, data) {
+  clearInterval(progressInterval);
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressLabel').textContent = 'COMPLETE ⚡';
+
+  setTimeout(() => {
+    document.getElementById('processing').classList.remove('active');
+    document.getElementById('results').classList.add('active');
+    document.getElementById('resultsFilename').textContent = filename;
+
+    // Set audio sources
+    const vocalsUrl = `${API}${data.files.vocal_stem}`;
+    const backingUrl = `${API}${data.files.backing_track}`;
+
+    setupAudio('vocals', vocalsUrl);
+    setupAudio('backing', backingUrl);
+
+    document.getElementById('downloadVocals').href = vocalsUrl;
+    document.getElementById('downloadBacking').href = backingUrl;
+  }, 500);
+}
+
+function showError(message) {
+  clearInterval(progressInterval);
+  document.getElementById('processing').classList.remove('active');
+  document.getElementById('dropZone').style.display = '';
+  const errorBox = document.getElementById('errorBox');
+  errorBox.classList.add('active');
+  errorBox.textContent = '⚠ ' + message;
+}
+
+function reset() {
+  document.getElementById('results').classList.remove('active');
+  document.getElementById('errorBox').classList.remove('active');
+  document.getElementById('dropZone').style.display = '';
+  document.getElementById('progressFill').style.width = '0%';
+  fileInput.value = '';
+
+  // Stop audio
+  ['vocals', 'backing'].forEach(type => {
+    const audio = document.getElementById(`audio${cap(type)}`);
+    audio.pause();
+    audio.src = '';
+    document.getElementById(`play${cap(type)}`).textContent = '▶';
+  });
+}
+
+// ── Audio Player ───────────────────────────────────────────────────────────
+
+function setupAudio(type, url) {
+  const audio = document.getElementById(`audio${cap(type)}`);
+  audio.src = url;
+  audio.addEventListener('timeupdate', () => updateTimeline(type));
+  audio.addEventListener('ended', () => {
+    document.getElementById(`play${cap(type)}`).textContent = '▶';
+  });
+}
+
+function togglePlay(type) {
+  const audio = document.getElementById(`audio${cap(type)}`);
+  const btn = document.getElementById(`play${cap(type)}`);
+
+  // Pause the other
+  const other = type === 'vocals' ? 'backing' : 'vocals';
+  const otherAudio = document.getElementById(`audio${cap(other)}`);
+  otherAudio.pause();
+  document.getElementById(`play${cap(other)}`).textContent = '▶';
+
+  if (audio.paused) {
+    audio.play();
+    btn.textContent = '⏸';
+  } else {
+    audio.pause();
+    btn.textContent = '▶';
+  }
+}
+
+function updateTimeline(type) {
+  const audio = document.getElementById(`audio${cap(type)}`);
+  if (!audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100;
+  document.getElementById(`fill${cap(type)}`).style.width = pct + '%';
+  document.getElementById(`time${cap(type)}`).textContent =
+    `${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;
+}
+
+function seek(e, type) {
+  const audio = document.getElementById(`audio${cap(type)}`);
+  const bar = document.getElementById(`timeline${cap(type)}`);
+  const rect = bar.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  audio.currentTime = pct * audio.duration;
+}
+
+function fmt(s) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60).toString().padStart(2, '0');
+  return `${m}:${sec}`;
+}
+
+function cap(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+</script>
+</body>
+</html>

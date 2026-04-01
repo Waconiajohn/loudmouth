@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOUDMOUTH — Stop Ruining Karaoke Night. Start Owning It.</title>
+<meta name="description" content="Borrow a superstar's voice tonight. Own your own voice tomorrow. The only karaoke app that uses real recordings.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Barlow:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080808;--red:#d42020;--red2:#ff3333;--yellow:#f5c400;--green:#2ecc71;
+  --white:#f0ede8;--dim:rgba(240,237,232,0.88);--dimmer:rgba(240,237,232,0.60);
+  --border:rgba(255,255,255,0.08);--card:#111111;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:60px;background:rgba(8,8,8,0.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:0.06em;}
+.nav-logo span{color:var(--red);}
+.nav-links{display:flex;gap:28px;}
+.nav-links a{font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:var(--dimmer);text-decoration:none;transition:color 0.15s;}
+.nav-links a:hover{color:var(--white);}
+.nav-cta{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;background:var(--red);color:white;border:none;border-radius:6px;padding:9px 22px;cursor:pointer;transition:background 0.15s;text-decoration:none;display:inline-block;}
+.nav-cta:hover{background:var(--red2);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px 60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(212,32,32,0.18),transparent),radial-gradient(ellipse 60% 40% at 50% 0%,rgba(20,20,20,0.8),transparent);pointer-events:none;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:0.22em;text-transform:uppercase;color:var(--red);margin-bottom:24px;animation:fadeUp 0.5s ease both;}
+.hero-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,10vw,116px);letter-spacing:0.02em;line-height:0.9;margin-bottom:28px;animation:fadeUp 0.5s 0.1s ease both;}
+.hero-headline em{color:var(--red);font-style:normal;}
+.hero-headline .cross{position:relative;display:inline-block;color:rgba(240,237,232,0.2);}
+.hero-headline .cross::after{content:'';position:absolute;left:-4px;right:-4px;top:50%;height:7px;margin-top:-3px;background:var(--red);transform:rotate(-2deg);}
+.hero-sub{font-size:21px;color:var(--dim);max-width:580px;line-height:1.65;margin-bottom:16px;animation:fadeUp 0.5s 0.15s ease both;}
+.hero-sub strong{color:var(--white);}
+.hero-artists{font-family:'Barlow Condensed',sans-serif;font-size:15px;letter-spacing:0.06em;color:var(--dimmer);margin-bottom:44px;line-height:1.9;animation:fadeUp 0.5s 0.2s ease both;}
+.hero-artists span{color:var(--dim);}
+.hero-cta-group{display:flex;flex-direction:column;align-items:center;gap:12px;animation:fadeUp 0.5s 0.25s ease both;}
+.email-form{display:flex;border-radius:10px;overflow:hidden;border:1px solid var(--border);transition:box-shadow 0.2s,border-color 0.2s;}
+.email-form:focus-within{box-shadow:0 0 0 3px rgba(212,32,32,0.25);border-color:var(--red);}
+.email-input{font-family:'Barlow',sans-serif;font-size:16px;background:rgba(255,255,255,0.06);color:var(--white);border:none;outline:none;padding:14px 20px;width:280px;}
+.email-input::placeholder{color:var(--dimmer);}
+.btn-want-in{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.1em;background:var(--red);color:white;border:none;padding:14px 28px;cursor:pointer;transition:background 0.15s;white-space:nowrap;}
+.btn-want-in:hover{background:var(--red2);}
+.hero-fine{font-size:12px;color:var(--dimmer);letter-spacing:0.04em;}
+
+/* SHARED LAYOUT */
+.dark-band{background:#0c0c0c;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.pad{padding:100px 40px;}
+.two-col{max-width:980px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+
+/* SECTION LABELS — all bigger now */
+.section-label{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:16px;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--red);margin-bottom:18px;
+}
+.section-label.yellow{color:var(--yellow);}
+.section-label.green{color:var(--green);}
+.section-label.white{color:var(--dimmer);}
+
+/* SECTION SUB-HEADLINES — bigger */
+.sub-headline{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:clamp(20px,2.5vw,28px);letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:20px;
+}
+.sub-headline em{font-style:normal;}
+
+.big-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,5vw,68px);letter-spacing:0.02em;line-height:0.92;margin-bottom:22px;}
+.body-text{font-size:16px;color:var(--dim);line-height:1.78;}
+.body-text p+p{margin-top:16px;}
+.body-text strong{color:var(--white);}
+.callout{margin-top:24px;padding:20px 24px;border-radius:10px;font-size:15px;line-height:1.6;}
+.callout.red{background:rgba(212,32,32,0.07);border:1px solid rgba(212,32,32,0.22);color:var(--white);}
+.callout.red em{color:var(--red);font-style:normal;font-weight:700;}
+.callout.yellow{background:rgba(245,196,0,0.07);border:1px solid rgba(245,196,0,0.2);color:var(--white);}
+.callout.yellow em{color:var(--yellow);font-style:normal;font-weight:700;}
+
+/* PROBLEM CARDS */
+.problem-visual{display:flex;flex-direction:column;gap:14px;}
+.pv-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 20px;display:flex;gap:14px;align-items:flex-start;}
+.pv-icon{font-size:26px;flex-shrink:0;margin-top:2px;}
+.pv-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:5px;}
+.pv-desc{font-size:13px;color:var(--dim);line-height:1.55;}
+.pv-desc strong{color:var(--white);}
+
+/* RESCUE / SLIDER */
+.rescue-section{padding:100px 40px;}
+.rescue-inner{max-width:980px;margin:0 auto;}
+.rescue-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-bottom:56px;}
+.slider-demo{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:32px 28px;}
+.slider-demo-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim);text-align:center;margin-bottom:4px;}
+.slider-demo-sub{font-size:13px;color:var(--dimmer);text-align:center;margin-bottom:24px;}
+.blend-meters{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.blend-meter{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.blend-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dimmer);margin-bottom:8px;}
+.blend-bar-wrap{height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;}
+.blend-bar{height:100%;border-radius:4px;transition:width 0.25s;}
+.blend-bar.you{background:var(--yellow);}
+.blend-bar.artist{background:rgba(212,32,32,0.75);}
+.blend-pct{font-family:'Bebas Neue',sans-serif;font-size:32px;margin-top:6px;line-height:1;}
+.blend-pct.you{color:var(--yellow);}
+.blend-pct.artist{color:rgba(212,32,32,0.9);}
+.sdl{display:flex;justify-content:space-between;margin-bottom:8px;}
+.sdl span{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dimmer);}
+.mkt-slider{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;outline:none;cursor:pointer;margin-bottom:20px;}
+.mkt-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 4px rgba(245,196,0,0.2);cursor:pointer;}
+.tier-showcase{text-align:center;padding:14px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid var(--border);margin-bottom:18px;}
+.ts-name{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--yellow);letter-spacing:0.06em;}
+.ts-desc{font-size:13px;color:var(--dim);margin-top:4px;}
+.tier-pips{display:flex;justify-content:space-between;}
+.t-pip{text-align:center;cursor:pointer;}
+.t-pip-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.15);margin:0 auto 5px;transition:all 0.2s;}
+.t-pip.on .t-pip-dot{background:var(--yellow);transform:scale(1.3);}
+.t-pip-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--dimmer);}
+.t-pip.on .t-pip-lbl{color:var(--yellow);}
+
+/* JOURNEY STEPS */
+.journey{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.journey-step{background:var(--card);padding:32px 26px;border-right:1px solid var(--border);position:relative;}
+.journey-step:last-child{border-right:none;}
+.journey-step.highlight{background:rgba(212,32,32,0.06);}
+.journey-num{font-family:'Bebas Neue',sans-serif;font-size:56px;color:rgba(255,255,255,0.04);line-height:1;position:absolute;top:12px;right:16px;}
+.journey-icon{font-size:32px;margin-bottom:14px;}
+.journey-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em;margin-bottom:8px;}
+.journey-step.highlight .journey-title{color:var(--yellow);}
+.journey-body{font-size:14px;color:var(--dim);line-height:1.65;}
+.journey-body strong{color:var(--white);}
+
+/* SCORE DEMO */
+.score-demo{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.sd-header{background:var(--red);padding:12px 20px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.1em;display:flex;justify-content:space-between;align-items:center;}
+.sd-song{padding:16px 20px;border-bottom:1px solid var(--border);}
+.sd-song-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;}
+.sd-song-artist{font-size:13px;color:var(--dim);margin-top:2px;}
+.sd-scores{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:24px 20px;}
+.sd-block{text-align:center;}
+.sd-num{font-family:'Bebas Neue',sans-serif;font-size:76px;line-height:1;}
+.sd-num.you{color:var(--yellow);}
+.sd-num.artist{color:rgba(240,237,232,0.60);}
+.sd-lbl{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-top:4px;}
+.sd-vs{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--dimmer);text-align:center;}
+.sd-verdict{padding:12px 20px;background:rgba(245,196,0,0.08);border-top:1px solid rgba(245,196,0,0.2);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:var(--yellow);text-align:center;}
+.sd-4d{padding:14px 20px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.sd-4d-item{text-align:center;}
+.sd-4d-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dimmer);margin-bottom:4px;}
+.sd-4d-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--yellow);}
+.sd-badge{padding:10px 20px;border-top:1px solid var(--border);font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);text-align:center;}
+
+/* ── THE FAKE STRIP ── */
+.fake-strip{
+  background:var(--red);
+  padding:52px 40px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.fake-strip::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    -45deg,
+    rgba(0,0,0,0.08) 0px,
+    rgba(0,0,0,0.08) 1px,
+    transparent 1px,
+    transparent 12px
+  );
+  pointer-events:none;
+}
+.fake-strip-eyebrow{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:16px;letter-spacing:0.28em;text-transform:uppercase;
+  color:rgba(255,255,255,0.7);margin-bottom:16px;
+}
+.fake-strip-headline{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(36px,5vw,64px);
+  letter-spacing:0.04em;line-height:0.95;
+  color:white;margin-bottom:16px;
+}
+.fake-strip-sub{
+  font-size:18px;color:rgba(255,255,255,0.85);
+  max-width:680px;margin:0 auto;line-height:1.6;
+}
+.fake-strip-sub strong{color:white;}
+
+/* SCIENCE */
+.science-points{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:36px;}
+.sci-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:26px 22px;transition:border-color 0.2s;}
+.sci-card:hover{border-color:rgba(245,196,0,0.3);}
+.sci-icon{font-size:28px;margin-bottom:12px;}
+.sci-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;color:var(--yellow);}
+.sci-body{font-size:14px;color:var(--dim);line-height:1.7;}
+.sci-body strong{color:var(--white);}
+.sci-source{margin-top:10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dimmer);}
+.coaching-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px;}
+.coach-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:26px 22px;transition:border-color 0.2s;}
+.coach-card:hover{border-color:rgba(255,255,255,0.14);}
+.coach-icon{font-size:28px;margin-bottom:12px;}
+.coach-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;}
+.coach-title em{color:var(--yellow);font-style:normal;}
+.coach-desc{font-size:14px;color:var(--dim);line-height:1.65;}
+.coach-desc strong{color:var(--white);}
+
+/* BYO */
+.byo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:44px;}
+.byo-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px 20px;text-align:center;transition:border-color 0.2s;}
+.byo-card:hover{border-color:rgba(245,196,0,0.3);}
+.byo-icon{font-size:28px;margin-bottom:10px;}
+.byo-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;}
+.byo-desc{font-size:13px;color:var(--dim);line-height:1.55;}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.feat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:26px 22px;transition:border-color 0.2s;}
+.feat-card:hover{border-color:rgba(255,255,255,0.14);}
+.feat-icon{font-size:28px;margin-bottom:12px;}
+.feat-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;}
+.feat-title em{color:var(--yellow);font-style:normal;}
+.feat-desc{font-size:14px;color:var(--dim);line-height:1.6;}
+.feat-desc strong{color:var(--white);}
+.feat-tag{display:inline-block;margin-top:10px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--red);background:rgba(212,32,32,0.1);border:1px solid rgba(212,32,32,0.2);border-radius:4px;padding:3px 8px;}
+.feat-tag.green{color:var(--green);background:rgba(46,204,113,0.08);border-color:rgba(46,204,113,0.2);}
+
+/* SOCIAL UNLOCK */
+.score-unlock{display:flex;gap:12px;justify-content:center;margin-bottom:28px;flex-wrap:wrap;}
+.su-card{flex:1;min-width:110px;max-width:150px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 12px;text-align:center;}
+.su-card.unlocked{border-color:var(--yellow);background:rgba(245,196,0,0.06);}
+.su-score{font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:1;color:var(--dimmer);margin-bottom:6px;}
+.su-card.unlocked .su-score{color:var(--yellow);}
+.su-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dimmer);margin-bottom:8px;}
+.su-card.unlocked .su-label{color:var(--yellow);}
+.su-share{font-size:20px;opacity:0.2;}
+.su-card.unlocked .su-share{opacity:1;}
+
+/* CHARITY */
+.split-cards{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;}
+.split-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:30px 26px;min-width:155px;text-align:center;}
+.split-amount{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:1;margin-bottom:8px;}
+.split-amount.us{color:var(--white);}
+.split-amount.artist{color:var(--yellow);}
+.split-amount.charity{color:var(--green);}
+.split-amount.choir{color:#a78bfa;}
+.split-who{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px;}
+.split-desc{font-size:12px;color:var(--dim);}
+.charity-choice{max-width:520px;margin:24px auto 0;padding:20px 28px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:10px;font-size:15px;color:var(--dim);line-height:1.6;text-align:center;}
+.charity-choice strong{color:var(--white);}
+
+/* FINAL CTA */
+.final-cta{background:#0c0c0c;border-top:1px solid var(--border);padding:100px 40px;text-align:center;}
+.final-cta-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,8vw,110px);letter-spacing:0.02em;line-height:0.9;margin-bottom:20px;}
+.final-cta-headline em{color:var(--red);font-style:normal;}
+.final-cta-sub{font-size:18px;color:var(--dim);max-width:480px;margin:0 auto 48px;line-height:1.65;}
+.final-cta-sub strong{color:var(--white);}
+.final-email-form{display:flex;border-radius:10px;overflow:hidden;border:1px solid var(--border);max-width:480px;margin:0 auto 14px;transition:box-shadow 0.2s,border-color 0.2s;}
+.final-email-form:focus-within{box-shadow:0 0 0 3px rgba(212,32,32,0.25);border-color:var(--red);}
+.final-email-input{font-family:'Barlow',sans-serif;font-size:16px;background:rgba(255,255,255,0.06);color:var(--white);border:none;outline:none;padding:16px 20px;flex:1;}
+.final-email-input::placeholder{color:var(--dimmer);}
+.btn-final{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.1em;background:var(--red);color:white;border:none;padding:16px 32px;cursor:pointer;transition:background 0.15s;white-space:nowrap;}
+.btn-final:hover{background:var(--red2);}
+.final-fine{font-size:12px;color:var(--dimmer);}
+
+footer{padding:48px 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;}
+.footer-logo span{color:var(--red);}
+.footer-tag{font-size:13px;color:var(--dimmer);margin-top:4px;}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap;}
+.footer-links a{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--dimmer);text-decoration:none;transition:color 0.15s;}
+.footer-links a:hover{color:var(--white);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:768px){
+  nav{padding:0 20px;}.nav-links{display:none;}
+  .two-col,.rescue-grid{grid-template-columns:1fr;gap:48px;}
+  .journey,.science-points,.coaching-row,.feat-grid{grid-template-columns:1fr 1fr;}
+  .journey-step{border-right:none;border-bottom:1px solid var(--border);}
+  .byo-grid{grid-template-columns:1fr 1fr;}
+  footer{flex-direction:column;text-align:center;}
+}
+@media(max-width:480px){
+  .journey,.science-points,.coaching-row,.feat-grid,.byo-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">LOUD<span>MOUTH</span></div>
+  <div class="nav-links">
+    <a href="#problem">The Problem</a>
+    <a href="#rescue">The Fix</a>
+    <a href="#science">Get Better</a>
+    <a href="#charity">Give Back</a>
+  </div>
+  <a href="#final-cta" class="nav-cta">I Want In</a>
+</nav>
+
+<!-- ═══════════════════ 1. HERO ═══════════════════ -->
+<section class="hero">
+  <div class="hero-eyebrow">The Karaoke App That Changes Everything</div>
+  <div class="hero-headline">
+    STOP <em>RUINING</em><br>
+    KARAOKE NIGHT.<br>
+    START <span class="cross">SURVIVING</span> <em>OWNING</em> IT.
+  </div>
+  <p class="hero-sub">
+    Borrow a superstar's voice tonight.<br>
+    <strong>Own your own voice tomorrow.</strong><br>
+    The only app that uses real recordings — and actually teaches you to sing.
+  </p>
+  <div class="hero-artists">
+    Compete against the real voice of&nbsp;&nbsp;
+    <span>Rihanna · Ariana Grande · Kelly Clarkson · Lady Gaga · Pink</span><br>
+    <span>Hozier · Chris Cornell · Chris Stapleton · Kenny Chesney</span>
+  </div>
+  <div class="hero-cta-group">
+    <div class="email-form">
+      <input class="email-input" type="email" placeholder="your@email.com">
+      <button class="btn-want-in" onclick="handleSignup(this)">I Want In</button>
+    </div>
+    <div class="hero-fine">Be first to know when we launch. No spam — ever.</div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 2. THE PROBLEM ═══════════════════ -->
+<section class="dark-band pad" id="problem">
+  <div class="two-col">
+    <div>
+      <div class="section-label">Let's Be Honest</div>
+      <div class="big-headline" style="color:var(--white);">SOMEONE ALWAYS <span style="color:var(--red);">RUINS IT.</span></div>
+      <div class="body-text">
+        <p>You know exactly who we're talking about. They don't know they can't sing — or they simply don't care. They grab the mic with complete confidence, and what comes out clears the room faster than the fire alarm.</p>
+        <p>They're not terrified. They're committed. That somehow makes it worse.</p>
+        <p>It's not really a karaoke problem. It's a <strong>self-awareness problem.</strong> And it kills the vibe for everyone, every single time.</p>
+        <p>Until now, there was no fix. You either suffered through it, politely applauded, or — if that person was you — had absolutely no idea why everyone suddenly needed another drink.</p>
+      </div>
+      <div class="callout red">
+        <em>This is the karaoke night nobody admits to hating.</em> Awkward silences. Painful high notes. A room full of people studying their phones. LOUDMOUTH was built to end this.
+      </div>
+    </div>
+    <div class="problem-visual">
+      <div class="pv-card">
+        <div class="pv-icon">😬</div>
+        <div>
+          <div class="pv-title">The Overconfident Screamer</div>
+          <div class="pv-desc">Doesn't know. Doesn't care. <strong>Full commitment, zero ability.</strong> The room endures. Everyone quietly checks the time.</div>
+        </div>
+      </div>
+      <div class="pv-card">
+        <div class="pv-icon">😰</div>
+        <div>
+          <div class="pv-title">The Terrified Whisperer</div>
+          <div class="pv-desc">Knows exactly how bad they are. <strong>Holds the mic like a grenade.</strong> Sings so quietly nobody can hear — which is somehow worse.</div>
+        </div>
+      </div>
+      <div class="pv-card">
+        <div class="pv-icon">🍺</div>
+        <div>
+          <div class="pv-title">The Entire Room</div>
+          <div class="pv-desc">Waiting for it to be over. Karaoke night is supposed to be fun. <strong>Nobody is having fun.</strong> This is the problem LOUDMOUTH solves.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 3. THE RESCUE — SLIDER ═══════════════════ -->
+<section class="rescue-section" id="rescue">
+  <div class="rescue-inner">
+
+    <div class="section-label yellow" style="text-align:center;">The Fix</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,7vw,96px);letter-spacing:0.02em;line-height:0.88;margin-bottom:20px;text-align:center;">
+      BORROW THEIR <span style="color:var(--yellow);">VOICE.</span><br>
+      SAVE THE <span style="color:var(--red);">PARTY.</span>
+    </div>
+    <p style="font-size:19px;color:var(--dim);max-width:700px;margin:0 auto 56px;text-align:center;line-height:1.68;">
+      Here's what nobody else offers: <strong style="color:var(--white);">borrow 90% of Kenny Chesney's voice tonight.</strong> Blend it with yours. Everyone in the room thinks you're a hero. The party thrives. This might genuinely be the first karaoke night you've ever actually enjoyed — and definitely the first one nobody had to endure.
+    </p>
+
+    <div class="rescue-grid">
+      <div>
+        <div class="section-label yellow">How The Slider Works</div>
+        <div class="body-text">
+          <p>The Vocal Assist Slider is your personal volume knob for the superstar's voice. <strong>Slide right and their voice blends into yours.</strong> You control exactly how much — 90% them, 10% you. Nobody in the room can tell the difference. You sound incredible.</p>
+          <p>It's not cheating. It's what every professional performer in the world does — backing vocals, studio blends, vocal doubling. <strong>Sound great tonight</strong> while you're learning to be great tomorrow.</p>
+          <p>And here's the difference that matters: when you borrow Kenny Chesney's voice on LOUDMOUTH, <strong>it's actually Kenny Chesney.</strong> The real recording. His real voice. Not a session singer doing an impression in a studio somewhere.</p>
+        </div>
+        <div class="callout yellow" style="margin-top:24px;">
+          <em>The party thrives.</em> This might be the first karaoke night you've ever genuinely enjoyed — from start to finish, for everyone in the room.
+        </div>
+      </div>
+      <div class="slider-demo">
+        <div class="slider-demo-label">Vocal Assist Slider</div>
+        <div class="slider-demo-sub">Drag left to take over. Drag right to borrow theirs.</div>
+        <div class="blend-meters">
+          <div class="blend-meter">
+            <div class="blend-label">Your Voice</div>
+            <div class="blend-bar-wrap"><div class="blend-bar you" id="you-bar" style="width:25%"></div></div>
+            <div class="blend-pct you" id="you-pct">25%</div>
+          </div>
+          <div class="blend-meter">
+            <div class="blend-label">Artist's Voice</div>
+            <div class="blend-bar-wrap"><div class="blend-bar artist" id="artist-bar" style="width:75%"></div></div>
+            <div class="blend-pct artist" id="artist-pct">75%</div>
+          </div>
+        </div>
+        <div class="sdl">
+          <span>← All you (Legend)</span>
+          <span>(Train Wreck) Full assist →</span>
+        </div>
+        <input type="range" class="mkt-slider" id="mkt-vas" min="0" max="100" value="75" oninput="mktSlider(this.value)">
+        <div class="tier-showcase">
+          <div class="ts-name" id="mkt-tier-name">SHOWER SINGER</div>
+          <div class="ts-desc" id="mkt-tier-desc">Artist carries most of the weight. The party thrives.</div>
+        </div>
+        <div class="tier-pips">
+          <div class="t-pip" onclick="mktSet(0)"><div class="t-pip-dot"></div><div class="t-pip-lbl">Legend</div></div>
+          <div class="t-pip" onclick="mktSet(25)"><div class="t-pip-dot"></div><div class="t-pip-lbl">Front Man</div></div>
+          <div class="t-pip" onclick="mktSet(50)"><div class="t-pip-dot"></div><div class="t-pip-lbl">Hero</div></div>
+          <div class="t-pip on" onclick="mktSet(75)"><div class="t-pip-dot"></div><div class="t-pip-lbl">Shower Singer</div></div>
+          <div class="t-pip" onclick="mktSet(100)"><div class="t-pip-dot"></div><div class="t-pip-lbl">Train Wreck</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Journey -->
+    <div class="journey" style="margin-top:0;">
+      <div class="journey-step">
+        <div class="journey-num">1</div>
+        <div class="journey-icon">🎤</div>
+        <div class="journey-title">Tonight</div>
+        <div class="journey-body">Borrow as much of the artist's voice as you need. <strong>Sound incredible. Save karaoke night.</strong> Start anywhere on the slider — no judgment whatsoever.</div>
+      </div>
+      <div class="journey-step highlight">
+        <div class="journey-num">2</div>
+        <div class="journey-icon">📉</div>
+        <div class="journey-title">The Weaning</div>
+        <div class="journey-body">Session by session, with real AI coaching behind you, <strong>you turn their voice down and yours up.</strong> You feel the difference. Your scores prove it.</div>
+      </div>
+      <div class="journey-step">
+        <div class="journey-num">3</div>
+        <div class="journey-icon">🏆</div>
+        <div class="journey-title">The Goal</div>
+        <div class="journey-body">Slider all the way left. <strong>Just you — no help.</strong> Competing against the real artist on their own song. And winning.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 4. SCORE REVEAL ═══════════════════ -->
+<section class="dark-band pad" id="scores">
+  <div class="two-col">
+    <div>
+      <div class="section-label">Compete Against Your Favorites</div>
+      <div class="big-headline" style="color:var(--white);">BEAT THEM AT<br><span style="color:var(--yellow);">THEIR OWN SONG.</span></div>
+      <div class="body-text">
+        <p>Both scores hidden while you sing. No numbers flickering. No pressure. Just you and the song.</p>
+        <p>When it ends — <strong>both scores revealed at once.</strong> Yours and the real artist's real performance, scored the exact same way.</p>
+        <p>Kelly Clarkson literally won American Idol. Ariana Grande is nearly untouchable. <strong>Kenny Chesney is closer than you'd think.</strong> Find out exactly where you stand.</p>
+      </div>
+      <div class="callout yellow">
+        When your score beats theirs — <em>that's real.</em> The actual artist. Their actual recording. You just beat them at their own song.
+      </div>
+    </div>
+    <div class="score-demo">
+      <div class="sd-header"><span>LOUDMOUTH</span><span style="font-size:12px;letter-spacing:0.08em;">SCORE REVEAL</span></div>
+      <div class="sd-song">
+        <div class="sd-song-title">Take Me to Church</div>
+        <div class="sd-song-artist">Hozier — original master recording</div>
+      </div>
+      <div class="sd-scores">
+        <div class="sd-block"><div class="sd-num you">8.4</div><div class="sd-lbl">You</div></div>
+        <div class="sd-vs">VS</div>
+        <div class="sd-block"><div class="sd-num artist">7.9</div><div class="sd-lbl">Hozier</div></div>
+      </div>
+      <div class="sd-verdict">🏆 YOU WIN — Beat the artist by 0.5 points</div>
+      <div class="sd-4d">
+        <div class="sd-4d-item"><div class="sd-4d-label">Pitch</div><div class="sd-4d-val">8.6</div></div>
+        <div class="sd-4d-item"><div class="sd-4d-label">Timing</div><div class="sd-4d-val">8.2</div></div>
+        <div class="sd-4d-item"><div class="sd-4d-label">Clarity</div><div class="sd-4d-val">8.1</div></div>
+        <div class="sd-4d-item"><div class="sd-4d-label">Dynamics</div><div class="sd-4d-val">8.7</div></div>
+      </div>
+      <div class="sd-badge">✓ Scored against Hozier's actual vocal performance</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 5. THE FAKE STRIP ═══════════════════ -->
+<div class="fake-strip">
+  <div class="fake-strip-eyebrow">By The Way</div>
+  <div class="fake-strip-headline">
+    EVERY OTHER KARAOKE APP<br>
+    IS PLAYING YOU A FAKE.
+  </div>
+  <p class="fake-strip-sub">
+    Every single one of them hires a session singer to re-record your favorite songs in a studio.
+    That's not Rihanna. That's not Chris Cornell. That's a stranger doing an impression.
+    <strong>You've been singing along to impostors your whole life. Not here.</strong>
+  </p>
+</div>
+
+<!-- ═══════════════════ 6. BYO ═══════════════════ -->
+<section class="pad">
+  <div style="max-width:980px;margin:0 auto;">
+    <div class="section-label yellow">Your Music. Your Way.</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,5.5vw,72px);letter-spacing:0.02em;line-height:0.92;margin-bottom:16px;">
+      PLAY WHAT YOU <span style="color:var(--yellow);">OWN.</span><br>BUY WHAT YOU DON'T.
+    </div>
+    <p style="font-size:17px;color:var(--dim);max-width:580px;line-height:1.65;">You probably already own some of the songs you want to sing. Bring them. For everything else — any song in the world is waiting on iTunes for under $1.29. Buy it once and it's yours on LOUDMOUTH forever.</p>
+    <div class="byo-grid">
+      <div class="byo-card">
+        <div class="byo-icon">📱</div>
+        <div class="byo-title">Bring Your Own</div>
+        <div class="byo-desc">Already own the song? Use it. LOUDMOUTH works with your existing music library. No need to buy what you've already got.</div>
+      </div>
+      <div class="byo-card">
+        <div class="byo-icon">🎵</div>
+        <div class="byo-title">Buy Any Song</div>
+        <div class="byo-desc">Pick anything. Buy it on iTunes for under $1.29. Yours permanently — on LOUDMOUTH and everywhere else. No rental. No catalog fee.</div>
+      </div>
+      <div class="byo-card">
+        <div class="byo-icon">⚡</div>
+        <div class="byo-title">We Separate the Voices</div>
+        <div class="byo-desc">LOUDMOUTH isolates the artist's real vocal from the music using the same AI trusted by Universal, Sony, and Warner. Done once. Yours forever.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 7. SCIENCE & COACHING ═══════════════════ -->
+<section class="dark-band pad" id="science">
+  <div style="max-width:980px;margin:0 auto;">
+    <div class="section-label yellow">State-of-the-Art Vocal Training</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,5.5vw,72px);letter-spacing:0.02em;line-height:0.92;margin-bottom:20px;">
+      THE FASTEST PATH<br>TO <span style="color:var(--yellow);">ACTUALLY SINGING.</span>
+    </div>
+    <p style="font-size:18px;color:var(--dim);max-width:700px;line-height:1.72;margin-bottom:52px;">
+      Traditional singing lessons work. They're also slow, expensive, and completely disconnected from the music you actually want to perform. <strong style="color:var(--white);">LOUDMOUTH is built on the cutting edge of vocal science</strong> — methods that dramatically compress the time it takes to go from struggling to singing. Not weeks of scales in a vacuum. A real path, built around real songs, with AI coaching that knows your specific voice.
+    </p>
+
+    <div class="science-points">
+      <div class="sci-card">
+        <div class="sci-icon">🎵</div>
+        <div class="sci-title">Train On Songs You Love</div>
+        <div class="sci-body">Vocal science is unambiguous: <strong>you improve dramatically faster when you train on music you're emotionally connected to.</strong> Motivation stays high. Practice becomes habit. Your brain encodes the patterns faster because it cares about the outcome. Every other app makes you practice scales in a vacuum. LOUDMOUTH trains you on the songs you're actually going to perform — which is exactly where the improvement shows up.</div>
+        <div class="sci-source">Supported by peer-reviewed vocal pedagogy research</div>
+      </div>
+      <div class="sci-card">
+        <div class="sci-icon">🎤</div>
+        <div class="sci-title">Sing Alongside the Best</div>
+        <div class="sci-body"><strong>Blending your voice with a world-class artist as you learn is itself a proven training technique.</strong> Your ear calibrates to professional pitch, tone, and dynamics in real time. You hear the gap between you and them. You close it. It's the vocal equivalent of training by running alongside an Olympic athlete — your body adapts to keep up. No other app on the planet can offer this because no other app has the real recordings.</div>
+        <div class="sci-source">Proven accelerant in professional vocal coaching</div>
+      </div>
+      <div class="sci-card">
+        <div class="sci-icon">👁️</div>
+        <div class="sci-title">See Your Voice in Real Time</div>
+        <div class="sci-body">Most people don't know this: <strong>you cannot accurately hear your own voice while you're singing.</strong> Bone conduction makes it sound richer in your head than it does to the room. You've been training deaf your whole life. LOUDMOUTH's real-time pitch display shows your voice as a line on screen while you sing — objective, instant, and accurate. A 2016 meta-analysis confirmed this is <strong>the single most effective intervention for pitch accuracy ever studied.</strong></div>
+        <div class="sci-source">Meta-analysis of vocal training methodologies, 2016</div>
+      </div>
+      <div class="sci-card">
+        <div class="sci-icon">🔔</div>
+        <div class="sci-title">Ten Minutes a Day. That's It.</div>
+        <div class="sci-body">The science on consistency is unambiguous: <strong>ten minutes daily produces dramatically faster results than an hour once a week.</strong> Vocal improvement is neurological — the brain builds and strengthens motor pathways through repeated, focused sessions. LOUDMOUTH reminds you daily, tracks your streak, and when you miss a session it tells you exactly how to get back on track. No guilt. Just a clear path forward.</div>
+        <div class="sci-source">Neural adaptation research in vocal motor control</div>
+      </div>
+    </div>
+
+    <div style="padding:28px 32px;background:rgba(245,196,0,0.06);border:1px solid rgba(245,196,0,0.18);border-radius:12px;display:flex;gap:20px;align-items:flex-start;">
+      <div style="font-size:28px;flex-shrink:0;margin-top:4px;">🔬</div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;letter-spacing:0.1em;text-transform:uppercase;color:var(--yellow);margin-bottom:12px;">The Bottom Line</div>
+        <div style="font-size:16px;color:var(--dim);line-height:1.75;">Less than 5% of people are truly tone deaf. <strong style="color:var(--white);">If you practice, you will improve. Period.</strong> The only question is how fast. LOUDMOUTH combines every proven accelerant into one app: real songs you love, a world-class artist to calibrate against, real-time visual feedback, and AI coaching that adapts to your specific voice every session. This is not a karaoke app with a coaching feature bolted on. This is a <strong style="color:var(--white);">state-of-the-art vocal training platform</strong> that happens to be the most fun you've ever had practicing.</div>
+      </div>
+    </div>
+
+    <div class="coaching-row">
+      <div class="coach-card">
+        <div class="coach-icon">🧠</div>
+        <div class="coach-title">AI <em>Vocal Coach</em></div>
+        <div class="coach-desc">After every session, your coach tells you exactly what happened and what to fix. <strong>Timestamp-specific feedback.</strong> Not "sing better" — here's the exact note, here's the moment, here's the exercise for tomorrow.</div>
+      </div>
+      <div class="coach-card">
+        <div class="coach-icon">📋</div>
+        <div class="coach-title">Dynamic <em>Lesson Plans</em></div>
+        <div class="coach-desc">Personalized curriculum — voice lessons, show choir, karaoke confidence — built around your actual voice. <strong>Adapts every week</strong> based on your real performance data.</div>
+      </div>
+      <div class="coach-card">
+        <div class="coach-icon">💬</div>
+        <div class="coach-title">Ask <em>Anything</em></div>
+        <div class="coach-desc">Chat with your AI coach anytime. <strong>"Why do I go flat on that note?"</strong> It knows your full history and answers for your voice specifically — not generic advice.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 8. FEATURES ═══════════════════ -->
+<section class="pad">
+  <div style="max-width:980px;margin:0 auto;">
+    <div class="section-label">Everything You Get</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,5.5vw,72px);letter-spacing:0.02em;line-height:0.92;margin-bottom:16px;">BUILT FOR <span style="color:var(--red);">REAL</span> SINGERS</div>
+    <p style="font-size:17px;color:var(--dim);max-width:500px;line-height:1.6;margin-bottom:52px;">Sound better tonight, or genuinely learn to sing. Both doors are open.</p>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🎹</div>
+        <div class="feat-title">Smart <em>Lyric</em> Display</div>
+        <div class="feat-desc">Words grow as they approach. A pitch guide shows high vs. low notes in real time. <strong>See what's coming before it hits.</strong></div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">4D <em>Scoring</em></div>
+        <div class="feat-desc">Pitch, Timing, Clarity, Dynamics — scored separately. <strong>Dynamics is what separates good from great.</strong> We're the only app that measures it.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🏆</div>
+        <div class="feat-title">Beat the <em>Artist</em></div>
+        <div class="feat-desc">Their real score vs. yours — both hidden until the song ends. <strong>Real artist. Real stakes.</strong> Real bragging rights when you win.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎤</div>
+        <div class="feat-title">A Cappella <em>Mode</em></div>
+        <div class="feat-desc">No music — just lyrics on screen. Pure voice, pure timing. <strong>Warmups, memorization, show choir rehearsal.</strong></div>
+        <div class="feat-tag">Coming Soon</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎭</div>
+        <div class="feat-title">Duet <em>Mode</em></div>
+        <div class="feat-desc">Two phones, one song, one winner. <strong>Compete head to head in real time.</strong> Individual scores, shared chaos.</div>
+        <div class="feat-tag">Coming Soon</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📱</div>
+        <div class="feat-title">Social <em>Sharing</em></div>
+        <div class="feat-desc">Score 9.0+ and the share button unlocks. <strong>"Now you're good enough."</strong> Post your moment with score badge to Instagram, TikTok, anywhere.</div>
+        <div class="feat-tag green">Earned, Not Given</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ 9. SOCIAL UNLOCK ═══════════════════ -->
+<section class="dark-band pad" style="text-align:center;">
+  <div style="max-width:760px;margin:0 auto;">
+    <div class="section-label green" style="text-align:center;">Social Sharing</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,92px);letter-spacing:0.02em;line-height:0.9;margin-bottom:20px;">EARN THE RIGHT<br>TO GO <span style="color:var(--yellow);">PUBLIC.</span></div>
+    <p style="font-size:18px;color:var(--dim);line-height:1.65;margin-bottom:44px;">The share button is locked until you score <strong style="color:var(--white);">9.0 or above.</strong> The world has enough painful karaoke videos. When you hit 9.0 — you've genuinely earned it.</p>
+    <div class="score-unlock">
+      <div class="su-card"><div class="su-score">6.2</div><div class="su-label">Keep going</div><div class="su-share">🔒</div></div>
+      <div class="su-card"><div class="su-score">7.7</div><div class="su-label">Getting there</div><div class="su-share">🔒</div></div>
+      <div class="su-card"><div class="su-score">8.6</div><div class="su-label">Almost...</div><div class="su-share">🔒</div></div>
+      <div class="su-card unlocked"><div class="su-score">9.3</div><div class="su-label">Now you're good enough!</div><div class="su-share">📱</div></div>
+    </div>
+    <p style="font-family:'Barlow Condensed',sans-serif;font-size:15px;letter-spacing:0.06em;color:var(--dim);">Hit 9.0 and share your moment — with score badge — to <strong style="color:var(--white);">Instagram, TikTok, or anywhere.</strong></p>
+  </div>
+</section>
+
+<!-- ═══════════════════ 10. CHARITY ═══════════════════ -->
+<section class="pad" style="text-align:center;" id="charity">
+  <div class="section-label green" style="text-align:center;margin-bottom:16px;">Put Your Money Where Your Mouth Is</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,92px);letter-spacing:0.02em;line-height:0.9;margin-bottom:20px;">YOU SING.<br>PEOPLE <span style="color:var(--green);">EAT.</span></div>
+  <p style="font-size:18px;color:var(--dim);max-width:580px;margin:0 auto 48px;line-height:1.65;">Every LOUDMOUTH subscription gives back. <strong style="color:var(--white);">Feeding America gets $0.50 every month per subscriber.</strong> That's 11 meals a month, every month you're a member. The competition uses fake music and pockets everything. We use the real thing and give back.</p>
+  <div class="split-cards">
+    <div class="split-card"><div class="split-amount us">TBD</div><div class="split-who">LOUDMOUTH</div><div class="split-desc">Keeps the lights on</div></div>
+    <div class="split-card"><div class="split-amount artist">$1.00</div><div class="split-who">The Artist</div><div class="split-desc">Direct. No label split.</div></div>
+    <div class="split-card"><div class="split-amount charity">$0.50</div><div class="split-who">Feeding America</div><div class="split-desc">11 meals per subscriber</div></div>
+    <div class="split-card"><div class="split-amount choir">$1.00</div><div class="split-who">Your Community</div><div class="split-desc">Show choir or local food shelf — you choose</div></div>
+  </div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:0.06em;color:var(--dim);">At 10,000 subscribers — <strong style="color:var(--green);font-size:22px;">110,000 meals a month.</strong></div>
+  <div class="charity-choice"><strong>Your community dollar, your call.</strong> Direct it to your local high school show choir program or your local food shelf. Every single month.</div>
+</section>
+
+<!-- ═══════════════════ 11. FINAL CTA ═══════════════════ -->
+<section class="final-cta" id="final-cta">
+  <div class="final-cta-headline">FINALLY.<br>A REASON TO BE<br>A <em>LOUDMOUTH.</em></div>
+  <p class="final-cta-sub">Be first to know when we launch. <strong>Founding members get locked-in pricing forever.</strong></p>
+  <div class="final-email-form">
+    <input class="final-email-input" type="email" placeholder="your@email.com">
+    <button class="btn-final" onclick="handleSignup(this)">I Want In</button>
+  </div>
+  <div class="final-fine">No spam. No selling your email. Just a heads-up when we're ready.</div>
+</section>
+
+<footer>
+  <div>
+    <div class="footer-logo">LOUD<span>MOUTH</span></div>
+    <div class="footer-tag">Finally, a reason to be one.</div>
+  </div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">For Artists</a>
+    <a href="#">For Show Choirs</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<script>
+const MKT_TIERS=[
+  {min:0,max:15,name:'LEGEND',desc:'All you. No safety net. Pure voice. This is the goal.'},
+  {min:15,max:35,name:'FRONT MAN',desc:'Mostly you — just a whisper of the artist behind you.'},
+  {min:35,max:65,name:'KARAOKE HERO',desc:'50/50 — you and the artist. Sounds great. Room stays happy.'},
+  {min:65,max:85,name:'SHOWER SINGER',desc:'Artist carries most of the weight. The party thrives.'},
+  {min:85,max:101,name:'TRAIN WRECK',desc:'Maximum assist. Start here if you need to. No judgment.'},
+];
+function mktSlider(val){
+  val=parseInt(val);
+  const s=document.getElementById('mkt-vas');
+  s.style.background=`linear-gradient(to right,var(--yellow) ${val}%,rgba(255,255,255,0.12) ${val}%)`;
+  const tier=MKT_TIERS.find(t=>val>=t.min&&val<t.max)||MKT_TIERS[MKT_TIERS.length-1];
+  document.getElementById('mkt-tier-name').textContent=tier.name;
+  document.getElementById('mkt-tier-desc').textContent=tier.desc;
+  const pips=document.querySelectorAll('.t-pip');
+  const pipVals=[0,25,50,75,100];
+  const closest=pipVals.reduce((a,b)=>Math.abs(b-val)<Math.abs(a-val)?b:a);
+  pips.forEach((p,i)=>p.classList.toggle('on',pipVals[i]===closest));
+  const youPct=100-val;
+  document.getElementById('you-bar').style.width=youPct+'%';
+  document.getElementById('artist-bar').style.width=val+'%';
+  document.getElementById('you-pct').textContent=youPct+'%';
+  document.getElementById('artist-pct').textContent=val+'%';
+}
+function mktSet(val){document.getElementById('mkt-vas').value=val;mktSlider(val);}
+function handleSignup(btn){
+  const form=btn.closest('.email-form,.final-email-form');
+  const input=form.querySelector('input[type=email]');
+  const email=input.value.trim();
+  if(!email||!email.includes('@')){input.style.outline='2px solid var(--red)';input.focus();return;}
+  btn.textContent="YOU'RE IN ✓";
+  btn.style.background='var(--green)';
+  btn.style.pointerEvents='none';
+  input.value='';input.placeholder='We got you. Talk soon.';input.disabled=true;
+}
+mktSlider(75);
+</script>
+</body>
+</html>

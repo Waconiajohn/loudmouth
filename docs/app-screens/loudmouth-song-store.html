@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LOUDMOUTH — Song Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0a0a;
+  --surface:   #131313;
+  --surface2:  #1a1a1a;
+  --border:    rgba(255,255,255,0.07);
+  --red:       #d42020;
+  --red-dim:   rgba(212,32,32,0.15);
+  --yellow:    #f5c400;
+  --yellow-dim:rgba(245,196,0,0.12);
+  --white:     #f0ede8;
+  --dim:       rgba(240,237,232,0.35);
+  --dimmer:    rgba(240,237,232,0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── TOP NAV ── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 56px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(10,10,10,0.96);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 0.06em;
+  color: var(--white);
+}
+.nav-logo span { color: var(--red); }
+.nav-tabs {
+  display: flex;
+  gap: 2px;
+}
+.nav-tab {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+  background: none;
+}
+.nav-tab:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+.nav-tab.active { color: var(--yellow); background: var(--yellow-dim); }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-credits {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  color: var(--dim);
+}
+.nav-credits strong { color: var(--yellow); }
+.btn-sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 7px 16px;
+  cursor: pointer;
+}
+
+/* ── HERO BAND ── */
+.hero {
+  padding: 28px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.hero-title em { color: var(--red); font-style: normal; }
+.hero-sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+  margin-bottom: 18px;
+}
+
+/* ── SEARCH BAR ── */
+.search-wrap {
+  position: relative;
+  max-width: 480px;
+}
+.search-wrap svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.4;
+}
+#search-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  padding: 11px 16px 11px 42px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+#search-input::placeholder { color: var(--dimmer); }
+#search-input:focus { border-color: rgba(245,196,0,0.4); }
+
+/* ── GENRE FILTERS ── */
+.genre-strip {
+  display: flex;
+  gap: 8px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--border);
+}
+.genre-strip::-webkit-scrollbar { display: none; }
+.genre-pill {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  color: var(--dim);
+  background: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.genre-pill:hover { border-color: rgba(255,255,255,0.2); color: var(--white); }
+.genre-pill.active { border-color: var(--red); color: var(--white); background: var(--red-dim); }
+
+/* ── SORT ROW ── */
+.sort-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 10px;
+}
+.sort-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  color: var(--dimmer);
+  letter-spacing: 0.06em;
+}
+.sort-label strong { color: var(--dim); }
+.sort-btns {
+  display: flex;
+  gap: 4px;
+}
+.sort-btn {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--dim);
+  background: none;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.sort-btn:hover { color: var(--white); }
+.sort-btn.active { color: var(--yellow); border-color: rgba(245,196,0,0.3); background: var(--yellow-dim); }
+
+/* ── SONG GRID ── */
+.song-grid {
+  padding: 8px 12px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ── SONG CARD ── */
+.song-card {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s;
+  position: relative;
+}
+.song-card:hover { background: var(--surface2); }
+.song-card.owned { opacity: 0.7; }
+
+.song-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: var(--dimmer);
+  text-align: center;
+  line-height: 1;
+  min-width: 32px;
+}
+.song-card:hover .song-num { display: none; }
+.song-play-icon {
+  display: none;
+  width: 36px;
+  height: 36px;
+  background: var(--red);
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: white;
+  margin: auto;
+  flex-shrink: 0;
+}
+.song-card:hover .song-play-icon { display: flex; }
+
+.song-info { overflow: hidden; }
+.song-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.song-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--dim);
+}
+.song-artist { }
+.song-dot { color: var(--dimmer); }
+.song-genre {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  background: rgba(255,255,255,0.06);
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.song-difficulty {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+.diff-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--border);
+}
+.diff-dot.filled { background: var(--yellow); }
+
+.song-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  min-width: 72px;
+}
+.song-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+.song-price.free { color: var(--yellow); font-size: 16px; letter-spacing: 0.06em; }
+.song-price.owned-lbl {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(100,200,100,0.7);
+}
+.btn-buy {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 4px;
+  border: 1px solid var(--red);
+  color: var(--white);
+  background: var(--red-dim);
+  cursor: pointer;
+  transition: background 0.12s;
+  white-space: nowrap;
+}
+.btn-buy:hover { background: var(--red); }
+.btn-sing {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(100,200,100,0.3);
+  color: rgba(100,200,100,0.9);
+  background: rgba(100,200,100,0.08);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.btn-sing:hover { background: rgba(100,200,100,0.16); }
+
+/* ── FEATURED SECTION ── */
+.section-head {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  padding: 16px 20px 8px;
+}
+.section-head span { color: var(--red); }
+
+/* ── FEATURED CARDS (horizontal scroll) ── */
+.featured-strip {
+  display: flex;
+  gap: 12px;
+  padding: 4px 20px 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.featured-strip::-webkit-scrollbar { display: none; }
+.featured-card {
+  flex-shrink: 0;
+  width: 160px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+.featured-card:hover { transform: translateY(-2px); border-color: rgba(212,32,32,0.4); }
+.fc-cover {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  position: relative;
+  overflow: hidden;
+}
+.fc-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.7));
+}
+.fc-body { padding: 10px; }
+.fc-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fc-artist { font-size: 12px; color: var(--dim); margin-bottom: 8px; }
+.fc-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: var(--yellow);
+}
+
+/* ── BOTTOM PLAYER BAR (if song selected) ── */
+.now-singing {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: rgba(20,20,20,0.97);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 14px;
+  transform: translateY(100%);
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 200;
+}
+.now-singing.visible { transform: translateY(0); }
+.ns-emoji { font-size: 28px; }
+.ns-info { flex: 1; overflow: hidden; }
+.ns-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ns-artist { font-size: 12px; color: var(--dim); }
+.ns-sing-btn {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  z-index: 500;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  display: none;
+}
+.empty-state.visible { display: block; }
+.empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--dim);
+  margin-bottom: 8px;
+}
+.empty-state-sub { font-size: 14px; color: var(--dimmer); }
+
+/* ── PROCESSING BADGE ── */
+.badge-processing {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  background: var(--yellow-dim);
+  border: 1px solid rgba(245,196,0,0.2);
+  border-radius: 3px;
+  padding: 1px 6px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">LOUD<span>MOUTH</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab" onclick="setTab('library')">My Library</button>
+    <button class="nav-tab active" onclick="setTab('store')">Song Store</button>
+    <button class="nav-tab" onclick="setTab('sing')">Sing</button>
+  </div>
+  <div class="nav-right">
+    <div class="nav-credits">Credits: <strong>$4.20</strong></div>
+    <button class="btn-sub">Subscribe $3.99</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-title">THE <em>SONG</em> STORE</div>
+  <div class="hero-sub">AI-processed. Pitch-mapped. Ready to rip. — $1.29–$1.99 per song, yours forever.</div>
+  <div class="search-wrap">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <circle cx="6.5" cy="6.5" r="5" stroke="white" stroke-width="1.5"/>
+      <path d="M10.5 10.5L14 14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <input id="search-input" type="text" placeholder="Search songs, artists, bands…" oninput="filterSongs()">
+  </div>
+</div>
+
+<!-- GENRE FILTERS -->
+<div class="genre-strip" id="genre-strip">
+  <button class="genre-pill active" data-genre="all" onclick="setGenre(this,'all')">All</button>
+  <button class="genre-pill" data-genre="rock" onclick="setGenre(this,'rock')">Rock</button>
+  <button class="genre-pill" data-genre="metal" onclick="setGenre(this,'metal')">Metal</button>
+  <button class="genre-pill" data-genre="classic rock" onclick="setGenre(this,'classic rock')">Classic Rock</button>
+  <button class="genre-pill" data-genre="pop" onclick="setGenre(this,'pop')">Pop</button>
+  <button class="genre-pill" data-genre="country" onclick="setGenre(this,'country')">Country</button>
+  <button class="genre-pill" data-genre="r&b" onclick="setGenre(this,'r&b')">R&B</button>
+  <button class="genre-pill" data-genre="hip-hop" onclick="setGenre(this,'hip-hop')">Hip-Hop</button>
+  <button class="genre-pill" data-genre="80s" onclick="setGenre(this,'80s')">80s</button>
+  <button class="genre-pill" data-genre="90s" onclick="setGenre(this,'90s')">90s</button>
+  <button class="genre-pill" data-genre="karaoke classics" onclick="setGenre(this,'karaoke classics')">Karaoke Classics</button>
+</div>
+
+<!-- FEATURED -->
+<div class="section-head">🔥 <span>Featured</span> — Most Sung This Week</div>
+<div class="featured-strip" id="featured-strip"></div>
+
+<!-- SORT ROW -->
+<div class="sort-row">
+  <div class="sort-label">Showing <strong id="count-label">0 songs</strong></div>
+  <div class="sort-btns">
+    <button class="sort-btn active" data-sort="popular" onclick="setSort(this,'popular')">Popular</button>
+    <button class="sort-btn" data-sort="new" onclick="setSort(this,'new')">New</button>
+    <button class="sort-btn" data-sort="az" onclick="setSort(this,'az')">A–Z</button>
+    <button class="sort-btn" data-sort="hard" onclick="setSort(this,'hard')">Hardest</button>
+  </div>
+</div>
+
+<!-- SONG GRID -->
+<div class="song-grid" id="song-grid"></div>
+<div class="empty-state" id="empty-state">
+  <div class="empty-state-icon">🎤</div>
+  <div class="empty-state-title">No songs found</div>
+  <div class="empty-state-sub">Try a different search or genre</div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="now-singing" id="now-singing">
+  <div class="ns-emoji" id="ns-emoji">🎸</div>
+  <div class="ns-info">
+    <div class="ns-title" id="ns-title">—</div>
+    <div class="ns-artist" id="ns-artist">—</div>
+  </div>
+  <button class="ns-sing-btn" onclick="goSing()">Sing This ▶</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════
+//  CATALOG DATA
+// ═══════════════════════════════════════════════════════
+const CATALOG = [
+  // Free / owned (demo purposes)
+  { id:1,  title:'Down With The Sickness', artist:'Disturbed',        genre:'metal',          price:0,    difficulty:4, emoji:'🤘', owned:true,  plays:9821,  new:false },
+  // $1.29
+  { id:2,  title:'Livin\' on a Prayer',    artist:'Bon Jovi',          genre:'rock',           price:1.29, difficulty:3, emoji:'🎸', owned:false, plays:18540, new:false },
+  { id:3,  title:'Don\'t Stop Believin\'', artist:'Journey',           genre:'classic rock',   price:1.29, difficulty:3, emoji:'🎹', owned:false, plays:22100, new:false },
+  { id:4,  title:'Bohemian Rhapsody',      artist:'Queen',             genre:'classic rock',   price:1.99, difficulty:5, emoji:'👑', owned:false, plays:15300, new:false },
+  { id:5,  title:'Mr. Brightside',         artist:'The Killers',       genre:'rock',           price:1.29, difficulty:2, emoji:'🌅', owned:false, plays:11200, new:false },
+  { id:6,  title:'Total Eclipse of the Heart', artist:'Bonnie Tyler',  genre:'80s',            price:1.29, difficulty:4, emoji:'🌑', owned:false, plays:9800,  new:false },
+  { id:7,  title:'Sweet Child O\' Mine',   artist:'Guns N\' Roses',    genre:'classic rock',   price:1.29, difficulty:4, emoji:'🌹', owned:false, plays:13400, new:false },
+  { id:8,  title:'Somebody That I Used To Know', artist:'Gotye',       genre:'pop',            price:1.29, difficulty:3, emoji:'👤', owned:false, plays:7600,  new:true  },
+  { id:9,  title:'I Will Survive',         artist:'Gloria Gaynor',     genre:'karaoke classics',price:1.29,difficulty:2, emoji:'💪', owned:false, plays:19200, new:false },
+  { id:10, title:'Killing Me Softly',      artist:'Fugees',            genre:'r&b',            price:1.29, difficulty:3, emoji:'🎵', owned:false, plays:8100,  new:false },
+  { id:11, title:'Wonderwall',             artist:'Oasis',             genre:'rock',           price:1.29, difficulty:2, emoji:'🧱', owned:false, plays:16700, new:false },
+  { id:12, title:'Enter Sandman',          artist:'Metallica',         genre:'metal',          price:1.99, difficulty:4, emoji:'😴', owned:false, plays:7900,  new:false },
+  { id:13, title:'Africa',                 artist:'Toto',              genre:'80s',            price:1.29, difficulty:3, emoji:'🌍', owned:false, plays:12300, new:false },
+  { id:14, title:'Take Me Home, Country Roads', artist:'John Denver',  genre:'country',        price:1.29, difficulty:2, emoji:'🛣️', owned:false, plays:10500, new:false },
+  { id:15, title:'Jolene',                 artist:'Dolly Parton',      genre:'country',        price:1.29, difficulty:3, emoji:'🌺', owned:false, plays:9200,  new:false },
+  { id:16, title:'Gold Digger',            artist:'Kanye West',        genre:'hip-hop',        price:1.29, difficulty:3, emoji:'💰', owned:false, plays:6800,  new:false },
+  { id:17, title:'Lose Yourself',          artist:'Eminem',            genre:'hip-hop',        price:1.99, difficulty:5, emoji:'🎤', owned:false, plays:8900,  new:false },
+  { id:18, title:'Shallow',               artist:'Lady Gaga & Bradley Cooper', genre:'pop',   price:1.29, difficulty:4, emoji:'🎬', owned:false, plays:11800, new:true  },
+  { id:19, title:'Since U Been Gone',      artist:'Kelly Clarkson',    genre:'pop',            price:1.29, difficulty:3, emoji:'✂️', owned:false, plays:9100,  new:false },
+  { id:20, title:'Living on the Ceiling',  artist:'Blancmange',        genre:'80s',            price:1.29, difficulty:3, emoji:'🪩', owned:false, plays:3200,  new:true  },
+  { id:21, title:'Seven Nation Army',      artist:'The White Stripes', genre:'rock',           price:1.29, difficulty:2, emoji:'⚡', owned:false, plays:14600, new:false },
+  { id:22, title:'Creep',                  artist:'Radiohead',         genre:'rock',           price:1.29, difficulty:3, emoji:'🕷️', owned:false, plays:10200, new:false },
+  { id:23, title:'Don\'t You Want Me',     artist:'Human League',      genre:'80s',            price:1.29, difficulty:2, emoji:'💃', owned:false, plays:8700,  new:false },
+  { id:24, title:'Smells Like Teen Spirit',artist:'Nirvana',           genre:'rock',           price:1.29, difficulty:3, emoji:'🧼', owned:false, plays:12100, new:false },
+];
+
+const FEATURED_IDS = [4, 3, 2, 7, 17, 9]; // Bohemian Rhapsody, Journey, Bon Jovi...
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let activeGenre = 'all';
+let activeSort  = 'popular';
+let searchQuery = '';
+let selectedId  = null;
+let ownedIds    = new Set(CATALOG.filter(s=>s.owned).map(s=>s.id));
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  renderFeatured();
+  renderSongs();
+});
+
+// ═══════════════════════════════════════════════════════
+//  FEATURED STRIP
+// ═══════════════════════════════════════════════════════
+function renderFeatured() {
+  const strip = document.getElementById('featured-strip');
+  strip.innerHTML = '';
+  FEATURED_IDS.forEach(id => {
+    const s = CATALOG.find(x=>x.id===id);
+    if (!s) return;
+    const div = document.createElement('div');
+    div.className = 'featured-card';
+    div.onclick = () => selectSong(s.id);
+    const bg = genBg(s.id);
+    div.innerHTML = `
+      <div class="fc-cover" style="background:${bg}">${s.emoji}</div>
+      <div class="fc-body">
+        <div class="fc-title">${s.title}</div>
+        <div class="fc-artist">${s.artist}</div>
+        <div class="fc-price">${ownedIds.has(s.id) ? '✓ OWNED' : s.price === 0 ? 'FREE' : '$'+s.price.toFixed(2)}</div>
+      </div>`;
+    strip.appendChild(div);
+  });
+}
+
+function genBg(id) {
+  const palettes = [
+    'linear-gradient(135deg,#1a0a0a,#3d0f0f)',
+    'linear-gradient(135deg,#0a0a1a,#0f0f3d)',
+    'linear-gradient(135deg,#0a1a0a,#0f3d0f)',
+    'linear-gradient(135deg,#1a1a0a,#3d3d0f)',
+    'linear-gradient(135deg,#1a0a1a,#3d0f3d)',
+    'linear-gradient(135deg,#0a1a1a,#0f3d3d)',
+  ];
+  return palettes[id % palettes.length];
+}
+
+// ═══════════════════════════════════════════════════════
+//  SONG LIST
+// ═══════════════════════════════════════════════════════
+function getFiltered() {
+  let songs = [...CATALOG];
+  if (activeGenre !== 'all') songs = songs.filter(s=>s.genre===activeGenre);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    songs = songs.filter(s=>
+      s.title.toLowerCase().includes(q) ||
+      s.artist.toLowerCase().includes(q) ||
+      s.genre.toLowerCase().includes(q)
+    );
+  }
+  if (activeSort === 'popular') songs.sort((a,b)=>b.plays-a.plays);
+  if (activeSort === 'new')     songs = songs.filter(s=>s.new).concat(songs.filter(s=>!s.new));
+  if (activeSort === 'az')      songs.sort((a,b)=>a.title.localeCompare(b.title));
+  if (activeSort === 'hard')    songs.sort((a,b)=>b.difficulty-a.difficulty);
+  return songs;
+}
+
+function renderSongs() {
+  const songs = getFiltered();
+  const grid = document.getElementById('song-grid');
+  const empty = document.getElementById('empty-state');
+  const countEl = document.getElementById('count-label');
+
+  countEl.textContent = `${songs.length} song${songs.length!==1?'s':''}`;
+
+  if (songs.length === 0) {
+    grid.innerHTML = '';
+    empty.classList.add('visible');
+    return;
+  }
+  empty.classList.remove('visible');
+
+  grid.innerHTML = '';
+  songs.forEach((s, i) => {
+    const isOwned = ownedIds.has(s.id);
+    const card = document.createElement('div');
+    card.className = 'song-card' + (isOwned ? ' owned' : '');
+    card.dataset.id = s.id;
+    card.onclick = () => selectSong(s.id);
+
+    const dots = [1,2,3,4,5].map(d =>
+      `<div class="diff-dot${d<=s.difficulty?' filled':''}"></div>`
+    ).join('');
+
+    const rightHtml = isOwned
+      ? `<div class="song-price owned-lbl">✓ Owned</div><button class="btn-sing" onclick="event.stopPropagation();singNow(${s.id})">Sing ▶</button>`
+      : s.price === 0
+        ? `<div class="song-price free">FREE</div><button class="btn-buy" onclick="event.stopPropagation();buySong(${s.id})">Add</button>`
+        : `<div class="song-price">$${s.price.toFixed(2)}</div><button class="btn-buy" onclick="event.stopPropagation();buySong(${s.id})">Buy</button>`;
+
+    card.innerHTML = `
+      <div class="song-num">${i+1}</div>
+      <div class="song-play-icon">▶</div>
+      <div class="song-info">
+        <div class="song-title">${s.emoji} ${s.title}</div>
+        <div class="song-meta">
+          <span class="song-artist">${s.artist}</span>
+          <span class="song-dot">·</span>
+          <span class="song-genre">${s.genre}</span>
+          <span class="song-dot">·</span>
+          <div class="song-difficulty">${dots}</div>
+        </div>
+      </div>
+      <div class="song-right">${rightHtml}</div>`;
+
+    grid.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  INTERACTIONS
+// ═══════════════════════════════════════════════════════
+function setGenre(el, genre) {
+  document.querySelectorAll('.genre-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  activeGenre = genre;
+  renderSongs();
+}
+
+function setSort(el, sort) {
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  activeSort = sort;
+  renderSongs();
+}
+
+function filterSongs() {
+  searchQuery = document.getElementById('search-input').value.trim();
+  renderSongs();
+}
+
+function selectSong(id) {
+  const s = CATALOG.find(x=>x.id===id);
+  if (!s) return;
+  selectedId = id;
+  document.getElementById('ns-emoji').textContent = s.emoji;
+  document.getElementById('ns-title').textContent = s.title;
+  document.getElementById('ns-artist').textContent = s.artist + (ownedIds.has(id) ? ' — Ready to sing' : ' — Tap to buy');
+  document.getElementById('now-singing').classList.add('visible');
+}
+
+function buySong(id) {
+  const s = CATALOG.find(x=>x.id===id);
+  if (!s) return;
+  // Simulate purchase
+  ownedIds.add(id);
+  showToast(`✓ ${s.title} added to your library`);
+  renderSongs();
+  renderFeatured();
+  if (selectedId === id) selectSong(id); // refresh bottom bar
+}
+
+function singNow(id) {
+  const s = CATALOG.find(x=>x.id===id);
+  showToast(`🎤 Loading ${s.title}…`);
+  // In real app: navigate to Smart Lyric Display with song id
+}
+
+function goSing() {
+  if (!selectedId) return;
+  if (ownedIds.has(selectedId)) {
+    singNow(selectedId);
+  } else {
+    buySong(selectedId);
+  }
+}
+
+function setTab(tab) {
+  showToast(tab === 'library' ? '📚 My Library' : tab === 'sing' ? '🎤 Sing — pick a song first' : '🛒 Song Store');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>

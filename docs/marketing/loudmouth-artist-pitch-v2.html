@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOUDMOUTH — Artist Partnership</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f2ec;--black:#080808;--red:#d42020;--yellow:#f5c400;--green:#2ecc71;--white:#f0ede8;--mid:#e0ddd8;--dim:rgba(8,8,8,0.5);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--black);font-family:'Barlow',sans-serif;overflow-x:hidden;}
+
+/* NAV */
+.topbar{background:var(--black);padding:20px 60px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.tlogo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.12em;color:var(--white);}
+.tlogo span{color:var(--red);}
+.tnote{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(240,237,232,0.3);}
+.tcontact{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;background:var(--red);color:white;border:none;border-radius:6px;padding:9px 20px;cursor:pointer;text-decoration:none;display:inline-block;}
+
+/* HERO */
+.hero{background:var(--black);padding:100px 60px;position:relative;overflow:hidden;border-bottom:6px solid var(--yellow);}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 100% 50%,rgba(212,32,32,0.1),transparent);pointer-events:none;}
+.hero-kicker{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.32em;text-transform:uppercase;color:var(--yellow);margin-bottom:24px;}
+.hero-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,8vw,110px);line-height:0.9;color:var(--white);margin-bottom:28px;max-width:900px;}
+.hero-headline em{color:var(--yellow);font-style:normal;}
+.hero-headline .cross{position:relative;display:inline-block;color:rgba(240,237,232,0.2);}
+.hero-headline .cross::after{content:'';position:absolute;left:-4px;right:-4px;top:50%;height:8px;margin-top:-4px;background:var(--red);transform:rotate(-1.5deg);}
+.hero-sub{font-size:20px;color:rgba(240,237,232,0.6);max-width:580px;line-height:1.7;margin-bottom:40px;}
+.hero-sub strong{color:var(--white);}
+.hero-cta-row{display:flex;gap:14px;align-items:center;}
+.btn-hero{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:0.12em;text-transform:uppercase;background:var(--yellow);color:var(--black);border:none;border-radius:8px;padding:16px 32px;cursor:pointer;transition:all 0.15s;text-decoration:none;display:inline-block;}
+.btn-hero:hover{background:#ffe033;}
+.btn-ghost-light{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(240,237,232,0.5);background:none;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:16px 28px;cursor:pointer;text-decoration:none;display:inline-block;}
+
+/* DOLLAR SECTION */
+.dollar{background:var(--yellow);padding:80px 60px;border-bottom:3px solid var(--black);}
+.dollar-inner{max-width:960px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:56px;align-items:center;}
+.dollar-amt{font-family:'Bebas Neue',sans-serif;font-size:clamp(120px,18vw,200px);line-height:0.9;color:var(--black);}
+.dollar-text h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,52px);line-height:1.05;color:var(--black);margin-bottom:16px;}
+.dollar-text p{font-size:17px;line-height:1.75;color:rgba(8,8,8,0.65);max-width:460px;}
+.dollar-text p strong{color:var(--black);}
+.dollar-note{margin-top:20px;padding:14px 18px;background:rgba(8,8,8,0.08);border-radius:8px;font-size:14px;color:rgba(8,8,8,0.7);line-height:1.5;}
+
+/* HOW IT WORKS */
+.section{padding:100px 60px;}
+.section-inner{max-width:1040px;margin:0 auto;}
+.slabel{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.32em;text-transform:uppercase;color:var(--red);margin-bottom:20px;}
+.section-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,68px);line-height:1;color:var(--black);margin-bottom:16px;}
+.section-headline em{color:var(--red);font-style:normal;}
+.section-sub{font-size:17px;color:var(--dim);max-width:560px;line-height:1.7;margin-bottom:56px;}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--mid);border:1px solid var(--mid);border-radius:2px;overflow:hidden;}
+.step-card{background:var(--white);padding:36px 28px;}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:56px;color:rgba(212,32,32,0.2);line-height:1;margin-bottom:12px;}
+.step-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;letter-spacing:0.06em;text-transform:uppercase;color:var(--black);margin-bottom:10px;}
+.step-body{font-size:14px;line-height:1.65;color:var(--dim);}
+.step-body strong{color:var(--black);}
+
+/* THE REAL STORY */
+.real-section{background:var(--black);padding:100px 60px;}
+.real-inner{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.real-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,64px);line-height:0.92;color:var(--white);margin-bottom:20px;}
+.real-headline em{color:var(--yellow);font-style:normal;}
+.real-body{font-size:16px;color:rgba(240,237,232,0.55);line-height:1.75;}
+.real-body p+p{margin-top:14px;}
+.real-body strong{color:var(--white);}
+.real-callout{margin-top:24px;padding:18px 22px;background:rgba(245,196,0,0.08);border:1px solid rgba(245,196,0,0.2);border-radius:10px;font-size:15px;color:var(--white);line-height:1.6;}
+.real-callout em{color:var(--yellow);font-style:normal;font-weight:700;}
+.compare-cards{display:flex;flex-direction:column;gap:12px;}
+.compare-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:22px;}
+.compare-card.ours{border-color:rgba(245,196,0,0.3);background:rgba(245,196,0,0.06);}
+.cc-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8px;}
+.compare-card.theirs .cc-label{color:rgba(240,237,232,0.28);}
+.compare-card.ours .cc-label{color:var(--yellow);}
+.cc-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.04em;margin-bottom:6px;}
+.compare-card.theirs .cc-title{color:rgba(240,237,232,0.25);text-decoration:line-through;text-decoration-color:rgba(212,32,32,0.7);}
+.compare-card.ours .cc-title{color:var(--white);}
+.cc-body{font-size:13px;color:rgba(240,237,232,0.4);line-height:1.55;}
+
+/* WHAT ARTISTS GET */
+.benefits-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.benefit-card{background:var(--white);border:1px solid var(--mid);border-radius:12px;padding:28px 24px;}
+.bc-icon{font-size:32px;margin-bottom:12px;}
+.bc-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:0.04em;text-transform:uppercase;color:var(--black);margin-bottom:8px;}
+.bc-body{font-size:14px;color:var(--dim);line-height:1.65;}
+.bc-body strong{color:var(--black);}
+
+/* SLIDER TABLE */
+.slider-table{border:1px solid var(--mid);border-radius:2px;overflow:hidden;}
+.st-row{display:grid;grid-template-columns:120px 160px 1fr;border-bottom:1px solid var(--mid);}
+.st-row:last-child{border-bottom:none;}
+.st-row.header{background:var(--black);}
+.st-cell{padding:14px 18px;font-size:14px;color:var(--dim);}
+.st-row.header .st-cell{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,237,232,0.4);}
+.st-tier{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--black);}
+.st-row.active-row{border-left:4px solid var(--yellow);}
+.st-row.active-row .st-tier{color:var(--red);}
+
+/* CHARITY */
+.charity-band{background:var(--green);padding:60px 60px;border-top:3px solid var(--black);border-bottom:3px solid var(--black);}
+.cb-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap;}
+.cb-text{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,52px);line-height:1;color:var(--black);}
+.cb-sub{font-size:17px;color:rgba(8,8,8,0.65);max-width:380px;line-height:1.6;margin-top:8px;}
+.cb-sub strong{color:var(--black);}
+.cb-badge{background:var(--black);border-radius:12px;padding:20px 28px;text-align:center;}
+.cb-badge-amt{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--green);line-height:1;}
+.cb-badge-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,237,232,0.5);margin-top:4px;}
+
+/* CTA */
+.final-cta{background:var(--black);padding:100px 60px;text-align:center;}
+.fct-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,7vw,96px);line-height:0.9;color:var(--white);margin-bottom:16px;}
+.fct-headline em{color:var(--yellow);font-style:normal;}
+.fct-sub{font-size:18px;color:rgba(240,237,232,0.5);max-width:500px;margin:0 auto 40px;line-height:1.65;}
+.fct-sub strong{color:var(--white);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:600px;margin:0 auto;}
+.contact-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:24px;text-align:center;}
+.contact-icon{font-size:28px;margin-bottom:10px;}
+.contact-type{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,237,232,0.4);margin-bottom:6px;}
+.contact-val{font-size:15px;color:var(--white);}
+
+footer{background:#040404;padding:32px 60px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.06);}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:0.08em;color:var(--white);}
+.flogo span{color:var(--red);}
+.ftag{font-size:13px;color:rgba(240,237,232,0.25);margin-top:3px;}
+.flinks{display:flex;gap:24px;}
+.flinks a{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(240,237,232,0.3);text-decoration:none;}
+
+@media(max-width:768px){
+  .topbar,.hero,.dollar,.section,.real-section,.charity-band,.final-cta,footer{padding-left:24px;padding-right:24px;}
+  .real-inner,.dollar-inner{grid-template-columns:1fr;gap:40px;}
+  .steps-grid,.benefits-grid,.contact-grid{grid-template-columns:1fr;}
+  .st-row{grid-template-columns:80px 120px 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tlogo">LOUD<span>MOUTH</span></div>
+  <div class="tnote">Artist Partnership Deck</div>
+  <a href="/cdn-cgi/l/email-protection#85ecebe3eac5e8fce9eaf0e1e8eaf0f1edabe4f5f5" class="tcontact">Get In Touch</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-kicker">A New Kind of Artist Partnership</div>
+  <div class="hero-headline">
+    YOUR FANS SING<br>
+    YOUR <em>REAL</em> SONGS.<br>
+    YOU GET <em>PAID.</em>
+  </div>
+  <p class="hero-sub">
+    Every time a fan unlocks your song on LOUDMOUTH, they buy the real recording on iTunes. <strong>You earn royalties on a catalog you already recorded.</strong> Then $1 every month per subscriber goes directly to you — no label split.
+  </p>
+  <div class="hero-cta-row">
+    <a href="/cdn-cgi/l/email-protection#2e474048416e435742415b4a43415b5a46004f5e5e" class="btn-hero">Talk to Us →</a>
+    <a href="https://myloudmouth.app" class="btn-ghost-light">See the App →</a>
+  </div>
+</section>
+
+<!-- DOLLAR -->
+<section class="dollar">
+  <div class="dollar-inner">
+    <div class="dollar-amt">$1</div>
+    <div class="dollar-text">
+      <h2>EVERY MONTH.<br>PER SUBSCRIBER.<br>DIRECT TO YOU.</h2>
+      <p>No label. No middleman. No percentage games. Every LOUDMOUTH subscriber who lists you as their favorite artist sends <strong>$1 directly to you every single month.</strong></p>
+      <div class="dollar-note">
+        At 10,000 subscribers who love your music: <strong>$10,000/month.</strong> Recurring. Passive. From a catalog you already recorded.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="background:var(--bg);">
+  <div class="section-inner">
+    <div class="slabel">How It Works For Artists</div>
+    <div class="section-headline">THREE WAYS<br>YOU GET <em>PAID</em></div>
+    <p class="section-sub">LOUDMOUTH creates multiple revenue streams from music you've already made — with zero additional work from you.</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-title">iTunes Royalties</div>
+        <div class="step-body">Every time a fan unlocks your song, they buy it on iTunes. <strong>You earn your standard iTunes royalty</strong> on every purchase — just like any other download. Fans own the song forever, you get paid forever.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-title">$1 Monthly Direct</div>
+        <div class="step-body"><strong>$1/month per subscriber</strong> who lists you as their favorite artist, paid directly to you. No label split. Scales with your fanbase. Keeps paying as long as they're subscribed.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-title">Viral Promotion</div>
+        <div class="step-body">When fans share their score beating you on social media — with your name, your song, and a LOUDMOUTH badge — <strong>that's organic promotion</strong> that no ad buy can replicate. Real fans, real engagement.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE REAL STORY -->
+<section class="real-section">
+  <div class="real-inner">
+    <div>
+      <div class="slabel" style="color:var(--yellow);">Why LOUDMOUTH Is Different</div>
+      <div class="real-headline">WE USE THE<br><em>REAL</em> RECORDING.<br>NOT A COVER.</div>
+      <div class="real-body">
+        <p>Every other karaoke app hires session singers to re-record your music. Your fans are singing along to an imitation of your voice — a stranger in a studio doing an impression of you.</p>
+        <p>LOUDMOUTH is different. <strong>We use the actual master recording your fans already know and love.</strong> When someone sings "Take Me to Church" on LOUDMOUTH, they're competing against Hozier's real vocal performance — not a copy.</p>
+        <p>That's why the "beat the artist" moment is real. That's why fans care. <strong>You're in the app as yourself.</strong></p>
+      </div>
+      <div class="real-callout">
+        <em>Your voice. Your recording. Your legacy.</em> Not a session singer's impression of it.
+      </div>
+    </div>
+    <div class="compare-cards">
+      <div class="compare-card theirs">
+        <div class="cc-label">Every other karaoke app</div>
+        <div class="cc-title">A Studio Impersonator</div>
+        <div class="cc-body">A hired singer re-recorded your songs. Fans are singing along to someone pretending to be you. You see none of that revenue. Your voice isn't even in the app.</div>
+      </div>
+      <div class="compare-card ours">
+        <div class="cc-label">LOUDMOUTH</div>
+        <div class="cc-title">The Real You</div>
+        <div class="cc-body">The actual recording. Your real voice, isolated and presented as the gold standard. Fans try to beat you. You get paid when they unlock the song. You get paid monthly as long as they subscribe.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT ARTISTS GET -->
+<section class="section" style="background:var(--white);">
+  <div class="section-inner">
+    <div class="slabel">What You Get</div>
+    <div class="section-headline">MORE THAN<br>JUST ROYALTIES</div>
+    <p class="section-sub">Partnering with LOUDMOUTH gives artists tools and exposure that go beyond the monthly payment.</p>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="bc-icon">🏆</div>
+        <div class="bc-title">Your Score In The App</div>
+        <div class="bc-body">Your real performance is scored alongside every fan who sings your song. <strong>Your score becomes the benchmark.</strong> Beating you is the goal. Your artistry is the standard.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="bc-icon">📱</div>
+        <div class="bc-title">Viral Social Moments</div>
+        <div class="bc-body">When fans hit 9.0+ and share on Instagram or TikTok — your name is in their post. <strong>Organic reach to their entire audience.</strong> Every share is an ad you didn't pay for.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="bc-icon">💰</div>
+        <div class="bc-title">Passive Catalog Revenue</div>
+        <div class="bc-body">Songs you recorded years ago keep generating income. <strong>Every new LOUDMOUTH user who loves your music means more iTunes purchases and more monthly revenue.</strong> Zero additional work.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="bc-icon">🎤</div>
+        <div class="bc-title">Artist Dashboard</div>
+        <div class="bc-body">See which of your songs are most practiced, which fans are closest to your score, and where your biggest fanbase is geographically. <strong>Real data about your listeners.</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDER SCALE -->
+<section class="section" style="background:var(--bg);padding-top:0;">
+  <div class="section-inner">
+    <div class="slabel">The Singer Scale</div>
+    <div class="section-headline">HOW FANS<br>USE YOUR VOICE</div>
+    <p class="section-sub">The Vocal Assist Slider lets fans blend your real voice with theirs. They start with more help and work toward going solo. Here's what each tier sounds like:</p>
+    <div class="slider-table">
+      <div class="st-row header">
+        <div class="st-cell">Tier</div>
+        <div class="st-cell">Artist Blend</div>
+        <div class="st-cell">What It Means</div>
+      </div>
+      <div class="st-row">
+        <div class="st-cell"><div class="st-tier">Legend</div></div>
+        <div class="st-cell" style="color:var(--dim);">10% artist</div>
+        <div class="st-cell">All them. Your voice is barely a whisper of support. They earned this.</div>
+      </div>
+      <div class="st-row">
+        <div class="st-cell"><div class="st-tier">Front Man</div></div>
+        <div class="st-cell" style="color:var(--dim);">25% artist</div>
+        <div class="st-cell">Mostly them, a hint of you. Real confidence building.</div>
+      </div>
+      <div class="st-row active-row">
+        <div class="st-cell"><div class="st-tier">Karaoke Hero</div></div>
+        <div class="st-cell" style="color:var(--dim);">50% artist</div>
+        <div class="st-cell">50/50 blend. This is where most fans live. Sounds incredible.</div>
+      </div>
+      <div class="st-row">
+        <div class="st-cell"><div class="st-tier">Shower Singer</div></div>
+        <div class="st-cell" style="color:var(--dim);">75% artist</div>
+        <div class="st-cell">Your voice carries most of the weight. They sound great because of you.</div>
+      </div>
+      <div class="st-row">
+        <div class="st-cell"><div class="st-tier">Train Wreck</div></div>
+        <div class="st-cell" style="color:var(--dim);">90% artist</div>
+        <div class="st-cell">Maximum assist. The party is saved entirely by your recording.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARITY -->
+<div class="charity-band">
+  <div class="cb-inner">
+    <div>
+      <div class="cb-text">YOU SING.<br>PEOPLE EAT.</div>
+      <p class="cb-sub">Every subscriber also donates to Feeding America. <strong>Your fans singing your songs feeds people.</strong> That's a story worth telling.</p>
+    </div>
+    <div class="cb-badge">
+      <div class="cb-badge-amt">$0.50</div>
+      <div class="cb-badge-label">Per subscriber / month<br>to Feeding America</div>
+    </div>
+    <div class="cb-badge" style="background:rgba(167,139,250,0.2);border:1px solid rgba(167,139,250,0.3);">
+      <div class="cb-badge-amt" style="color:#a78bfa;">$1.00</div>
+      <div class="cb-badge-label" style="color:rgba(167,139,250,0.7);">Per subscriber / month<br>to show choir or food shelf</div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="fct-headline">LET'S TALK.<br>YOUR FANS ARE <em>READY.</em></div>
+  <p class="fct-sub">LOUDMOUTH launches soon. <strong>We're building our founding artist roster now.</strong> Partnering early means maximum exposure at launch and founding artist pricing.</p>
+  <div class="contact-grid">
+    <div class="contact-card">
+      <div class="contact-icon">✉️</div>
+      <div class="contact-type">Email</div>
+      <div class="contact-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="650c0b030a25081c090a1001080a10110d4b041515">[email&#160;protected]</a></div>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">🌐</div>
+      <div class="contact-type">Website</div>
+      <div class="contact-val">myloudmouth.app</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="flogo">LOUD<span>MOUTH</span></div>
+    <div class="ftag">Fin

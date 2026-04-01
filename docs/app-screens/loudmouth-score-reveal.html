@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LOUDMOUTH — Score Reveal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #0a0a0a;
+  --red:    #d42020;
+  --yellow: #f5c400;
+  --white:  #f0ede8;
+  --dim:    rgba(240,237,232,0.40);
+  --dimmer: rgba(240,237,232,0.18);
+  --border: rgba(255,255,255,0.08);
+  --green:  rgba(100,220,120,0.9);
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+}
+
+/* ── MAIN LAYOUT ── */
+.page {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0 0 40px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── TOP BAR ── */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.top-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.06em;
+}
+.top-logo span { color: var(--red); }
+.top-song {
+  text-align: right;
+}
+.top-song-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+}
+.top-song-artist {
+  font-size: 12px;
+  color: var(--dim);
+}
+
+/* ── RESULT HEADER ── */
+.result-header {
+  padding: 32px 20px 20px;
+  text-align: center;
+}
+.result-tier {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 6px;
+}
+.result-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px;
+  letter-spacing: 0.03em;
+  line-height: 0.95;
+  margin-bottom: 8px;
+}
+.result-headline.win  { color: var(--yellow); }
+.result-headline.loss { color: var(--white); }
+.result-sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+}
+
+/* ── SCORE DUEL ── */
+.score-duel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 24px 20px;
+  position: relative;
+}
+
+.score-block {
+  flex: 1;
+  text-align: center;
+  padding: 24px 12px;
+  border-radius: 12px;
+  position: relative;
+  transition: transform 0.3s;
+}
+.score-block.you {
+  background: rgba(245,196,0,0.07);
+  border: 1px solid rgba(245,196,0,0.2);
+}
+.score-block.artist {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+}
+.score-block.winner {
+  transform: scale(1.04);
+}
+
+.score-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.score-block.you .score-label     { color: rgba(245,196,0,0.7); }
+.score-block.artist .score-label  { color: var(--dimmer); }
+
+.score-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  margin-bottom: 2px;
+}
+.score-block.you .score-number    { color: var(--yellow); }
+.score-block.artist .score-number { color: rgba(240,237,232,0.6); }
+
+.score-decimal {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  vertical-align: super;
+  margin-left: 1px;
+}
+
+.score-name {
+  font-size: 13px;
+  color: var(--dim);
+}
+
+.vs-divider {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: var(--dimmer);
+  padding: 0 8px;
+  flex-shrink: 0;
+  margin-bottom: 20px;
+}
+
+.winner-crown {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+}
+
+/* ── BEAT BADGE ── */
+.beat-badge {
+  margin: 0 20px 24px;
+  background: rgba(245,196,0,0.1);
+  border: 1px solid rgba(245,196,0,0.3);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: center;
+  display: none;
+}
+.beat-badge.visible { display: block; }
+.beat-badge-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  color: var(--yellow);
+}
+.beat-badge-sub {
+  font-size: 13px;
+  color: var(--dim);
+  margin-top: 3px;
+}
+
+/* ── 4-DIMENSION BREAKDOWN ── */
+.breakdown {
+  margin: 0 20px 24px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.breakdown-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.dim-row {
+  display: flex;
+  align-items: center;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.dim-row:last-child { border-bottom: none; }
+.dim-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  width: 80px;
+  flex-shrink: 0;
+}
+.dim-bars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.dim-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dim-bar-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  width: 36px;
+  flex-shrink: 0;
+}
+.dim-bar-label.you    { color: rgba(245,196,0,0.7); }
+.dim-bar-label.artist { color: var(--dimmer); }
+.dim-bar-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.dim-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.8s cubic-bezier(0.34,1.2,0.64,1);
+}
+.dim-bar-fill.you    { background: var(--yellow); }
+.dim-bar-fill.artist { background: rgba(240,237,232,0.4); }
+.dim-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.dim-score.you    { color: var(--yellow); }
+.dim-score.artist { color: var(--dimmer); }
+
+/* ── INSIGHT (WHY YOUR SCORE CHANGED) ── */
+.insight {
+  margin: 0 20px 24px;
+  background: rgba(212,32,32,0.06);
+  border: 1px solid rgba(212,32,32,0.2);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.insight-head {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(212,32,32,0.7);
+  margin-bottom: 8px;
+}
+.insight-text {
+  font-size: 14px;
+  color: var(--dim);
+  line-height: 1.5;
+}
+.insight-text strong { color: var(--white); }
+
+/* ── HISTORY SPARKLINE ── */
+.history-section {
+  margin: 0 20px 24px;
+}
+.history-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-bottom: 10px;
+}
+.sparkline-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 50px;
+}
+.spark-bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  background: rgba(245,196,0,0.25);
+  transition: height 0.5s ease;
+  min-height: 4px;
+  position: relative;
+  cursor: pointer;
+}
+.spark-bar:last-child {
+  background: var(--yellow);
+}
+.spark-bar:hover .spark-tooltip {
+  opacity: 1;
+  transform: translateY(-4px);
+}
+.spark-tooltip {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%) translateY(0px);
+  background: rgba(20,20,20,0.95);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 7px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  color: var(--yellow);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.spark-trend {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  color: var(--green);
+  margin-top: 6px;
+}
+.spark-trend.down { color: rgba(212,32,32,0.8); }
+
+/* ── SHARE CARD ── */
+.share-section {
+  margin: 0 20px 24px;
+}
+.share-card {
+  background: linear-gradient(135deg, #0f0f0f, #1a0808);
+  border: 1px solid rgba(212,32,32,0.3);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.share-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(212,32,32,0.15), transparent 70%);
+  pointer-events: none;
+}
+.share-card-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--dimmer);
+  margin-bottom: 8px;
+}
+.share-card-song {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+.share-card-artist {
+  font-size: 12px;
+  color: var(--dim);
+  margin-bottom: 14px;
+}
+.share-card-scores {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 10px;
+}
+.share-score-block { text-align: center; }
+.share-score-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  line-height: 1;
+}
+.share-score-num.you    { color: var(--yellow); }
+.share-score-num.artist { color: rgba(240,237,232,0.5); }
+.share-score-lbl {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+}
+.share-card-tier {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.share-btns {
+  display: flex;
+  gap: 10px;
+}
+.share-btn {
+  flex: 1;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--white);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.share-btn:hover { background: rgba(255,255,255,0.08); }
+.share-btn.primary {
+  background: var(--red);
+  border-color: var(--red);
+  flex: 2;
+}
+.share-btn.primary:hover { background: #e62525; }
+
+/* ── ACTION ROW ── */
+.action-row {
+  display: flex;
+  gap: 10px;
+  padding: 0 20px;
+  margin-bottom: 14px;
+}
+.action-btn {
+  flex: 1;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  border: none;
+}
+.action-btn:active { transform: scale(0.98); }
+.action-btn.retry {
+  background: var(--red);
+  color: white;
+  flex: 2;
+}
+.action-btn.next {
+  background: rgba(255,255,255,0.07);
+  color: var(--white);
+  border: 1px solid var(--border);
+}
+
+/* ── VAS NUDGE ── */
+.vas-nudge {
+  margin: 0 20px 16px;
+  text-align: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  color: var(--dimmer);
+  letter-spacing: 0.04em;
+}
+.vas-nudge strong { color: var(--dim); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-logo">LOUD<span>MOUTH</span></div>
+    <div class="top-song">
+      <div class="top-song-title" id="song-title-el">Down With The Sickness</div>
+      <div class="top-song-artist" id="song-artist-el">Disturbed</div>
+    </div>
+  </div>
+
+  <!-- RESULT HEADER -->
+  <div class="result-header">
+    <div class="result-tier" id="tier-label">KARAOKE HERO</div>
+    <div class="result-headline" id="result-headline">YOU WON</div>
+    <div class="result-sub" id="result-sub">You out-sang the artist on their own song.</div>
+  </div>
+
+  <!-- SCORE DUEL -->
+  <div class="score-duel">
+    <div class="score-block you" id="score-you-block">
+      <div class="winner-crown" id="you-crown" style="display:none">👑</div>
+      <div class="score-label">YOU</div>
+      <div class="score-number" id="score-you-num">
+        <span id="you-int">0</span><span class="score-decimal">.<span id="you-dec">0</span></span>
+      </div>
+      <div class="score-name" id="you-name">Your Score</div>
+    </div>
+    <div class="vs-divider">VS</div>
+    <div class="score-block artist" id="score-artist-block">
+      <div class="winner-crown" id="artist-crown" style="display:none">👑</div>
+      <div class="score-label">ARTIST</div>
+      <div class="score-number" id="score-artist-num">
+        <span id="artist-int">0</span><span class="score-decimal">.<span id="artist-dec">0</span></span>
+      </div>
+      <div class="score-name" id="artist-name">David Draiman</div>
+    </div>
+  </div>
+
+  <!-- BEAT BADGE -->
+  <div class="beat-badge" id="beat-badge">
+    <div class="beat-badge-text" id="beat-badge-text">🏆 YOU BEAT THE ARTIST</div>
+    <div class="beat-badge-sub" id="beat-badge-sub">First time beating Disturbed on this song.</div>
+  </div>
+
+  <!-- 4D BREAKDOWN -->
+  <div class="breakdown">
+    <div class="breakdown-title">Score Breakdown</div>
+    <div class="dim-row" id="dim-pitch">
+      <div class="dim-name">Pitch</div>
+      <div class="dim-bars">
+        <div class="dim-bar-wrap">
+          <div class="dim-bar-label you">YOU</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill you" id="bar-pitch-you"></div></div>
+          <div class="dim-score you" id="score-pitch-you">—</div>
+        </div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar-label artist">ARTIST</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill artist" id="bar-pitch-artist"></div></div>
+          <div class="dim-score artist" id="score-pitch-artist">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="dim-row">
+      <div class="dim-name">Timing</div>
+      <div class="dim-bars">
+        <div class="dim-bar-wrap">
+          <div class="dim-bar-label you">YOU</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill you" id="bar-timing-you"></div></div>
+          <div class="dim-score you" id="score-timing-you">—</div>
+        </div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar-label artist">ARTIST</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill artist" id="bar-timing-artist"></div></div>
+          <div class="dim-score artist" id="score-timing-artist">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="dim-row">
+      <div class="dim-name">Clarity</div>
+      <div class="dim-bars">
+        <div class="dim-bar-wrap">
+          <div class="dim-bar-label you">YOU</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill you" id="bar-clarity-you"></div></div>
+          <div class="dim-score you" id="score-clarity-you">—</div>
+        </div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar-label artist">ARTIST</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill artist" id="bar-clarity-artist"></div></div>
+          <div class="dim-score artist" id="score-clarity-artist">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="dim-row">
+      <div class="dim-name">Dynamics</div>
+      <div class="dim-bars">
+        <div class="dim-bar-wrap">
+          <div class="dim-bar-label you">YOU</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill you" id="bar-dynamics-you"></div></div>
+          <div class="dim-score you" id="score-dynamics-you">—</div>
+        </div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar-label artist">ARTIST</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill artist" id="bar-dynamics-artist"></div></div>
+          <div class="dim-score artist" id="score-dynamics-artist">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHT -->
+  <div class="insight" id="insight-block">
+    <div class="insight-head">💡 What happened</div>
+    <div class="insight-text" id="insight-text">—</div>
+  </div>
+
+  <!-- HISTORY SPARKLINE -->
+  <div class="history-section">
+    <div class="history-title">Your last 8 attempts</div>
+    <div class="sparkline-wrap" id="sparkline"></div>
+    <div class="spark-trend" id="spark-trend">—</div>
+  </div>
+
+  <!-- SHARE CARD -->
+  <div class="share-section">
+    <div class="share-card">
+      <div class="share-card-logo">LOUDMOUTH</div>
+      <div class="share-card-song" id="share-song">DOWN WITH THE SICKNESS</div>
+      <div class="share-card-artist" id="share-artist">Disturbed</div>
+      <div class="share-card-scores">
+        <div class="share-score-block">
+          <div class="share-score-num you" id="share-you">0.0</div>
+          <div class="share-score-lbl">Me</div>
+        </div>
+        <div class="share-score-block">
+          <div class="share-score-num artist" id="share-artist-score">0.0</div>
+          <div class="share-score-lbl">Artist</div>
+        </div>
+      </div>
+      <div class="share-card-tier" id="share-tier">KARAOKE HERO</div>
+    </div>
+    <div class="share-btns">
+      <button class="share-btn" onclick="copyScore()">📋 Copy</button>
+      <button class="share-btn primary" onclick="shareScore()">🎤 Share Score</button>
+    </div>
+  </div>
+
+  <!-- ACTION ROW -->
+  <div class="action-row">
+    <button class="action-btn retry" onclick="retry()">↺ Try Again</button>
+    <button class="action-btn next" onclick="nextSong()">Next Song →</button>
+  </div>
+
+  <!-- VAS NUDGE -->
+  <div class="vas-nudge" id="vas-nudge">—</div>
+
+</div>
+
+<script>
+'use strict';
+
+// ── DEMO DATA — in real app these come from session state
+const SESSION = {
+  song:    'Down With The Sickness',
+  artist:  'Disturbed',
+  vocalist:'David Draiman',
+  tier:    'KARAOKE HERO',
+  vasValue: 50,
+  scoreYou:    7.8,
+  scoreArtist: 7.1,
+  history: [5.2, 5.9, 6.3, 6.1, 6.8, 7.2, 7.4, 7.8], // last 8 attempts
+  dims: {
+    pitch:   { you: 8.1, artist: 7.3 },
+    timing:  { you: 7.6, artist: 7.8 },
+    clarity: { you: 7.9, artist: 6.8 },
+    dynamics:{ you: 7.5, artist: 6.9 },
+  }
+};
+
+// ── INIT
+document.addEventListener('DOMContentLoaded', () => {
+  // Populate static text
+  document.getElementById('song-title-el').textContent = SESSION.song;
+  document.getElementById('song-artist-el').textContent = SESSION.artist;
+  document.getElementById('artist-name').textContent = SESSION.vocalist;
+
+  const youWon = SESSION.scoreYou > SESSION.scoreArtist;
+  const tie    = SESSION.scoreYou === SESSION.scoreArtist;
+
+  // Headline
+  document.getElementById('tier-label').textContent = SESSION.tier;
+  const hl = document.getElementById('result-headline');
+  if (youWon) { hl.textContent = 'YOU WON'; hl.className = 'result-headline win'; }
+  else if (tie) { hl.textContent = "IT'S A TIE"; hl.className = 'result-headline'; }
+  else { hl.textContent = 'CLOSE ONE'; hl.className = 'result-headline loss'; }
+  document.getElementById('result-sub').textContent = youWon
+    ? `You out-sang ${SESSION.vocalist} on their own song.`
+    : tie
+    ? `Matched ${SESSION.vocalist} note for note.`
+    : `${SESSION.vocalist} edged you out. Give it another shot.`;
+
+  // Winner crown
+  if (youWon) {
+    document.getElementById('score-you-block').classList.add('winner');
+    document.getElementById('you-crown').style.display = 'block';
+  } else if (!tie) {
+    document.getElementById('score-artist-block').classList.add('winner');
+    document.getElementById('artist-crown').style.display = 'block';
+  }
+
+  // Beat badge
+  if (youWon) {
+    document.getElementById('beat-badge').classList.add('visible');
+    document.getElementById('beat-badge-text').textContent = `🏆 YOU BEAT ${SESSION.artist.toUpperCase()}`;
+    document.getElementById('beat-badge-sub').textContent = `First time beating ${SESSION.artist} on this song.`;
+  }
+
+  // Animate scores counting up
+  animateScore('you-int', 'you-dec', SESSION.scoreYou, 900);
+  animateScore('artist-int', 'artist-dec', SESSION.scoreArtist, 900);
+
+  // Share card
+  document.getElementById('share-song').textContent = SESSION.song.toUpperCase();
+  document.getElementById('share-artist').textContent = SESSION.artist;
+  document.getElementById('share-you').textContent = SESSION.scoreYou.toFixed(1);
+  document.getElementById('share-artist-score').textContent = SESSION.scoreArtist.toFixed(1);
+  document.getElementById('share-tier').textContent = SESSION.tier;
+
+  // Dimensions (delayed for effect)
+  setTimeout(() => animateDims(), 400);
+
+  // Insight
+  buildInsight();
+
+  // Sparkline
+  buildSparkline();
+
+  // VAS nudge
+  buildVasNudge();
+});
+
+// ── SCORE ANIMATION
+function animateScore(intId, decId, target, duration) {
+  const intEl = document.getElementById(intId);
+  const decEl = document.getElementById(decId);
+  const start = performance.now();
+  function tick(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1-t, 3);
+    const val = target * ease;
+    intEl.textContent = Math.floor(val);
+    decEl.textContent = Math.floor((val % 1) * 10);
+    if (t < 1) requestAnimationFrame(tick);
+    else { intEl.textContent = Math.floor(target); decEl.textContent = Math.round((target%1)*10); }
+  }
+  requestAnimationFrame(tick);
+}
+
+// ── DIM BARS
+function animateDims() {
+  const dims = ['pitch','timing','clarity','dynamics'];
+  dims.forEach((d, i) => {
+    const y = SESSION.dims[d].you;
+    const a = SESSION.dims[d].artist;
+    setTimeout(() => {
+      document.getElementById(`bar-${d}-you`).style.width    = (y/10*100)+'%';
+      document.getElementById(`bar-${d}-artist`).style.width = (a/10*100)+'%';
+      document.getElementById(`score-${d}-you`).textContent    = y.toFixed(1);
+      document.getElementById(`score-${d}-artist`).textContent = a.toFixed(1);
+    }, i * 120);
+  });
+}
+
+// ── INSIGHT ENGINE
+function buildInsight() {
+  const dims = SESSION.dims;
+  const insights = [];
+
+  if (dims.dynamics.you > dims.dynamics.artist + 0.3)
+    insights.push(`Your <strong>dynamics</strong> were better than the artist's — you nailed the soft/loud contrast.`);
+  if (dims.pitch.you < dims.pitch.artist - 0.3)
+    insights.push(`Your <strong>pitch</strong> was the weak point. Try slowing it down to 0.75× to lock in the notes first.`);
+  if (dims.timing.you < 7.0)
+    insights.push(`<strong>Timing</strong> is holding you back. Watch the red line on the piano roll — hit words right as they reach it.`);
+  if (dims.clarity.you > 7.5)
+    insights.push(`Excellent <strong>clarity</strong> — your signal was clean and strong throughout.`);
+  if (SESSION.scoreYou > SESSION.scoreArtist)
+    insights.push(`You <strong>beat the artist</strong> overall. Slider is at ${SESSION.vasValue}% assist — try pulling it left to go more solo.`);
+
+  if (insights.length === 0)
+    insights.push(`Solid run. Your <strong>pitch and timing</strong> are consistent. Focus on dynamics next — vary your volume to match the artist's intensity.`);
+
+  document.getElementById('insight-text').innerHTML = insights[0];
+}
+
+// ── SPARKLINE
+function buildSparkline() {
+  const container = document.getElementById('sparkline');
+  const scores = SESSION.history;
+  const max = Math.max(...scores);
+  const min = Math.min(...scores);
+  const range = max - min || 1;
+
+  scores.forEach((s, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'spark-bar';
+    const pct = 20 + ((s - min) / range) * 80;
+    bar.style.height = '0%';
+    bar.innerHTML = `<div class="spark-tooltip">${s.toFixed(1)}</div>`;
+    container.appendChild(bar);
+    setTimeout(() => { bar.style.height = pct + '%'; }, 200 + i * 60);
+  });
+
+  const last = scores[scores.length-1];
+  const prev = scores[scores.length-2];
+  const diff = last - prev;
+  const trend = document.getElementById('spark-trend');
+  if (diff > 0) {
+    trend.textContent = `↑ Up ${diff.toFixed(1)} from last attempt — trending up`;
+    trend.className = 'spark-trend';
+  } else if (diff < 0) {
+    trend.textContent = `↓ Down ${Math.abs(diff).toFixed(1)} from last attempt`;
+    trend.className = 'spark-trend down';
+  } else {
+    trend.textContent = `→ Same as last attempt`;
+    trend.className = 'spark-trend';
+  }
+}
+
+// ── VAS NUDGE
+function buildVasNudge() {
+  const vas = SESSION.vasValue;
+  const el = document.getElementById('vas-nudge');
+  if (SESSION.scoreYou > SESSION.scoreArtist && vas > 10) {
+    el.innerHTML = `You're winning at <strong>${vas}% assist</strong>. Ready to try with less help?`;
+  } else if (SESSION.scoreYou < 6 && vas < 90) {
+    el.innerHTML = `Struggling? Try sliding right for <strong>more assist</strong> while you learn the song.`;
+  } else if (vas === 0) {
+    el.innerHTML = `<strong>No assist.</strong> Pure you. Respect.`;
+  } else {
+    el.innerHTML = `Currently at <strong>${vas}% assist</strong> — adjust the slider before your next attempt.`;
+  }
+}
+
+// ── ACTIONS
+function retry() {
+  // In real app: go back to Smart Lyric Display with same song
+  alert('Retrying song… (navigates to Smart Lyric Display)');
+}
+function nextSong() {
+  // In real app: go to song store or library
+  alert('Going to Song Store…');
+}
+function shareScore() {
+  const text = `I just scored ${SESSION.scoreYou.toFixed(1)} on "${SESSION.song}" by ${SESSION.artist} in LOUDMOUTH 🎤`;
+  if (navigator.share) {
+    navigator.share({ title: 'LOUDMOUTH Score', text });
+  } else {
+    navigator.clipboard?.writeText(text);
+    alert('Score copied to clipboard!');
+  }
+}
+function copyScore() {
+  const text = `LOUDMOUTH: ${SESSION.scoreYou.toFixed(1)} on ${SESSION.song} (${SESSION.artist}) — ${SESSION.tier}`;
+  navigator.clipboard?.writeText(text).then(() => {
+    const btn = document.querySelector('.share-btn:first-child');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = '📋 Copy'; }, 1800);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>LOUDMOUTH — Free Song Catalog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@400;500&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#060606; --surface:#0e0e0e; --surface2:#141414; --surface3:#1c1c1c;
+  --red:#c8151b; --amber:#f59e0b; --ember:#e85d04; --teal:#0d9488;
+  --indigo:#6366f1; --green:#22c55e; --pink:#f472b6;
+  --white:#f4f0ea; --dim:rgba(244,240,234,0.88); --dimmer:rgba(244,240,234,0.60);
+  --border:rgba(255,255,255,0.07); --border-bright:rgba(255,255,255,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;}
+body{max-width:600px;margin:0 auto;padding-bottom:80px;}
+
+/* ── HEADER ── */
+.cat-header{
+  padding:40px 20px 24px;
+  background:linear-gradient(to bottom,rgba(200,21,27,0.07),transparent);
+  border-bottom:1px solid var(--border);
+}
+.cat-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;margin-bottom:2px;}
+.cat-logo em{color:var(--red);font-style:normal;}
+.cat-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,7vw,48px);letter-spacing:0.03em;line-height:0.95;margin-bottom:8px;}
+.cat-title em{color:var(--amber);font-style:normal;}
+.cat-sub{font-size:14px;color:var(--dim);line-height:1.6;margin-bottom:16px;}
+.cat-sub strong{color:var(--white);font-weight:500;}
+
+/* Stats bar */
+.stats-row{display:flex;gap:20px;flex-wrap:wrap;}
+.stat-item{text-align:center;}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--amber);line-height:1;}
+.stat-label{font-size:10px;color:var(--dimmer);letter-spacing:0.12em;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;}
+
+/* ── SEARCH ── */
+.search-bar{
+  padding:16px 20px;
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,6,6,0.96);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(8px);
+}
+.search-inner{position:relative;}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--dimmer);pointer-events:none;}
+.search-input{
+  width:100%;padding:12px 16px 12px 42px;
+  background:var(--surface2);border:1px solid var(--border-bright);
+  border-radius:10px;color:var(--white);font-family:'Barlow',sans-serif;
+  font-size:15px;outline:none;transition:border-color 0.15s;
+}
+.search-input:focus{border-color:var(--amber);}
+.search-input::placeholder{color:var(--dimmer);}
+.search-count{
+  font-size:11px;color:var(--dimmer);font-family:'Barlow Condensed',sans-serif;
+  letter-spacing:0.08em;text-transform:uppercase;margin-top:8px;
+}
+
+/* ── FILTER TABS ── */
+.filter-section{padding:14px 20px 0;}
+.filter-row{
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+  padding-bottom:10px;
+}
+.filter-row::-webkit-scrollbar{display:none;}
+.filter-tab{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
+  padding:6px 14px;border-radius:100px;border:1px solid var(--border);
+  color:var(--dimmer);background:transparent;cursor:pointer;
+  white-space:nowrap;transition:all 0.12s;flex-shrink:0;
+}
+.filter-tab:hover{color:var(--white);border-color:var(--border-bright);}
+.filter-tab.active{color:#000;border-color:transparent;}
+.filter-tab.mode-all.active{background:var(--white);color:#000;}
+.filter-tab.mode-rising.active{background:var(--pink);}
+.filter-tab.mode-teen.active{background:var(--red);}
+.filter-tab.mode-adult.active{background:var(--amber);}
+.filter-tab.mode-senior.active{background:var(--teal);}
+.filter-tab.mode-lang.active{background:var(--indigo);}
+
+.filter-row-2{margin-top:0;}
+
+/* Language filter chips */
+.lang-filter-row{
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+  padding:8px 20px 0;
+}
+.lang-filter-row::-webkit-scrollbar{display:none;}
+.lang-chip{
+  display:flex;align-items:center;gap:5px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;
+  font-size:11px;letter-spacing:0.08em;text-transform:uppercase;
+  padding:5px 12px;border-radius:100px;border:1px solid var(--border);
+  color:var(--dimmer);background:transparent;cursor:pointer;
+  white-space:nowrap;transition:all 0.12s;flex-shrink:0;
+}
+.lang-chip:hover{color:var(--white);border-color:var(--border-bright);}
+.lang-chip.active{background:rgba(99,102,241,0.15);border-color:var(--indigo);color:var(--indigo);}
+.lang-chip .lc-flag{font-size:14px;}
+
+/* ── GENRE SECTION HEADERS ── */
+.genre-section{margin-bottom:4px;}
+.genre-header{
+  padding:16px 20px 8px;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;
+}
+.genre-header-left{display:flex;align-items:center;gap:10px;}
+.genre-icon{font-size:18px;}
+.genre-name{
+  font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.06em;
+}
+.genre-count{
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--dimmer);
+}
+.genre-chevron{color:var(--dimmer);font-size:16px;transition:transform 0.2s;}
+.genre-section.collapsed .genre-chevron{transform:rotate(-90deg);}
+.genre-body{padding:0 20px 8px;}
+.genre-section.collapsed .genre-body{display:none;}
+
+/* ── SONG ROWS ── */
+.song-row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.04);
+  cursor:pointer;transition:background 0.1s;
+}
+.song-row:last-child{border-bottom:none;}
+.song-row:hover{margin:0 -20px;padding-left:20px;padding-right:20px;background:rgba(255,255,255,0.03);border-radius:8px;}
+
+.song-emoji{font-size:22px;width:36px;text-align:center;flex-shrink:0;}
+.song-info{flex:1;min-width:0;}
+.song-title{
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;
+  font-size:15px;letter-spacing:0.02em;color:var(--white);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.song-artist{font-size:11px;color:var(--dimmer);margin-top:1px;}
+.song-tags{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;}
+.song-tag{
+  font-size:9px;letter-spacing:0.1em;text-transform:uppercase;
+  font-family:'Barlow Condensed',sans-serif;padding:2px 6px;border-radius:3px;
+}
+
+
+.tag-lang{background:rgba(13,148,136,0.1);color:var(--teal);border:1px solid rgba(13,148,136,0.2);}
+.tag-diff-easy{background:rgba(34,197,94,0.08);color:rgba(34,197,94,0.8);border:1px solid rgba(34,197,94,0.15);}
+.tag-diff-med{background:rgba(245,158,11,0.08);color:rgba(245,158,11,0.8);border:1px solid rgba(245,158,11,0.15);}
+.tag-diff-hard{background:rgba(200,21,27,0.08);color:rgba(200,21,27,0.8);border:1px solid rgba(200,21,27,0.15);}
+
+.song-meta-right{
+  display:flex;flex-direction:column;align-items:flex-end;gap:3px;
+  flex-shrink:0;
+}
+.song-duration{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--dimmer);}
+.song-modes{display:flex;gap:3px;}
+.mode-dot{
+  width:6px;height:6px;border-radius:50%;
+  flex-shrink:0;
+}
+.md-rising{background:var(--pink);}
+.md-teen{background:var(--red);}
+.md-adult{background:var(--amber);}
+.md-senior{background:var(--teal);}
+.md-lang{background:var(--indigo);}
+
+
+/* ── EMPTY STATE ── */
+.empty-state{
+  text-align:center;padding:60px 20px;
+  font-size:15px;color:var(--dimmer);line-height:1.6;
+}
+.empty-state .es-icon{font-size:40px;margin-bottom:16px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="cat-header">
+  <div class="cat-logo">LOUD<em>MOUTH</em></div>
+  <div class="cat-title">Free <em>Forever</em><br>Catalog</div>
+  <div class="cat-sub">
+    <strong>Every song below is free to sing, forever.</strong> Public domain compositions, Creative Commons licensed recordings, and traditional songs from every culture on earth.
+  </div>
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-num" id="total-count">—</div>
+      <div class="stat-label">Songs</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="lang-count">20</div>
+      <div class="stat-label">Languages</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="genre-count">—</div>
+      <div class="stat-label">Genres</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">$0</div>
+      <div class="stat-label">Licensing Cost</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-bar">
+  <div class="search-inner">
+    <div class="search-icon">🔍</div>
+    <input type="text" class="search-input" id="search-input"
+      placeholder="Search songs, artists, languages…"
+      oninput="filterCatalog()">
+  </div>
+  <div class="search-count" id="search-count"></div>
+</div>
+
+<!-- MODE FILTERS -->
+<div class="filter-section">
+  <div class="filter-row" id="mode-filters">
+    <button class="filter-tab mode-all active" onclick="setMode('all',this)">All Modes</button>
+    <button class="filter-tab mode-rising" onclick="setMode('rising',this)">⭐ Rising Stars</button>
+    <button class="filter-tab mode-teen" onclick="setMode('teen',this)">🎤 Teens</button>
+    <button class="filter-tab mode-adult" onclick="setMode('adult',this)">🎸 Adults</button>
+    <button class="filter-tab mode-senior" onclick="setMode('senior',this)">🌿 Seniors</button>
+    <button class="filter-tab mode-lang" onclick="setMode('lang',this)">🌍 Language</button>
+  </div>
+  <div class="lang-filter-row" id="lang-filters">
+    <button class="lang-chip active" onclick="setLang('all',this)">🌐 All Languages</button>
+    <button class="lang-chip" onclick="setLang('en',this)"><span class="lc-flag">🇺🇸</span>English</button>
+    <button class="lang-chip" onclick="setLang('es',this)"><span class="lc-flag">🇪🇸</span>Spanish</button>
+    <button class="lang-chip" onclick="setLang('fr',this)"><span class="lc-flag">🇫🇷</span>French</button>
+    <button class="lang-chip" onclick="setLang('de',this)"><span class="lc-flag">🇩🇪</span>German</button>
+    <button class="lang-chip" onclick="setLang('it',this)"><span class="lc-flag">🇮🇹</span>Italian</button>
+    <button class="lang-chip" onclick="setLang('ja',this)"><span class="lc-flag">🇯🇵</span>Japanese</button>
+    <button class="lang-chip" onclick="setLang('pt',this)"><span class="lc-flag">🇵🇹</span>Portuguese</button>
+    <button class="lang-chip" onclick="setLang('la',this)"><span class="lc-flag">🎼</span>Latin/Classical</button>
+    <button class="lang-chip" onclick="setLang('multi',this)"><span class="lc-flag">🌍</span>Multi-lingual</button>
+  </div>
+</div>
+
+</div>
+
+<!-- CATALOG CONTAINER -->
+<div id="catalog-container"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+//  LOUDMOUTH FREE CATALOG
+//  Real titles. Real artists. Real public domain / CC status.
+//  Organized by genre. Filterable by mode and language.
+//
+//  License codes:
+//
+//  Mode codes: rising, teen, adult, senior, lang (can have multiple)
+//  Lang codes: en, es, fr, de, it, ja, pt, la, multi
+//  Diff: easy, medium, hard
+// ══════════════════════════════════════════════════════════════════
+
+const CATALOG = [
+
+  // ════════════════════════════════════════
+  // AMERICAN FOLK & TRADITIONAL
+  // ════════════════════════════════════════
+  { genre:'American Folk & Traditional', icon:'🪕', songs:[
+    { t:"Oh! Susanna",                  a:"Stephen Foster (1848)",        e:"🎸", lic:"pd", lang:"en", diff:"easy",   modes:["rising","teen","adult","senior"], dur:"2:45" },
+    { t:"Camptown Races",               a:"Stephen Foster (1850)",        e:"🎵", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:10" },
+    { t:"Beautiful Dreamer",            a:"Stephen Foster (1864)",        e:"🌙", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"3:05" },
+    { t:"Old Folks at Home",            a:"Stephen Foster (1851)",        e:"🏡", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:55" },
+    { t:"This Land Is Your Land",       a:"Woody Guthrie (1940)",         e:"🇺🇸", lic:"pd", lang:"en", diff:"easy",  modes:["rising","teen","adult","senior"],  dur:"2:50" },
+    { t:"If I Had a Hammer",            a:"Pete Seeger / Lee Hays (1949)",e:"🔨", lic:"pd", lang:"en", diff:"easy",   modes:["teen","adult","senior"],           dur:"3:15" },
+    { t:"Goodnight Irene",              a:"Leadbelly (1933)",             e:"🌙", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"3:20" },
+    { t:"On Top of Old Smoky",          a:"Traditional",                  e:"⛰️", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:30" },
+    { t:"She'll Be Coming Round the Mountain",a:"Traditional",            e:"🚂", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult"],                  dur:"2:15" },
+    { t:"You Are My Sunshine",          a:"Traditional (1939)",           e:"☀️", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:40" },
+    { t:"Red River Valley",             a:"Traditional (1896)",           e:"🌊", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"3:00" },
+    { t:"Clementine",                   a:"Traditional (1884)",           e:"⛏️", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:20" },
+    { t:"Home on the Range",            a:"Traditional (1872)",           e:"🌵", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"3:10" },
+    { t:"Greensleeves",                 a:"Traditional English (1580)",   e:"💚", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:25" },
+    { t:"Danny Boy",                    a:"Traditional Irish (1913)",     e:"☘️", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"4:10" },
+    { t:"Scarborough Fair",             a:"Traditional English",          e:"🌿", lic:"pd", lang:"en", diff:"medium",  modes:["teen","adult","senior"],           dur:"3:30" },
+    { t:"Shenandoah",                   a:"Traditional American",         e:"🌅", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"4:00" },
+    { t:"House of the Rising Sun",      a:"Traditional (arr. pre-1928)",  e:"🏠", lic:"pd", lang:"en", diff:"medium",  modes:["teen","adult"],                    dur:"4:30" },
+    { t:"Wayfaring Stranger",           a:"Traditional Appalachian",      e:"🛤️", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:45" },
+    { t:"The Water Is Wide",            a:"Traditional Scottish/English", e:"💧", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:50" },
+    { t:"Black Is the Color",           a:"Traditional Appalachian",      e:"🖤", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:20" },
+    { t:"Wildwood Flower",              a:"Traditional (1859)",           e:"🌸", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"2:55" },
+    { t:"Down in the Valley",           a:"Traditional Kentucky",         e:"🏔️", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:40" },
+    { t:"Barbara Allen",                a:"Traditional Ballad (1666)",    e:"🌹", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:30" },
+  ]},
+
+  // ════════════════════════════════════════
+  // EARLY JAZZ & BLUES (PRE-1928)
+  // ════════════════════════════════════════
+  { genre:'Early Jazz & Blues', icon:'🎺', songs:[
+    { t:"St. Louis Blues",              a:"W.C. Handy (1914)",            e:"🎺", lic:"pd", lang:"en", diff:"medium",  modes:["teen","adult","senior","lang"],    dur:"3:45" },
+    { t:"St. James Infirmary",          a:"Traditional Blues (1927)",     e:"🎷", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:30" },
+    { t:"Ain't Misbehavin'",            a:"Fats Waller (1929)",           e:"😇", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:15" },
+    { t:"Am I Blue",                    a:"Grant Clarke (1929)",          e:"💙", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:20" },
+    { t:"Stardust",                     a:"Hoagy Carmichael (1927)",      e:"✨", lic:"pd", lang:"en", diff:"hard",    modes:["adult","senior"],                  dur:"4:10" },
+    { t:"Tiptoe Through the Tulips",    a:"Al Dubin (1929)",              e:"🌷", lic:"pd", lang:"en", diff:"medium",  modes:["rising","adult","senior"],         dur:"2:55" },
+    { t:"Sweet Georgia Brown",          a:"Ben Bernie (1925)",            e:"🍑", lic:"pd", lang:"en", diff:"medium",  modes:["teen","adult","senior"],           dur:"3:10" },
+    { t:"Five Foot Two Eyes of Blue",   a:"Ray Henderson (1925)",         e:"👀", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:45" },
+    { t:"Yes Sir That's My Baby",       a:"Walter Donaldson (1925)",      e:"👶", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:30" },
+    { t:"Bye Bye Blackbird",            a:"Ray Henderson (1926)",         e:"🐦", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:05" },
+    { t:"Has Anyone Seen My Gal",       a:"Ray Henderson (1925)",         e:"👀", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:40" },
+    { t:"Tea for Two",                  a:"Vincent Youmans (1924)",       e:"☕", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:00" },
+    { t:"Hard Hearted Hannah",          a:"Jack Yellen (1924)",           e:"💔", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:10" },
+    { t:"Memphis Blues",                a:"W.C. Handy (1912)",            e:"🎸", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:20" },
+    { t:"After You've Gone",            a:"Turner Layton (1918)",         e:"🚪", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:05" },
+    { t:"Wang Wang Blues",              a:"Henry Busse (1921)",           e:"🎵", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"2:50" },
+    { t:"Beale Street Blues",           a:"W.C. Handy (1917)",            e:"🏙️", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:15" },
+    { t:"Careless Love",                a:"Traditional Blues",            e:"💘", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"3:00" },
+  ]},
+
+  // ════════════════════════════════════════
+  // GOSPEL & SPIRITUALS
+  // ════════════════════════════════════════
+  { genre:'Gospel & Spirituals', icon:'🙏', songs:[
+    { t:"Amazing Grace",                a:"John Newton (1779)",           e:"🕊️", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior","lang"],  dur:"3:30" },
+    { t:"Swing Low Sweet Chariot",      a:"Traditional Spiritual",        e:"🌅", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"3:15" },
+    { t:"Go Down Moses",                a:"Traditional Spiritual",        e:"📜", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:45" },
+    { t:"Nobody Knows the Trouble I've Seen",a:"Traditional Spiritual",  e:"😔", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:20" },
+    { t:"Deep River",                   a:"Traditional Spiritual",        e:"🌊", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:50" },
+    { t:"This Little Light of Mine",    a:"Traditional Spiritual",        e:"💡", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:45" },
+    { t:"He's Got the Whole World",     a:"Traditional Spiritual",        e:"🌍", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:30" },
+    { t:"When the Saints Go Marching In",a:"Traditional Spiritual",      e:"👼", lic:"pd", lang:"en", diff:"easy",   modes:["rising","teen","adult","senior"],  dur:"2:50" },
+    { t:"Jacob's Ladder",               a:"Traditional Spiritual",        e:"🪜", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:40" },
+    { t:"Down by the Riverside",        a:"Traditional Spiritual",        e:"🏞️", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"3:00" },
+    { t:"Wayfarin' Stranger",           a:"Traditional Spiritual",        e:"🛤️", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:45" },
+    { t:"Michael Row the Boat Ashore",  a:"Traditional Spiritual (1867)", e:"⛵", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:35" },
+    { t:"Were You There",               a:"Traditional Spiritual",        e:"🕯️", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:30" },
+    { t:"Steal Away",                   a:"Traditional Spiritual",        e:"🌙", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:15" },
+    { t:"Joshua Fit the Battle of Jericho",a:"Traditional Spiritual",    e:"🏛️", lic:"pd", lang:"en", diff:"medium",  modes:["teen","adult","senior"],           dur:"2:55" },
+    { t:"Kumbaya",                      a:"Traditional Spiritual",        e:"🔥", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"3:00" },
+    { t:"I Shall Not Be Moved",         a:"Traditional Spiritual",        e:"✊", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:45" },
+    { t:"Balm in Gilead",               a:"Traditional Spiritual",        e:"💚", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:20" },
+    { t:"Every Time I Feel the Spirit", a:"Traditional Spiritual",        e:"🌬️", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"2:50" },
+    { t:"Hold On Keep Your Hand on the Plow",a:"Traditional Spiritual",  e:"🌾", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:05" },
+  ]},
+
+  // ════════════════════════════════════════
+  // CLASSIC COUNTRY
+  // ════════════════════════════════════════
+  { genre:'Classic Country', icon:'🤠', songs:[
+    { t:"Wildwood Flower",              a:"A.P. Carter / Carter Family (1928)",e:"🌼", lic:"pd", lang:"en", diff:"medium", modes:["adult","senior"],             dur:"2:55" },
+    { t:"Will the Circle Be Unbroken",  a:"A.P. Carter (1935)",           e:"⭕", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"3:15" },
+    { t:"Keep on the Sunny Side",       a:"Ada Blenkhorn (1899)",         e:"☀️", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:40" },
+    { t:"Wabash Cannonball",            a:"Traditional (1882)",           e:"🚂", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:50" },
+    { t:"I'm Thinking Tonight of My Blue Eyes",a:"A.P. Carter (1929)",   e:"👁️", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"3:00" },
+    { t:"Jimmie Brown the Newsboy",     a:"Traditional",                  e:"📰", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:45" },
+    { t:"I Am Bound for the Promised Land",a:"Samuel Stennett (1787)",   e:"⛺", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:35" },
+    { t:"Banks of the Ohio",            a:"Traditional (1927)",           e:"🌊", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:10" },
+    { t:"John Henry",                   a:"Traditional American",         e:"🔨", lic:"pd", lang:"en", diff:"medium",  modes:["teen","adult","senior"],           dur:"3:30" },
+    { t:"Darling Nellie Gray",          a:"Benjamin Hanby (1856)",        e:"💐", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:50" },
+  ]},
+
+  // ════════════════════════════════════════
+  // CLASSIC POP & STANDARDS (PD)
+  // ════════════════════════════════════════
+  { genre:'Classic Pop & Standards', icon:'🎙️', songs:[
+    { t:"Let Me Call You Sweetheart",   a:"Beth Slater Whitson (1910)",   e:"💕", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:50" },
+    { t:"Shine On Harvest Moon",        a:"Nora Bayes (1908)",            e:"🌕", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:45" },
+    { t:"By the Light of the Silvery Moon",a:"Gus Edwards (1909)",       e:"🌙", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:40" },
+    { t:"In the Good Old Summer Time",  a:"Ren Shields (1902)",           e:"☀️", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:35" },
+    { t:"Take Me Out to the Ball Game", a:"Jack Norworth (1908)",         e:"⚾", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"1:45" },
+    { t:"Give My Regards to Broadway",  a:"George M. Cohan (1904)",       e:"🎭", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"2:50" },
+    { t:"You're a Grand Old Flag",      a:"George M. Cohan (1906)",       e:"🚩", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:30" },
+    { t:"Bill Bailey Won't You Please Come Home",a:"Hughie Cannon (1902)",e:"🏠", lic:"pd", lang:"en", diff:"medium", modes:["adult","senior"],                  dur:"3:00" },
+    { t:"Sweet Adeline",                a:"Richard Gerard (1903)",        e:"🌹", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"2:55" },
+    { t:"Alexander's Ragtime Band",     a:"Irving Berlin (1911)",         e:"🎺", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:05" },
+    { t:"When Irish Eyes Are Smiling",  a:"Chauncey Olcott (1912)",       e:"☘️", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"3:10" },
+    { t:"My Melancholy Baby",           a:"Ernie Burnett (1912)",         e:"🎵", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:20" },
+    { t:"Back Home Again in Indiana",   a:"James Hanley (1917)",          e:"🌽", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:45" },
+    { t:"Row Row Row Your Boat",        a:"Traditional (1852)",           e:"⛵", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"1:00" },
+    { t:"Oh My Darling Clementine",     a:"Traditional (1884)",           e:"💛", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:20" },
+    { t:"Over There",                   a:"George M. Cohan (1917)",       e:"🎺", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"2:40" },
+    { t:"Pack Up Your Troubles",        a:"George Powell (1915)",         e:"🎒", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:30" },
+    { t:"It's a Long Way to Tipperary", a:"Jack Judge (1912)",            e:"🛤️", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:50" },
+  ]},
+
+  // ════════════════════════════════════════
+  // SPANISH — TRADITIONAL & FOLK
+  // ════════════════════════════════════════
+  { genre:'Spanish — Traditional & Folk', icon:'🇪🇸', songs:[
+    { t:"Cielito Lindo",                a:"Quirino Mendoza (1882)",       e:"🌟", lic:"pd", lang:"es", diff:"easy",   modes:["rising","adult","senior","lang"],  dur:"2:50" },
+    { t:"Guantanamera",                 a:"Joseíto Fernández (1929)",     e:"🇨🇺", lic:"pd", lang:"es", diff:"easy",  modes:["teen","adult","senior","lang"],    dur:"3:15" },
+    { t:"La Bamba",                     a:"Traditional Mexican",          e:"🎸", lic:"pd", lang:"es", diff:"medium",  modes:["teen","adult","lang"],             dur:"3:00" },
+    { t:"Besame Mucho",                 a:"Consuelo Velázquez (1940)",    e:"💋", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:30" },
+    { t:"El Cóndor Pasa",               a:"Daniel Alomía Robles (1913)",  e:"🦅", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:45" },
+    { t:"La Paloma",                    a:"Sebastián Yradier (1863)",     e:"🕊️", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"Quizás Quizás Quizás",         a:"Osvaldo Farrés (1947)",        e:"🤷", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:05" },
+    { t:"Perfidia",                     a:"Alberto Domínguez (1939)",     e:"🌙", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"La Cucaracha",                 a:"Traditional Mexican",          e:"🪲", lic:"pd", lang:"es", diff:"easy",   modes:["rising","adult","lang"],           dur:"2:30" },
+    { t:"Arroro Mi Niño",               a:"Traditional Spanish Lullaby",  e:"🌙", lic:"pd", lang:"es", diff:"easy",   modes:["rising","adult","lang"],           dur:"2:20" },
+    { t:"A La Nanita Nana",             a:"Traditional Spanish Lullaby",  e:"💤", lic:"pd", lang:"es", diff:"easy",   modes:["rising","lang"],                   dur:"2:45" },
+    { t:"De Colores",                   a:"Traditional Spanish Folk",     e:"🌈", lic:"pd", lang:"es", diff:"easy",   modes:["rising","adult","lang"],           dur:"2:50" },
+    { t:"Cucurrucucú Paloma",           a:"Tomás Méndez (1954)",          e:"🕊️", lic:"pd", lang:"es", diff:"hard",   modes:["adult","senior","lang"],           dur:"4:20" },
+    { t:"Sabor a Mí",                   a:"Álvaro Carrillo (1959)",       e:"💕", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:45" },
+    { t:"Somos Novios",                 a:"Armando Manzanero (1969)",     e:"💑", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:30" },
+    { t:"Noche de Ronda",               a:"Agustín Lara (1933)",          e:"🌛", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:15" },
+    { t:"Granada",                      a:"Agustín Lara (1932)",          e:"🏰", lic:"pd", lang:"es", diff:"hard",   modes:["adult","senior","lang"],           dur:"4:10" },
+    { t:"El Reloj",                     a:"Roberto Cantoral (1959)",      e:"⏰", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"Flor de Lis",                  a:"Agustín Lara (1930)",          e:"💐", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:05" },
+    { t:"Ay Jalisco No Te Rajes",       a:"Manuel Esperón (1941)",        e:"🌵", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:40" },
+    { t:"Las Mañanitas",                a:"Traditional Mexican",          e:"🎂", lic:"pd", lang:"es", diff:"easy",   modes:["rising","adult","lang"],           dur:"2:30" },
+    { t:"Paloma Negra",                 a:"Tomás Méndez (1954)",          e:"🖤", lic:"pd", lang:"es", diff:"hard",   modes:["adult","senior","lang"],           dur:"4:30" },
+    { t:"Solamente Una Vez",            a:"Agustín Lara (1941)",          e:"1️⃣", lic:"pd", lang:"es", diff:"medium", modes:["adult","senior","lang"],           dur:"3:10" },
+  ]},
+
+  // ════════════════════════════════════════
+  // FRENCH — TRADITIONAL & CHANSON
+  // ════════════════════════════════════════
+  { genre:'French — Traditional & Chanson', icon:'🇫🇷', songs:[
+    { t:"La Vie en Rose",               a:"Édith Piaf (1946)",            e:"🌹", lic:"pd", lang:"fr", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"Frère Jacques",                a:"Traditional French",           e:"🔔", lic:"pd", lang:"fr", diff:"easy",   modes:["rising","lang"],                   dur:"1:30" },
+    { t:"Au Clair de la Lune",          a:"Traditional French (1792)",    e:"🌙", lic:"pd", lang:"fr", diff:"easy",   modes:["rising","adult","lang"],           dur:"2:10" },
+    { t:"Alouette",                     a:"Traditional French-Canadian",  e:"🐦", lic:"pd", lang:"fr", diff:"easy",   modes:["rising","lang"],                   dur:"2:00" },
+    { t:"Sur le Pont d'Avignon",        a:"Traditional French (1503)",    e:"🌉", lic:"pd", lang:"fr", diff:"easy",   modes:["rising","adult","lang"],           dur:"1:45" },
+    { t:"Non Je Ne Regrette Rien",      a:"Charles Dumont (1956)",        e:"🙅", lic:"pd", lang:"fr", diff:"medium",  modes:["teen","adult","senior","lang"],    dur:"2:20" },
+    { t:"La Marseillaise",              a:"Rouget de Lisle (1792)",       e:"🇫🇷", lic:"pd", lang:"fr", diff:"medium", modes:["adult","lang"],                    dur:"1:50" },
+    { t:"Plaisir d'Amour",              a:"Giovanni Martini (1784)",      e:"💕", lic:"pd", lang:"fr", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:30" },
+    { t:"C'est Si Bon",                 a:"Henri Betti (1947)",           e:"😊", lic:"pd", lang:"fr", diff:"medium",  modes:["adult","senior","lang"],           dur:"2:45" },
+    { t:"Sous le Ciel de Paris",        a:"Hubert Giraud (1951)",         e:"🗼", lic:"pd", lang:"fr", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:00" },
+    { t:"La Mer",                       a:"Charles Trenet (1946)",        e:"🌊", lic:"pd", lang:"fr", diff:"medium",  modes:["adult","senior","lang"],           dur:"2:55" },
+    { t:"Douce France",                 a:"Charles Trenet (1943)",        e:"🇫🇷", lic:"pd", lang:"fr", diff:"easy",  modes:["adult","senior","lang"],           dur:"2:50" },
+    { t:"Quand On N'a Que l'Amour",     a:"Jacques Brel (1956)",          e:"❤️", lic:"pd", lang:"fr", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:45" },
+    { t:"Les Feuilles Mortes",          a:"Joseph Kosma (1945)",          e:"🍂", lic:"pd", lang:"fr", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"Il Est Ne Le Divin Enfant",    a:"Traditional French Carol",     e:"⭐", lic:"pd", lang:"fr", diff:"easy",   modes:["rising","adult","lang"],           dur:"2:20" },
+  ]},
+
+  // ════════════════════════════════════════
+  // ITALIAN — TRADITIONAL & OPERATIC
+  // ════════════════════════════════════════
+  { genre:'Italian — Traditional & Operatic', icon:'🇮🇹', songs:[
+    { t:"O Sole Mio",                   a:"Eduardo di Capua (1898)",      e:"☀️", lic:"pd", lang:"it", diff:"hard",   modes:["adult","senior","lang"],           dur:"3:45" },
+    { t:"Funiculì Funiculà",            a:"Luigi Denza (1880)",           e:"🎡", lic:"pd", lang:"it", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:15" },
+    { t:"Santa Lucia",                  a:"Teodoro Cottrau (1850)",       e:"⛵", lic:"pd", lang:"it", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:00" },
+    { t:"Torna a Surriento",            a:"Ernesto de Curtis (1902)",     e:"🌊", lic:"pd", lang:"it", diff:"hard",   modes:["adult","senior","lang"],           dur:"4:10" },
+    { t:"Core 'ngrato",                 a:"Salvatore Cardillo (1911)",    e:"💔", lic:"pd", lang:"it", diff:"hard",   modes:["adult","senior","lang"],           dur:"4:30" },
+    { t:"Mattinata",                    a:"Ruggero Leoncavallo (1904)",   e:"🌅", lic:"pd", lang:"it", diff:"hard",   modes:["adult","senior","lang"],           dur:"3:50" },
+    { t:"Caro Mio Ben",                 a:"Tommaso Giordani (1783)",      e:"💕", lic:"pd", lang:"it", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"Ave Maria",                    a:"Franz Schubert (1825)",        e:"🕊️", lic:"pd", lang:"la", diff:"hard",   modes:["adult","senior","lang"],           dur:"4:15" },
+    { t:"La donna è mobile",            a:"Verdi / Piave (1851)",         e:"👩", lic:"pd", lang:"it", diff:"hard",   modes:["adult","senior","lang"],           dur:"2:10" },
+    { t:"Nessun Dorma",                 a:"Puccini / Adami (1926)",       e:"🌟", lic:"pd", lang:"it", diff:"hard",   modes:["adult","senior","lang"],           dur:"3:30" },
+    { t:"Non ti scordar di me",         a:"Ernesto de Curtis (1935)",     e:"🌸", lic:"pd", lang:"it", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:45" },
+    { t:"Parlami d'Amore Mariù",        a:"Cesare Andrea Bixio (1932)",   e:"💬", lic:"pd", lang:"it", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+  ]},
+
+  // ════════════════════════════════════════
+  // GERMAN — TRADITIONAL & LIEDER
+  // ════════════════════════════════════════
+  { genre:'German — Traditional & Lieder', icon:'🇩🇪', songs:[
+    { t:"Lili Marleen",                 a:"Norbert Schultze (1938)",      e:"🌹", lic:"pd", lang:"de", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"Der Erlkönig",                 a:"Schubert / Goethe (1815)",     e:"🌲", lic:"pd", lang:"de", diff:"hard",   modes:["adult","senior","lang"],           dur:"4:30" },
+    { t:"Die Forelle",                  a:"Schubert / Schubart (1817)",   e:"🐟", lic:"pd", lang:"de", diff:"medium",  modes:["adult","senior","lang"],           dur:"2:50" },
+    { t:"Schumann Ich grolle nicht",    a:"Schumann / Heine (1840)",      e:"💔", lic:"pd", lang:"de", diff:"hard",   modes:["adult","senior","lang"],           dur:"3:00" },
+    { t:"Stille Nacht",                 a:"Franz Gruber (1818)",          e:"🌙", lic:"pd", lang:"de", diff:"easy",   modes:["rising","adult","senior","lang"],  dur:"3:00" },
+    { t:"O Tannenbaum",                 a:"Traditional German (1824)",    e:"🎄", lic:"pd", lang:"de", diff:"easy",   modes:["rising","adult","senior","lang"],  dur:"2:30" },
+    { t:"Heidenröslein",                a:"Schubert / Goethe (1815)",     e:"🌹", lic:"pd", lang:"de", diff:"medium",  modes:["adult","senior","lang"],           dur:"2:20" },
+    { t:"Das Wandern",                  a:"Schubert / Müller (1823)",     e:"🥾", lic:"pd", lang:"de", diff:"medium",  modes:["adult","senior","lang"],           dur:"2:45" },
+    { t:"Abendlied",                    a:"Josef Rheinberger (1855)",     e:"🌅", lic:"pd", lang:"de", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:10" },
+    { t:"Hänschen Klein",               a:"Traditional German",           e:"👦", lic:"pd", lang:"de", diff:"easy",   modes:["rising","lang"],                   dur:"1:30" },
+  ]},
+
+  // ════════════════════════════════════════
+  // JAPANESE — TRADITIONAL & FOLK
+  // ════════════════════════════════════════
+  { genre:'Japanese — Traditional & Folk', icon:'🇯🇵', songs:[
+    { t:"Sakura Sakura",                a:"Traditional Japanese (1888)",  e:"🌸", lic:"pd", lang:"ja", diff:"easy",   modes:["rising","adult","senior","lang"],  dur:"2:30" },
+    { t:"Ue wo Muite Arukō",            a:"Ei Rokusuke (1961)",           e:"🌙", lic:"pd", lang:"ja", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:05" },
+    { t:"Furusato",                     a:"Traditional Japanese (1914)",  e:"🏡", lic:"pd", lang:"ja", diff:"easy",   modes:["adult","senior","lang"],           dur:"2:45" },
+    { t:"Kokiriko Bushi",               a:"Traditional Toyama Folk",      e:"🎋", lic:"pd", lang:"ja", diff:"medium",  modes:["adult","lang"],                    dur:"3:00" },
+    { t:"Hana (Okinawa)",               a:"Ryūkichi Moriyama (1908)",     e:"🌺", lic:"pd", lang:"ja", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"Momiji",                       a:"Traditional Japanese (1911)",  e:"🍁", lic:"pd", lang:"ja", diff:"easy",   modes:["rising","adult","lang"],           dur:"2:20" },
+    { t:"Usagi Usagi",                  a:"Traditional Japanese",         e:"🐰", lic:"pd", lang:"ja", diff:"easy",   modes:["rising","lang"],                   dur:"1:45" },
+    { t:"Hotaru Koi",                   a:"Traditional Japanese",         e:"✨", lic:"pd", lang:"ja", diff:"easy",   modes:["rising","lang"],                   dur:"1:30" },
+    { t:"Ringo no Uta",                 a:"Masao Kinoshita (1945)",       e:"🍎", lic:"pd", lang:"ja", diff:"easy",   modes:["adult","senior","lang"],           dur:"2:40" },
+    { t:"Akatombo",                     a:"Kōsaku Yamada (1921)",         e:"🦟", lic:"pd", lang:"ja", diff:"easy",   modes:["rising","adult","lang"],           dur:"2:10" },
+  ]},
+
+  // ════════════════════════════════════════
+  // PORTUGUESE / BRAZILIAN
+  // ════════════════════════════════════════
+  { genre:'Portuguese & Brazilian', icon:'🇧🇷', songs:[
+    { t:"Garota de Ipanema",            a:"Jobim / Vinicius (1962)",      e:"🏖️", lic:"pd", lang:"pt", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:30" },
+    { t:"The Girl from Ipanema",        a:"Jobim / Vinicius (1962)",      e:"🌊", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:30" },
+    { t:"Tico-Tico no Fubá",            a:"Zequinha de Abreu (1917)",     e:"🐦", lic:"pd", lang:"pt", diff:"hard",   modes:["adult","senior","lang"],           dur:"2:50" },
+    { t:"Aquarela do Brasil",           a:"Ary Barroso (1939)",           e:"🎨", lic:"pd", lang:"pt", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:15" },
+    { t:"Carinhoso",                    a:"Pixinguinha (1928)",           e:"💕", lic:"pd", lang:"pt", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:00" },
+    { t:"Chega de Saudade",             a:"Jobim / Vinicius (1958)",      e:"💔", lic:"pd", lang:"pt", diff:"hard",   modes:["adult","senior","lang"],           dur:"4:10" },
+    { t:"Corcovado",                    a:"Jobim (1960)",                 e:"⛰️", lic:"pd", lang:"pt", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"Fado Hilário",                 a:"Traditional Portuguese Fado",  e:"🎸", lic:"pd", lang:"pt", diff:"hard",   modes:["adult","senior","lang"],           dur:"3:45" },
+    { t:"Estranha Forma de Vida",       a:"Amália Rodrigues (1952)",      e:"💫", lic:"pd", lang:"pt", diff:"hard",   modes:["adult","senior","lang"],           dur:"4:00" },
+  ]},
+
+  // ════════════════════════════════════════
+  // CLASSICAL / OPERA (VOCAL REPERTOIRE)
+  // ════════════════════════════════════════
+  { genre:'Classical & Opera', icon:'🎼', songs:[
+    { t:"Ode to Joy",                   a:"Beethoven / Schiller (1824)",  e:"🎵", lic:"pd", lang:"de", diff:"easy",   modes:["rising","adult","senior","lang"],  dur:"2:30" },
+    { t:"Jesu Joy of Man's Desiring",   a:"J.S. Bach (1723)",            e:"🕊️", lic:"pd", lang:"la", diff:"medium",  modes:["adult","senior"],                  dur:"3:45" },
+    { t:"Pie Jesu",                     a:"Gabriel Fauré (1887)",         e:"🌸", lic:"pd", lang:"la", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"Lascia ch'io pianga",          a:"Handel (1711)",               e:"😢", lic:"pd", lang:"it", diff:"medium",  modes:["adult","senior","lang"],           dur:"4:00" },
+    { t:"Summertime",                   a:"George Gershwin (1935)",       e:"☀️", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:30" },
+    { t:"Somewhere Over the Rainbow",   a:"Harold Arlen (1939)",          e:"🌈", lic:"pd", lang:"en", diff:"medium",  modes:["rising","teen","adult","senior"],  dur:"3:20" },
+    { t:"My Favorite Things",           a:"Rodgers & Hammerstein (1959)", e:"⭐", lic:"pd", lang:"en", diff:"medium",  modes:["rising","adult","senior"],         dur:"3:45" },
+    { t:"You'll Never Walk Alone",      a:"Rodgers & Hammerstein (1945)", e:"👫", lic:"pd", lang:"en", diff:"medium",  modes:["teen","adult","senior"],           dur:"3:15" },
+    { t:"Climb Every Mountain",         a:"Rodgers & Hammerstein (1959)", e:"⛰️", lic:"pd", lang:"en", diff:"hard",   modes:["adult","senior"],                  dur:"3:30" },
+    { t:"Memory (Cats)",                a:"Andrew Lloyd Webber (1981)",   e:"🐱", lic:"cc", lang:"en", diff:"hard",   modes:["adult","senior"],                  dur:"4:10" },
+    { t:"O Mio Babbino Caro",           a:"Puccini (1918)",               e:"💕", lic:"pd", lang:"it", diff:"hard",   modes:["adult","senior","lang"],           dur:"2:40" },
+    { t:"Habanera",                     a:"Bizet (1875)",                 e:"💃", lic:"pd", lang:"fr", diff:"hard",   modes:["adult","senior","lang"],           dur:"3:00" },
+    { t:"Ave Maria (Bach/Gounod)",      a:"Bach / Gounod (1859)",         e:"🕊️", lic:"pd", lang:"la", diff:"hard",   modes:["adult","senior","lang"],           dur:"3:45" },
+    { t:"Panis Angelicus",              a:"César Franck (1872)",          e:"✝️", lic:"pd", lang:"la", diff:"hard",   modes:["adult","senior","lang"],           dur:"4:00" },
+  ]},
+
+  // ════════════════════════════════════════
+  // NURSERY RHYMES & RISING STARS
+  // ════════════════════════════════════════
+  { genre:'Rising Stars — Nursery & Play Songs', icon:'⭐', songs:[
+    { t:"Twinkle Twinkle Little Star",  a:"Traditional (1806)",           e:"⭐", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"1:30" },
+    { t:"Mary Had a Little Lamb",       a:"Sarah Hale (1830)",            e:"🐑", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"1:15" },
+    { t:"Baa Baa Black Sheep",          a:"Traditional English (1744)",   e:"🐑", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"1:00" },
+    { t:"Old MacDonald Had a Farm",     a:"Traditional (1917)",           e:"🐄", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"2:00" },
+    { t:"The Wheels on the Bus",        a:"Traditional (1939)",           e:"🚌", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"2:00" },
+    { t:"Head Shoulders Knees and Toes",a:"Traditional",                  e:"🙆", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"1:30" },
+    { t:"If You're Happy and You Know It",a:"Traditional (1901)",         e:"😊", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"1:45" },
+    { t:"Itsy Bitsy Spider",            a:"Traditional (1910)",           e:"🕷️", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"1:00" },
+    { t:"Hickory Dickory Dock",         a:"Traditional English (1744)",   e:"🕐", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"0:50" },
+    { t:"Ring Around the Rosie",        a:"Traditional English",          e:"💐", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"0:45" },
+    { t:"London Bridge Is Falling Down",a:"Traditional English (1744)",   e:"🌉", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"1:15" },
+    { t:"Jack and Jill",                a:"Traditional English (1765)",   e:"🪣", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"0:50" },
+    { t:"Pop Goes the Weasel",          a:"Traditional English (1853)",   e:"🐭", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"1:00" },
+    { t:"Humpty Dumpty",                a:"Traditional English (1797)",   e:"🥚", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"0:45" },
+    { t:"Happy Birthday to You",        a:"Mildred Hill (1893)",          e:"🎂", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"0:50" },
+    { t:"You Are My Sunshine",          a:"Jimmie Davis (1940)",          e:"☀️", lic:"pd", lang:"en", diff:"easy",   modes:["rising","senior"],                 dur:"2:40" },
+    { t:"Puff the Magic Dragon",        a:"Peter Yarrow (1963)",          e:"🐉", lic:"cc", lang:"en", diff:"easy",   modes:["rising"],                          dur:"3:30" },
+    { t:"Somewhere Over the Rainbow",   a:"Harold Arlen (1939)",          e:"🌈", lic:"pd", lang:"en", diff:"medium",  modes:["rising","adult","senior"],         dur:"3:20" },
+    { t:"This Old Man",                 a:"Traditional English",          e:"🎵", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"1:30" },
+    { t:"Five Little Ducks",            a:"Traditional",                  e:"🦆", lic:"pd", lang:"en", diff:"easy",   modes:["rising"],                          dur:"1:15" },
+  ]},
+
+  // ════════════════════════════════════════
+  // CHRISTMAS & SEASONAL (PD)
+  // ════════════════════════════════════════
+  { genre:'Christmas & Seasonal', icon:'🎄', songs:[
+    { t:"Silent Night",                 a:"Franz Gruber (1818)",          e:"🌙", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"3:00" },
+    { t:"O Christmas Tree",             a:"Traditional German (1824)",    e:"🎄", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:30" },
+    { t:"Joy to the World",             a:"Isaac Watts (1719)",           e:"🌟", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:45" },
+    { t:"O Come All Ye Faithful",       a:"John Francis Wade (1743)",     e:"⭐", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"3:00" },
+    { t:"Deck the Halls",               a:"Traditional Welsh (1881)",     e:"🎊", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:15" },
+    { t:"Hark the Herald Angels Sing",  a:"Charles Wesley (1739)",        e:"👼", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"2:50" },
+    { t:"The First Noel",               a:"Traditional English (1823)",   e:"🌟", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:40" },
+    { t:"God Rest Ye Merry Gentlemen",  a:"Traditional English (1760)",   e:"🎁", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"2:55" },
+    { t:"We Three Kings",               a:"John Henry Hopkins (1857)",    e:"👑", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:10" },
+    { t:"Away in a Manger",             a:"Traditional (1885)",           e:"🐄", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:30" },
+    { t:"Angels We Have Heard on High", a:"Traditional French (1862)",    e:"👼", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"2:45" },
+    { t:"O Holy Night",                 a:"Adolphe Adam (1847)",          e:"⭐", lic:"pd", lang:"en", diff:"hard",   modes:["teen","adult","senior"],           dur:"4:00" },
+    { t:"Winter Wonderland",            a:"Felix Bernard (1934)",         e:"❄️", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:50" },
+    { t:"Let It Snow",                  a:"Sammy Cahn (1945)",            e:"❄️", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:45" },
+    { t:"Rudolph the Red-Nosed Reindeer",a:"Johnny Marks (1949)",         e:"🦌", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:20" },
+    { t:"Frosty the Snowman",           a:"Walter Rollins (1950)",        e:"⛄", lic:"pd", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"2:30" },
+    { t:"White Christmas",              a:"Irving Berlin (1942)",         e:"🎅", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"3:00" },
+    { t:"Have Yourself a Merry Little Christmas",a:"Hugh Martin (1943)",  e:"🎄", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:20" },
+  ]},
+
+  // ════════════════════════════════════════
+  // SEA SHANTIES & WORK SONGS
+  // ════════════════════════════════════════
+  { genre:'Sea Shanties & Work Songs', icon:'⚓', songs:[
+    { t:"Drunken Sailor",               a:"Traditional Shanty",           e:"⚓", lic:"pd", lang:"en", diff:"easy",   modes:["rising","teen","adult"],           dur:"2:30" },
+    { t:"Blow the Man Down",            a:"Traditional Shanty (1880)",    e:"💨", lic:"pd", lang:"en", diff:"easy",   modes:["teen","adult"],                    dur:"2:45" },
+    { t:"Wellerman",                    a:"Traditional NZ Shanty (1860)", e:"🐳", lic:"pd", lang:"en", diff:"easy",   modes:["rising","teen","adult"],           dur:"2:20" },
+    { t:"Haul Away Joe",                a:"Traditional Shanty",           e:"🪢", lic:"pd", lang:"en", diff:"easy",   modes:["adult"],                           dur:"2:00" },
+    { t:"Leave Her Johnny",             a:"Traditional Shanty",           e:"🌊", lic:"pd", lang:"en", diff:"easy",   modes:["adult"],                           dur:"2:30" },
+    { t:"Shenandoah",                   a:"Traditional River Shanty",     e:"🌅", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"4:00" },
+    { t:"John Brown's Body",            a:"Traditional (1861)",           e:"⚔️", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:45" },
+    { t:"Paddy Works on the Railway",   a:"Traditional Irish (1850)",     e:"🛤️", lic:"pd", lang:"en", diff:"easy",   modes:["adult"],                           dur:"2:30" },
+    { t:"The Leaving of Liverpool",     a:"Traditional English Shanty",   e:"🚢", lic:"pd", lang:"en", diff:"easy",   modes:["teen","adult"],                    dur:"3:00" },
+    { t:"All for Me Grog",              a:"Traditional Irish Shanty",     e:"🍺", lic:"pd", lang:"en", diff:"easy",   modes:["teen","adult"],                    dur:"2:40" },
+  ]},
+
+  // ════════════════════════════════════════
+  // PATRIOTIC & NATIONAL ANTHEMS
+  // ════════════════════════════════════════
+  { genre:'National Anthems & Patriotic', icon:'🌐', songs:[
+    { t:"The Star-Spangled Banner",     a:"Francis Scott Key (1814)",     e:"🇺🇸", lic:"pd", lang:"en", diff:"hard",  modes:["adult","senior"],                  dur:"1:50" },
+    { t:"America the Beautiful",        a:"Katharine Lee Bates (1895)",   e:"🗻", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:20" },
+    { t:"God Bless America",            a:"Irving Berlin (1918)",         e:"🇺🇸", lic:"pd", lang:"en", diff:"easy",  modes:["adult","senior"],                  dur:"1:45" },
+    { t:"La Marseillaise",              a:"Rouget de Lisle (1792)",       e:"🇫🇷", lic:"pd", lang:"fr", diff:"medium", modes:["adult","lang"],                    dur:"1:50" },
+    { t:"Das Lied der Deutschen",       a:"Haydn / Hoffmann (1841)",      e:"🇩🇪", lic:"pd", lang:"de", diff:"medium", modes:["adult","lang"],                    dur:"1:30" },
+    { t:"La Bamba",                     a:"Traditional Mexican",          e:"🇲🇽", lic:"pd", lang:"es", diff:"medium", modes:["teen","adult","lang"],             dur:"3:00" },
+    { t:"Kimigayo",                     a:"Traditional Japanese (1880)",  e:"🇯🇵", lic:"pd", lang:"ja", diff:"medium", modes:["adult","lang"],                    dur:"1:30" },
+    { t:"Inno di Mameli",               a:"Goffredo Mameli (1847)",       e:"🇮🇹", lic:"pd", lang:"it", diff:"medium", modes:["adult","lang"],                    dur:"1:45" },
+  ]},
+
+  // ════════════════════════════════════════
+  // CREATIVE COMMONS — CONTEMPORARY
+  // ════════════════════════════════════════
+  { genre:'Creative Commons — Contemporary', icon:'🔓', songs:[
+    { t:"Still Alive",                  a:"Jonathan Coulton (CC-BY-NC)",  e:"🎮", lic:"cc", lang:"en", diff:"medium",  modes:["teen","adult"],                    dur:"3:25" },
+    { t:"Code Monkey",                  a:"Jonathan Coulton (CC-BY-NC)",  e:"🐒", lic:"cc", lang:"en", diff:"medium",  modes:["teen","adult"],                    dur:"3:45" },
+    { t:"Re: Your Brains",              a:"Jonathan Coulton (CC-BY-NC)",  e:"🧠", lic:"cc", lang:"en", diff:"medium",  modes:["teen","adult"],                    dur:"3:30" },
+    { t:"Ikson — Last Summer",          a:"Ikson (CC0)",                  e:"☀️", lic:"cc", lang:"en", diff:"easy",   modes:["teen","adult"],                    dur:"3:10" },
+    { t:"Jahzzar — I Walk Away",        a:"Jahzzar (CC-BY-SA)",           e:"🚶", lic:"cc", lang:"en", diff:"medium",  modes:["adult"],                           dur:"3:50" },
+    { t:"Kevin MacLeod — Somewhere Sunny",a:"Kevin MacLeod (CC-BY)",     e:"🌤️", lic:"cc", lang:"en", diff:"easy",   modes:["rising","adult","senior"],         dur:"3:15" },
+    { t:"Josh Woodward — Flying",       a:"Josh Woodward (CC-BY)",        e:"✈️", lic:"cc", lang:"en", diff:"medium",  modes:["teen","adult"],                    dur:"4:00" },
+    { t:"Josh Woodward — Pulaski at Night",a:"Josh Woodward (CC-BY)",     e:"🌃", lic:"cc", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"3:45" },
+    { t:"Podington Bear — Upbeat",      a:"Podington Bear (CC-BY-NC)",    e:"🐻", lic:"cc", lang:"en", diff:"easy",   modes:["rising","adult"],                  dur:"2:50" },
+    { t:"Chris Zabriskie — Divider",    a:"Chris Zabriskie (CC-BY)",      e:"🎵", lic:"cc", lang:"en", diff:"medium",  modes:["adult"],                           dur:"3:30" },
+  ]},
+
+  // ════════════════════════════════════════
+  // LATIN — RUMBA, TANGO, BOSSA NOVA
+  // ════════════════════════════════════════
+  { genre:'Latin — Rumba, Tango & Bossa Nova', icon:'💃', songs:[
+    { t:"La Cumparsita",                a:"Gerardo Matos Rodríguez (1917)",e:"🌹", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:30" },
+    { t:"El Choclo",                    a:"Ángel Villoldo (1903)",         e:"🌽", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:15" },
+    { t:"La Paloma",                    a:"Sebastián Yradier (1863)",      e:"🕊️", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"Quizás Quizás Quizás",         a:"Osvaldo Farrés (1947)",         e:"🤷", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:05" },
+    { t:"Perfidia",                     a:"Alberto Domínguez (1939)",      e:"🌙", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:20" },
+    { t:"Brazil (Aquarela do Brasil)",  a:"Ary Barroso (1939)",            e:"🇧🇷", lic:"pd", lang:"pt", diff:"medium", modes:["adult","senior","lang"],           dur:"3:10" },
+    { t:"Sway (¿Quién Será?)",          a:"Pablo Beltrán Ruiz (1953)",     e:"💃", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:00" },
+    { t:"Bésame Mucho",                 a:"Consuelo Velázquez (1940)",     e:"💋", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:30" },
+    { t:"Historia de un Amor",          a:"Carlos Eleta Almarán (1955)",   e:"💕", lic:"pd", lang:"es", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:25" },
+    { t:"Amor",                         a:"Gabriel Ruiz (1941)",           e:"❤️", lic:"pd", lang:"es", diff:"easy",   modes:["adult","senior","lang"],           dur:"2:50" },
+  ]},
+
+  // ════════════════════════════════════════
+  // MULTI-LANGUAGE & WORLD
+  // ════════════════════════════════════════
+  { genre:'World & Multi-Language', icon:'🌍', songs:[
+    { t:"Scarborough Fair",             a:"Traditional English/Norman",   e:"🌿", lic:"pd", lang:"en", diff:"medium",  modes:["teen","adult","senior","lang"],    dur:"3:30" },
+    { t:"Siyahamba",                    a:"Traditional Zulu Spiritual",   e:"🌍", lic:"pd", lang:"multi", diff:"easy", modes:["rising","adult","senior"],        dur:"2:30" },
+    { t:"Waltzing Matilda",             a:"A.B. Paterson (1895)",         e:"🇦🇺", lic:"pd", lang:"en", diff:"easy",  modes:["adult","senior","lang"],           dur:"2:45" },
+    { t:"Kalinka",                      a:"Ivan Larionov (1860)",          e:"🌺", lic:"pd", lang:"multi", diff:"medium",modes:["adult","senior","lang"],          dur:"2:50" },
+    { t:"Hava Nagila",                  a:"Traditional Hebrew Folk",      e:"✡️", lic:"pd", lang:"multi", diff:"medium",modes:["adult","senior","lang"],          dur:"3:00" },
+    { t:"Arirang",                      a:"Traditional Korean",           e:"🇰🇷", lic:"pd", lang:"multi", diff:"medium",modes:["adult","senior","lang"],         dur:"3:10" },
+    { t:"Danny Boy",                    a:"Traditional Irish (1913)",     e:"☘️", lic:"pd", lang:"en", diff:"medium",  modes:["adult","senior"],                  dur:"4:10" },
+    { t:"Molly Malone",                 a:"Traditional Irish (1883)",     e:"🐚", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior","lang"],           dur:"2:30" },
+    { t:"Cockles and Mussels",          a:"Traditional Irish (1883)",     e:"🦪", lic:"pd", lang:"en", diff:"easy",   modes:["adult","senior"],                  dur:"2:20" },
+    { t:"Maori Farewell Song",          a:"Traditional Maori",            e:"🌿", lic:"pd", lang:"multi", diff:"medium",modes:["adult","senior","lang"],          dur:"3:15" },
+    { t:"Sukiyaki (Ue wo Muite)",       a:"Ei Rokusuke (1961)",           e:"🌙", lic:"pd", lang:"ja", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:05" },
+    { t:"Bella Ciao",                   a:"Traditional Italian (1867)",   e:"🌸", lic:"pd", lang:"it", diff:"easy",   modes:["teen","adult","senior","lang"],    dur:"2:50" },
+    { t:"Plaisir d'Amour",              a:"Giovanni Martini (1784)",      e:"💕", lic:"pd", lang:"fr", diff:"medium",  modes:["adult","senior","lang"],           dur:"3:30" },
+    { t:"Tom Dooley",                   a:"Traditional American (1866)",  e:"🎸", lic:"pd", lang:"en", diff:"easy",   modes:["teen","adult"],                    dur:"2:40" },
+  ]},
+
+];
+
+// ─── STATE ───────────────────────────────────────────────────────
+let activeMode = 'all';
+let activeLang = 'all';
+let searchQuery = '';
+
+// ─── COUNT STATS ─────────────────────────────────────────────────
+function countAll() {
+  let total = 0, genres = 0;
+  CATALOG.forEach(g => { total += g.songs.length; genres++; });
+  document.getElementById('total-count').textContent = total.toLocaleString();
+  document.getElementById('genre-count').textContent = genres;
+  document.getElementById('search-count').textContent = `${total} songs available`;
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────
+function render() {
+  const container = document.getElementById('catalog-container');
+  container.innerHTML = '';
+  let totalShown = 0;
+
+  CATALOG.forEach(genre => {
+    const filteredSongs = genre.songs.filter(song => {
+      // Mode filter
+      if (activeMode !== 'all' && !song.modes.includes(activeMode)) return false;
+      // Lang filter
+      if (activeLang !== 'all' && song.lang !== activeLang) return false;
+      // Search
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        if (!song.t.toLowerCase().includes(q) &&
+            !song.a.toLowerCase().includes(q) &&
+            !genre.genre.toLowerCase().includes(q)) return false;
+      }
+      return true;
+    });
+
+    if (filteredSongs.length === 0) return;
+    totalShown += filteredSongs.length;
+
+    const section = document.createElement('div');
+    section.className = 'genre-section';
+
+    section.innerHTML = `
+      <div class="genre-header" onclick="toggleGenre(this.parentElement)">
+        <div class="genre-header-left">
+          <div class="genre-icon">${genre.icon}</div>
+          <div class="genre-name">${genre.genre}</div>
+          <div class="genre-count">${filteredSongs.length} songs</div>
+        </div>
+        <div class="genre-chevron">›</div>
+      </div>
+      <div class="genre-body">${filteredSongs.map(s => songRow(s)).join('')}</div>
+    `;
+    container.appendChild(section);
+  });
+
+  // Update count
+  document.getElementById('search-count').textContent =
+    `${totalShown.toLocaleString()} song${totalShown !== 1 ? 's' : ''} shown`;
+
+  if (totalShown === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="es-icon">🔍</div>
+        No songs match your filters.<br>Try adjusting the mode or language.
+      </div>`;
+  }
+}
+
+function songRow(s) {
+  const diffTag = `<span class="song-tag tag-diff-${s.diff}">${s.diff}</span>`;
+  const langTag = s.lang !== 'en'
+    ? `<span class="song-tag tag-lang">${langLabel(s.lang)}</span>` : '';
+
+  const modeDots = s.modes.map(m =>
+    `<div class="mode-dot md-${m}" title="${m}"></div>`
+  ).join('');
+
+  return `
+    <div class="song-row">
+      <div class="song-emoji">${s.e}</div>
+      <div class="song-info">
+        <div class="song-title">${s.t}</div>
+        <div class="song-artist">${s.a}</div>
+        <div class="song-tags">${diffTag}${langTag}</div>
+      </div>
+      <div class="song-meta-right">
+        <div class="song-duration">${s.dur}</div>
+        <div class="song-modes">${modeDots}</div>
+      </div>
+    </div>`;
+}
+
+function langLabel(code) {
+  const map = {
+    es:'Spanish', fr:'French', de:'German', it:'Italian',
+    ja:'Japanese', pt:'Portuguese', la:'Latin', multi:'Multi-lang'
+  };
+  return map[code] || code;
+}
+
+// ─── INTERACTIONS ────────────────────────────────────────────────
+function toggleGenre(section) {
+  section.classList.toggle('collapsed');
+}
+
+function setMode(mode, btn) {
+  activeMode = mode;
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function setLang(lang, btn) {
+  activeLang = lang;
+  document.querySelectorAll('.lang-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function filterCatalog() {
+  searchQuery = document.getElementById('search-input').value.trim();
+  render();
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+countAll();
+render();
+</script>
+</body>
+</html>

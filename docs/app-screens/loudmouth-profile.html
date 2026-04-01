@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LOUDMOUTH — Your Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #080808;
+  --card:   #111111;
+  --card2:  #161616;
+  --border: rgba(255,255,255,0.08);
+  --red:    #d42020;
+  --yellow: #f5c400;
+  --green:  rgba(100,220,120,0.85);
+  --white:  #f0ede8;
+  --dim:    rgba(240,237,232,0.40);
+  --dimmer: rgba(240,237,232,0.20);
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { background:var(--bg); color:var(--white); font-family:'Barlow',sans-serif; min-height:100%; }
+
+/* ── NAV ── */
+.nav {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 20px; height:52px; border-bottom:1px solid var(--border);
+  background:rgba(8,8,8,0.96); position:sticky; top:0; z-index:50;
+}
+.nav-logo { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.06em; }
+.nav-logo span { color:var(--red); }
+.nav-tabs { display:flex; gap:2px; }
+.nav-tab {
+  font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:12px;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--dimmer); padding:5px 12px;
+  border-radius:4px; cursor:pointer; border:none; background:none; transition:all 0.14s;
+}
+.nav-tab:hover { color:var(--white); }
+.nav-tab.active { color:var(--yellow); background:rgba(245,196,0,0.1); }
+
+/* ── PROFILE HEADER ── */
+.profile-header {
+  padding:28px 20px 20px;
+  background:linear-gradient(180deg, rgba(212,32,32,0.05) 0%, transparent 100%);
+  border-bottom:1px solid var(--border);
+}
+.ph-top { display:flex; align-items:center; gap:16px; margin-bottom:20px; }
+.avatar {
+  width:64px; height:64px; border-radius:50%;
+  background:linear-gradient(135deg, var(--red), #7b0000);
+  display:flex; align-items:center; justify-content:center;
+  font-size:28px; flex-shrink:0;
+  border:2px solid rgba(212,32,32,0.4);
+}
+.ph-info { flex:1; }
+.ph-name {
+  font-family:'Bebas Neue',sans-serif; font-size:32px;
+  letter-spacing:0.04em; line-height:1; margin-bottom:4px;
+}
+.ph-since { font-size:13px; color:var(--dimmer); }
+.ph-tier-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(245,196,0,0.1); border:1px solid rgba(245,196,0,0.25);
+  border-radius:6px; padding:6px 12px;
+}
+.ph-tier-name {
+  font-family:'Bebas Neue',sans-serif; font-size:18px;
+  letter-spacing:0.08em; color:var(--yellow);
+}
+.ph-tier-label {
+  font-family:'Barlow Condensed',sans-serif; font-size:11px;
+  letter-spacing:0.14em; text-transform:uppercase; color:rgba(245,196,0,0.6);
+}
+
+/* ── STAT STRIP ── */
+.stat-strip {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+  border:1px solid var(--border); border-radius:10px; overflow:hidden;
+}
+.stat-cell {
+  padding:14px 10px; text-align:center; border-right:1px solid var(--border);
+}
+.stat-cell:last-child { border-right:none; }
+.stat-num {
+  font-family:'Bebas Neue',sans-serif; font-size:32px;
+  letter-spacing:0.04em; line-height:1; margin-bottom:3px;
+}
+.stat-num.yellow { color:var(--yellow); }
+.stat-num.green  { color:var(--green); }
+.stat-lbl {
+  font-family:'Barlow Condensed',sans-serif; font-size:10px;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--dimmer);
+}
+
+/* ── SECTION HEADING ── */
+.section-head {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:11px; letter-spacing:0.22em; text-transform:uppercase;
+  color:var(--dimmer); padding:18px 20px 10px;
+}
+.section-head span { color:var(--red); }
+
+/* ── BEST SCORE SUMMARY ── */
+.score-summary {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:2px; margin:0 20px 20px;
+}
+.score-dim-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:8px; padding:14px 10px; text-align:center;
+  transition:border-color 0.15s;
+}
+.score-dim-card:hover { border-color:rgba(245,196,0,0.3); }
+.dim-icon { font-size:20px; margin-bottom:6px; }
+.dim-score-num {
+  font-family:'Bebas Neue',sans-serif; font-size:36px;
+  line-height:1; color:var(--yellow); margin-bottom:2px;
+}
+.dim-name {
+  font-family:'Barlow Condensed',sans-serif; font-size:10px;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--dimmer);
+}
+.dim-delta {
+  font-family:'Barlow Condensed',sans-serif; font-size:11px;
+  font-weight:600; color:var(--green); margin-top:4px;
+}
+.dim-delta.down { color:rgba(212,32,32,0.7); }
+
+/* ── PROGRESS CHART ── */
+.progress-card {
+  margin:0 20px 20px;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:10px; overflow:hidden;
+}
+.pc-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 16px; border-bottom:1px solid var(--border);
+}
+.pc-title {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:14px; letter-spacing:0.08em; text-transform:uppercase;
+}
+.pc-song-select {
+  font-family:'Barlow Condensed',sans-serif; font-size:13px;
+  color:var(--dim); background:rgba(255,255,255,0.05);
+  border:1px solid var(--border); border-radius:4px;
+  padding:4px 10px; color:var(--white); cursor:pointer; outline:none;
+}
+.pc-chart { padding:16px; }
+.chart-wrap {
+  display:flex; align-items:flex-end; gap:8px;
+  height:80px; padding-bottom:6px; border-bottom:1px solid var(--border);
+  margin-bottom:10px;
+}
+.chart-bar-group { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.chart-bar {
+  width:100%; border-radius:3px 3px 0 0;
+  background:rgba(245,196,0,0.25); min-height:3px;
+  transition:height 0.5s cubic-bezier(0.34,1.2,0.64,1);
+  cursor:pointer; position:relative;
+}
+.chart-bar:last-child { background:var(--yellow); }
+.chart-bar:hover .bar-tip {
+  opacity:1; transform:translateY(-4px);
+}
+.bar-tip {
+  position:absolute; bottom:calc(100%+4px); left:50%;
+  transform:translateX(-50%) translateY(0);
+  background:rgba(20,20,20,0.95); border:1px solid var(--border);
+  border-radius:4px; padding:3px 7px; font-family:'Bebas Neue',sans-serif;
+  font-size:14px; color:var(--yellow); white-space:nowrap;
+  opacity:0; pointer-events:none; transition:opacity 0.15s, transform 0.15s;
+}
+.chart-date {
+  font-family:'Barlow Condensed',sans-serif; font-size:10px;
+  letter-spacing:0.06em; color:var(--dimmer); text-align:center;
+}
+.chart-trend {
+  display:flex; align-items:center; gap:8px;
+  font-family:'Barlow Condensed',sans-serif; font-size:13px;
+}
+.trend-arrow { font-size:16px; }
+.trend-text.up { color:var(--green); }
+.trend-text.flat { color:var(--dimmer); }
+.chart-vas-note {
+  font-size:12px; color:var(--dimmer);
+  margin-top:4px; font-family:'Barlow Condensed',sans-serif; letter-spacing:0.04em;
+}
+
+/* ── VAS HISTORY ── */
+.vas-history-card {
+  margin:0 20px 20px;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:10px; padding:16px;
+}
+.vh-title {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--dimmer); margin-bottom:14px;
+}
+.vh-bar-wrap {
+  position:relative; margin-bottom:8px;
+}
+.vh-label {
+  display:flex; justify-content:space-between;
+  font-family:'Barlow Condensed',sans-serif; font-size:11px;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--dimmer);
+  margin-bottom:6px;
+}
+.vh-track {
+  height:8px; background:rgba(255,255,255,0.06); border-radius:4px;
+  position:relative; overflow:visible;
+}
+.vh-segment {
+  position:absolute; top:0; height:100%; border-radius:4px;
+  transition:opacity 0.2s;
+}
+.vh-marker {
+  position:absolute; top:-3px; width:14px; height:14px; border-radius:50%;
+  background:white; border:2px solid var(--bg);
+  transform:translateX(-50%); box-shadow:0 1px 6px rgba(0,0,0,0.4);
+}
+.vh-tiers {
+  display:flex; justify-content:space-between;
+  margin-top:6px;
+}
+.vh-tier-lbl {
+  font-family:'Barlow Condensed',sans-serif; font-size:9px;
+  font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--dimmer); text-align:center; flex:1;
+}
+.vh-insight {
+  margin-top:12px; padding:10px 12px;
+  background:rgba(245,196,0,0.06); border:1px solid rgba(245,196,0,0.15);
+  border-radius:6px; font-size:13px; color:var(--dim);
+  font-family:'Barlow Condensed',sans-serif; letter-spacing:0.04em;
+  line-height:1.5;
+}
+.vh-insight strong { color:var(--white); }
+
+/* ── SONG HISTORY ── */
+.song-history { padding:0 20px 100px; display:flex; flex-direction:column; gap:10px; }
+.sh-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:10px; padding:14px 16px;
+  display:grid; grid-template-columns:40px 1fr auto;
+  align-items:center; gap:12px; cursor:pointer; transition:border-color 0.15s;
+}
+.sh-card:hover { border-color:rgba(245,196,0,0.25); }
+.sh-emoji { font-size:24px; text-align:center; }
+.sh-title {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:16px; letter-spacing:0.02em; margin-bottom:3px;
+}
+.sh-meta { font-size:12px; color:var(--dim); }
+.sh-score {
+  text-align:right;
+}
+.sh-score-num {
+  font-family:'Bebas Neue',sans-serif; font-size:32px;
+  line-height:1; color:var(--yellow);
+}
+.sh-score-vs {
+  font-size:11px; color:var(--dimmer);
+  font-family:'Barlow Condensed',sans-serif; letter-spacing:0.06em;
+}
+.sh-score-vs.beat { color:var(--green); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">LOUD<span>MOUTH</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab" onclick="alert('Library')">Library</button>
+    <button class="nav-tab" onclick="alert('Store')">Store</button>
+    <button class="nav-tab" onclick="alert('Sing')">Sing</button>
+    <button class="nav-tab active">Profile</button>
+  </div>
+</nav>
+
+<!-- PROFILE HEADER -->
+<div class="profile-header">
+  <div class="ph-top">
+    <div class="avatar">🎤</div>
+    <div class="ph-info">
+      <div class="ph-name">Alex Rivera</div>
+      <div class="ph-since">Singing since January 2026</div>
+    </div>
+    <div class="ph-tier-badge">
+      <div class="ph-tier-name">FRONT MAN</div>
+      <div class="ph-tier-label">Current Tier</div>
+    </div>
+  </div>
+  <div class="stat-strip">
+    <div class="stat-cell">
+      <div class="stat-num yellow">47</div>
+      <div class="stat-lbl">Sessions</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num yellow">12</div>
+      <div class="stat-lbl">Songs Owned</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num green">8.2</div>
+      <div class="stat-lbl">Best Score</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num green">6</div>
+      <div class="stat-lbl">Artists Beat</div>
+    </div>
+  </div>
+</div>
+
+<!-- 4D SCORE SUMMARY -->
+<div class="section-head">📊 Your <span>Best Scores</span> by Dimension</div>
+<div class="score-summary">
+  <div class="score-dim-card">
+    <div class="dim-icon">🎵</div>
+    <div class="dim-score-num">8.1</div>
+    <div class="dim-name">Pitch</div>
+    <div class="dim-delta">↑ +0.8</div>
+  </div>
+  <div class="score-dim-card">
+    <div class="dim-icon">⏱️</div>
+    <div class="dim-score-num">7.6</div>
+    <div class="dim-name">Timing</div>
+    <div class="dim-delta">↑ +1.2</div>
+  </div>
+  <div class="score-dim-card">
+    <div class="dim-icon">🔊</div>
+    <div class="dim-score-num">7.9</div>
+    <div class="dim-name">Clarity</div>
+    <div class="dim-delta">↑ +0.5</div>
+  </div>
+  <div class="score-dim-card">
+    <div class="dim-icon">🌊</div>
+    <div class="dim-score-num">6.8</div>
+    <div class="dim-name">Dynamics</div>
+    <div class="dim-delta">↑ +1.8</div>
+  </div>
+</div>
+
+<!-- PROGRESS CHART -->
+<div class="section-head">📈 <span>Progress</span> Over Time</div>
+<div class="progress-card">
+  <div class="pc-header">
+    <div class="pc-title">Score History</div>
+    <select class="pc-song-select" onchange="buildChart(this.value)">
+      <option value="0">Down With The Sickness</option>
+      <option value="1">Bohemian Rhapsody</option>
+      <option value="2">Livin' on a Prayer</option>
+    </select>
+  </div>
+  <div class="pc-chart">
+    <div class="chart-wrap" id="chart-wrap"></div>
+    <div id="chart-trend" class="chart-trend"></div>
+    <div class="chart-vas-note" id="chart-vas-note"></div>
+  </div>
+</div>
+
+<!-- VAS HISTORY -->
+<div class="section-head">🎚️ <span>Vocal Assist</span> Journey</div>
+<div class="vas-history-card">
+  <div class="vh-title">How you've been using the slider — Down With The Sickness</div>
+  <div class="vh-label">
+    <span>Less help (Legend)</span>
+    <span>More help (Train Wreck)</span>
+  </div>
+  <div class="vh-track" id="vh-track">
+    <!-- Built by JS -->
+  </div>
+  <div class="vh-tiers">
+    <div class="vh-tier-lbl">Legend</div>
+    <div class="vh-tier-lbl">Front Man</div>
+    <div class="vh-tier-lbl">Karaoke Hero</div>
+    <div class="vh-tier-lbl">Shower Singer</div>
+    <div class="vh-tier-lbl">Train Wreck</div>
+  </div>
+  <div class="vh-insight">
+    You started at <strong>75% assist</strong> and worked your way down to <strong>25%</strong> over 12 sessions.
+    Your scores improved as the assist dropped — you're genuinely getting better, not just leaning on the artist.
+    <strong>Try 0% on your next run.</strong>
+  </div>
+</div>
+
+<!-- SONG HISTORY -->
+<div class="section-head">🎤 <span>Recent Sessions</span></div>
+<div class="song-history" id="song-history"></div>
+
+<script>
+'use strict';
+
+// ── CHART DATA
+const CHARTS = [
+  {
+    dates: ['Jan 8','Jan 12','Jan 19','Jan 24','Feb 2','Feb 9','Feb 17','Feb 24','Mar 1','Mar 8'],
+    scores:[5.2,    5.6,     6.1,     5.9,     6.4,    6.8,    7.1,     7.4,     7.8,    8.2],
+    vas:   [75,     75,      70,      65,       60,     55,     50,      40,      30,     25],
+  },
+  {
+    dates: ['Jan 20','Jan 28','Feb 5','Feb 12','Feb 20','Mar 5'],
+    scores:[4.1,     4.8,     5.3,    5.1,     5.8,     6.4],
+    vas:   [90,      85,      80,     80,       70,      65],
+  },
+  {
+    dates: ['Feb 1','Feb 10','Feb 22','Mar 3','Mar 9'],
+    scores:[6.2,    6.7,     7.0,     7.2,    7.6],
+    vas:   [60,     50,      45,      40,     35],
+  },
+];
+
+function buildChart(idx) {
+  const d = CHARTS[idx] || CHARTS[0];
+  const wrap = document.getElementById('chart-wrap');
+  const trend = document.getElementById('chart-trend');
+  const vasNote = document.getElementById('chart-vas-note');
+  const max = Math.max(...d.scores);
+  const min = Math.min(...d.scores);
+  const range = max - min || 1;
+
+  wrap.innerHTML = '';
+  d.scores.forEach((s, i) => {
+    const pct = 15 + ((s - min) / range) * 85;
+    const group = document.createElement('div');
+    group.className = 'chart-bar-group';
+    group.style.justifyContent = 'flex-end';
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar';
+    bar.style.height = '0px';
+    bar.innerHTML = `<div class="bar-tip">${s.toFixed(1)}</div>`;
+    const dateEl = document.createElement('div');
+    dateEl.className = 'chart-date';
+    dateEl.textContent = d.dates[i].replace(/[A-Za-z]+ /,'').replace('0','');
+    group.appendChild(bar);
+    wrap.appendChild(group);
+    setTimeout(() => { bar.style.height = pct + '%'; }, 100 + i * 50);
+    // Add date labels below
+    const bottomLabel = document.createElement('div');
+    bottomLabel.style.cssText='font-family:\'Barlow Condensed\',sans-serif;font-size:9px;letter-spacing:0.06em;color:rgba(240,237,232,0.2);text-align:center;margin-top:4px;';
+    bottomLabel.textContent = d.dates[i].slice(0,6);
+  });
+
+  const last = d.scores[d.scores.length-1];
+  const prev = d.scores[d.scores.length-2];
+  const diff = last - prev;
+  const vasFirst = d.vas[0], vasLast = d.vas[d.vas.length-1];
+
+  if (diff > 0) {
+    trend.innerHTML = `<span class="trend-arrow">↑</span><span class="trend-text up">Up ${diff.toFixed(1)} from last session</span>`;
+  } else if (diff < 0) {
+    trend.innerHTML = `<span class="trend-arrow">↓</span><span class="trend-text flat">Down ${Math.abs(diff).toFixed(1)} from last</span>`;
+  } else {
+    trend.innerHTML = `<span class="trend-text flat">Same as last session</span>`;
+  }
+  vasNote.textContent = `Vocal Assist went from ${vasFirst}% → ${vasLast}% over this period. Score improved ${(last - d.scores[0]).toFixed(1)} points.`;
+}
+
+// ── VAS JOURNEY
+function buildVasTrack() {
+  const track = document.getElementById('vh-track');
+  const sessions = [75,75,70,65,60,55,50,40,30,25]; // VAS values over time
+  const colors = ['#4fc3f7','#81d4fa','#aed6f1','#aed6f1','#f5c400','#f5c400','#f5c400','#f5c400','#ffd54f','#ffa726'];
+
+  // Draw gradient segments
+  const gradient = `linear-gradient(to right, ${sessions.map((v,i) => {
+    const pct = (v / 100 * 100);
+    return `rgba(245,196,0,${0.15 + (1 - v/100) * 0.6}) ${i/sessions.length*100}%`;
+  }).join(',')})`;
+  track.style.background = 'rgba(255,255,255,0.06)';
+
+  // Place current marker
+  const currentVas = 25;
+  const marker = document.createElement('div');
+  marker.className = 'vh-marker';
+  marker.style.left = currentVas + '%';
+  track.appendChild(marker);
+
+  // Draw the journey line
+  const line = document.createElement('div');
+  line.style.cssText = `position:absolute;top:0;height:100%;border-radius:4px;
+    background:linear-gradient(to right, rgba(79,195,247,0.5) 0%, rgba(245,196,0,0.8) 100%);
+    width:${currentVas}%; transition:width 1s ease;`;
+  track.appendChild(line);
+}
+
+// ── SONG HISTORY
+const HISTORY = [
+  { emoji:'🤘', title:'Down With The Sickness', artist:'Disturbed',       score:8.2, artistScore:7.1, vas:25, date:'Mar 8', beat:true  },
+  { emoji:'👑', title:'Bohemian Rhapsody',       artist:'Queen',           score:6.4, artistScore:7.8, vas:65, date:'Mar 5', beat:false },
+  { emoji:'🎸', title:'Livin\' on a Prayer',     artist:'Bon Jovi',        score:7.6, artistScore:7.2, vas:35, date:'Mar 1', beat:true  },
+  { emoji:'🧱', title:'Wonderwall',              artist:'Oasis',           score:7.9, artistScore:6.8, vas:20, date:'Feb 24',beat:true  },
+  { emoji:'🤘', title:'Down With The Sickness', artist:'Disturbed',       score:7.4, artistScore:7.1, vas:30, date:'Feb 17',beat:true  },
+  { emoji:'🌍', title:'Africa',                  artist:'Toto',            score:7.1, artistScore:7.4, vas:50, date:'Feb 12',beat:false },
+  { emoji:'🤘', title:'Down With The Sickness', artist:'Disturbed',       score:7.1, artistScore:7.1, vas:40, date:'Feb 9', beat:false },
+];
+
+function buildHistory() {
+  const container = document.getElementById('song-history');
+  HISTORY.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'sh-card';
+    const beatLabel = s.beat
+      ? `<div class="sh-score-vs beat">✓ beat ${s.artist.split(' ')[0]} (${s.artistScore.toFixed(1)})</div>`
+      : `<div class="sh-score-vs">lost to ${s.artist.split(' ')[0]} (${s.artistScore.toFixed(1)})</div>`;
+    card.innerHTML = `
+      <div class="sh-emoji">${s.emoji}</div>
+      <div>
+        <div class="sh-title">${s.title}</div>
+        <div class="sh-meta">${s.date} · ${s.vas}% assist · ${tierName(s.vas)}</div>
+      </div>
+      <div class="sh-score">
+        <div class="sh-score-num">${s.score.toFixed(1)}</div>
+        ${beatLabel}
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function tierName(vas) {
+  if (vas < 15) return 'Legend';
+  if (vas < 35) return 'Front Man';
+  if (vas < 65) return 'Karaoke Hero';
+  if (vas < 85) return 'Shower Singer';
+  return 'Train Wreck';
+}
+
+// ── INIT
+document.addEventListener('DOMContentLoaded', () => {
+  buildChart(0);
+  buildVasTrack();
+  buildHistory();
+});
+</script>
+</body>
+</html>

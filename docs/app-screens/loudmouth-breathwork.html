@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>LOUDMOUTH — Breathwork & Vocal Strength</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Barlow:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   LOUDMOUTH — BREATHWORK & VOCAL STRENGTH
+   Aesthetic: Ancient/elemental meets raw industrial
+   Deep blacks, ember glow, breath as a living thing
+   The lungs are the engine. Build the engine first.
+═══════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #050505;
+  --surface: #0d0d0d;
+  --surface2: #141414;
+  --surface3: #1c1c1c;
+  --red: #c8151b;
+  --ember: #e85d04;
+  --amber: #f59e0b;
+  --amber-soft: rgba(245,158,11,0.15);
+  --amber-dim: rgba(245,158,11,0.08);
+  --gold: #d4a017;
+  --teal: #0d9488;
+  --teal-soft: rgba(13,148,136,0.15);
+  --white: #f4f0ea;
+  --dim: rgba(244,240,234,0.88);
+  --dimmer: rgba(244,240,234,0.60);
+  --dimmest: rgba(244,240,234,0.35);
+  --border: rgba(255,255,255,0.07);
+  --border-amber: rgba(245,158,11,0.22);
+  --border-teal: rgba(13,148,136,0.22);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; background: var(--bg); }
+
+body {
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  overflow-x: hidden;
+  padding-bottom: 60px;
+}
+
+/* ── HERO SECTION ── */
+.hero {
+  padding: 48px 24px 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(232,93,4,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 50% 100%, rgba(13,148,136,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 14px;
+  position: relative;
+}
+.hero-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 9vw, 52px);
+  letter-spacing: 0.04em;
+  line-height: 0.95;
+  position: relative;
+  margin-bottom: 6px;
+}
+.hero-logo em { color: var(--red); font-style: normal; }
+.hero-module {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(18px, 4vw, 24px);
+  letter-spacing: 0.12em;
+  color: var(--amber);
+  position: relative;
+  margin-bottom: 24px;
+}
+
+/* Pull quotes */
+.hero-quote {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-size: clamp(16px, 3.5vw, 20px);
+  color: var(--dim);
+  line-height: 1.45;
+  max-width: 460px;
+  margin: 0 auto 12px;
+  position: relative;
+}
+.hero-quote em {
+  color: var(--white);
+  font-style: normal;
+  font-weight: 600;
+}
+.hero-divider {
+  width: 40px; height: 2px;
+  background: var(--ember);
+  margin: 20px auto;
+}
+.hero-sub {
+  font-size: 14px;
+  color: var(--dimmer);
+  line-height: 1.65;
+  max-width: 380px;
+  margin: 0 auto;
+  position: relative;
+}
+.hero-sub strong { color: var(--white); font-weight: 500; }
+
+/* ── TRUTH CARDS ── */
+.truth-section {
+  padding: 0 20px 32px;
+}
+.truth-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 20px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.truth-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+}
+.truth-card.amber::before { background: var(--amber); }
+.truth-card.ember::before { background: var(--ember); }
+.truth-card.teal::before { background: var(--teal); }
+.truth-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.truth-card.amber .truth-label { color: var(--amber); }
+.truth-card.ember .truth-label { color: var(--ember); }
+.truth-card.teal .truth-label { color: var(--teal); }
+.truth-text {
+  font-size: 14px;
+  color: var(--dim);
+  line-height: 1.65;
+}
+.truth-text strong { color: var(--white); font-weight: 500; }
+.truth-text em { color: var(--amber); font-style: italic; }
+
+/* ── SECTION HEADERS ── */
+.section-head {
+  padding: 8px 20px 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.section-head-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  color: var(--white);
+}
+.section-head-sub {
+  font-size: 12px;
+  color: var(--dimmer);
+  letter-spacing: 0.06em;
+  font-family: 'Barlow Condensed', sans-serif;
+  text-transform: uppercase;
+}
+
+/* ── EXERCISE CARDS ── */
+.exercise-grid {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.ex-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.ex-card:hover { border-color: rgba(255,255,255,0.12); }
+.ex-card.active { border-color: var(--amber); }
+
+.ex-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+}
+.ex-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.ex-icon.breath { background: rgba(232,93,4,0.12); border: 1px solid rgba(232,93,4,0.2); }
+.ex-icon.hum    { background: rgba(13,148,136,0.12); border: 1px solid rgba(13,148,136,0.2); }
+.ex-icon.lung   { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.18); }
+.ex-icon.power  { background: rgba(200,21,27,0.1); border: 1px solid rgba(200,21,27,0.18); }
+
+.ex-info { flex: 1; min-width: 0; }
+.ex-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+.ex-tag {
+  font-size: 11px;
+  color: var(--dimmer);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'Barlow Condensed', sans-serif;
+}
+.ex-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.ex-duration {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: var(--amber);
+  letter-spacing: 0.04em;
+}
+.ex-level {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Barlow Condensed', sans-serif;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+.level-beginner { background: rgba(13,148,136,0.12); color: var(--teal); border: 1px solid var(--border-teal); }
+.level-intermediate { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid var(--border-amber); }
+.level-advanced { background: rgba(200,21,27,0.1); color: var(--red); border: 1px solid rgba(200,21,27,0.22); }
+
+/* Exercise detail panel */
+.ex-detail {
+  display: none;
+  border-top: 1px solid var(--border);
+  padding: 18px 18px 20px;
+  background: var(--surface2);
+}
+.ex-card.active .ex-detail { display: block; }
+.ex-detail-desc {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+.ex-detail-desc strong { color: var(--white); font-weight: 500; }
+.ex-detail-desc em { color: var(--amber); font-style: italic; }
+
+/* ── LIVE EXERCISE PLAYER ── */
+.player-panel {
+  margin: 0 20px 32px;
+  background: var(--surface);
+  border: 1px solid var(--border-amber);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.player-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.player-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+.player-song {
+  font-size: 11px;
+  color: var(--dimmer);
+  letter-spacing: 0.06em;
+  font-family: 'Barlow Condensed', sans-serif;
+}
+
+/* Breathing orb */
+.orb-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 20px 20px;
+  position: relative;
+}
+.orb-outer {
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.orb-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(232,93,4,0.25);
+  animation: ring-breathe 4s ease-in-out infinite;
+}
+.orb-ring-2 {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 1px solid rgba(232,93,4,0.1);
+  animation: ring-breathe 4s ease-in-out infinite 0.3s;
+}
+.orb-ring-3 {
+  position: absolute;
+  inset: -24px;
+  border-radius: 50%;
+  border: 1px solid rgba(232,93,4,0.05);
+  animation: ring-breathe 4s ease-in-out infinite 0.6s;
+}
+@keyframes ring-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+.orb-core {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 40% 35%, rgba(232,93,4,0.35), rgba(200,21,27,0.15) 60%, transparent);
+  border: 1px solid rgba(232,93,4,0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.1s;
+}
+.orb-instruction {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  color: var(--white);
+  line-height: 1;
+  transition: all 0.4s;
+}
+.orb-count {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  color: var(--ember);
+  line-height: 1;
+  transition: all 0.1s;
+}
+.orb-phase-sub {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  font-family: 'Barlow Condensed', sans-serif;
+  margin-top: 2px;
+}
+
+/* Breath phase indicator */
+.phase-track {
+  width: 100%;
+  max-width: 280px;
+  margin-bottom: 18px;
+}
+.phase-dots {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.phase-dot {
+  height: 3px;
+  flex: 1;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background 0.3s;
+  max-width: 60px;
+}
+.phase-dot.inhale.active { background: var(--ember); }
+.phase-dot.hold.active { background: var(--amber); }
+.phase-dot.exhale.active { background: var(--teal); }
+.phase-dot.hold2.active { background: rgba(244,240,234,0.3); }
+.phase-labels {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.phase-lbl {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  font-family: 'Barlow Condensed', sans-serif;
+  flex: 1;
+  text-align: center;
+  max-width: 60px;
+  transition: color 0.3s;
+}
+.phase-lbl.inhale.active { color: var(--ember); }
+.phase-lbl.hold.active { color: var(--amber); }
+.phase-lbl.exhale.active { color: var(--teal); }
+
+/* Stats row during exercise */
+.player-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+}
+.pstat {
+  background: var(--surface);
+  padding: 12px 10px;
+  text-align: center;
+}
+.pstat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--amber);
+}
+.pstat-label {
+  font-size: 10px;
+  color: var(--dimmer);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Barlow Condensed', sans-serif;
+  margin-top: 2px;
+}
+
+/* Player controls */
+.player-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+}
+.pctrl {
+  font-size: 14px;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(245,158,11,0.2);
+  background: rgba(245,158,11,0.06);
+  color: rgba(245,158,11,0.65);
+  cursor: pointer;
+  transition: all 0.12s;
+  display: flex; align-items: center; justify-content: center;
+}
+.pctrl:hover { border-color: rgba(245,158,11,0.4); color: var(--amber); background: rgba(245,158,11,0.1); }
+.pctrl:active { transform: scale(0.93); }
+.pctrl.start {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  font-size: 22px;
+  background: var(--ember);
+  border-color: var(--ember);
+  color: white;
+  box-shadow: 0 4px 20px rgba(232,93,4,0.4);
+}
+.pctrl.start:hover { background: #f06a1a; box-shadow: 0 4px 28px rgba(232,93,4,0.55); }
+.pctrl.start.running {
+  background: var(--surface3);
+  border-color: var(--border-amber);
+  color: var(--amber);
+  box-shadow: none;
+}
+
+/* ── EXERCISE SELECTOR TABS ── */
+.ex-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 20px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ex-tabs::-webkit-scrollbar { display: none; }
+.ex-tab {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  color: var(--dimmer);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.ex-tab:hover { color: var(--white); border-color: rgba(255,255,255,0.14); }
+.ex-tab.active { background: rgba(245,158,11,0.1); border-color: var(--border-amber); color: var(--amber); }
+
+/* ── HUMMING SECTION ── */
+.hum-section {
+  margin: 0 20px 32px;
+}
+.hum-panel {
+  background: var(--surface);
+  border: 1px solid var(--border-teal);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.hum-header {
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(13,148,136,0.04);
+}
+.hum-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  color: var(--teal);
+  margin-bottom: 4px;
+}
+.hum-desc {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.6;
+}
+.hum-desc strong { color: var(--white); font-weight: 500; }
+
+/* Frequency selector */
+.freq-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.freq-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.freq-chip:hover { border-color: rgba(13,148,136,0.3); }
+.freq-chip.selected {
+  background: rgba(13,148,136,0.1);
+  border-color: var(--teal);
+}
+.freq-hz {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: var(--teal);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.freq-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 4px;
+}
+.freq-note {
+  font-size: 10px;
+  color: var(--dimmer);
+  line-height: 1.4;
+}
+
+/* Humming timer */
+.hum-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+.hum-time-display {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  color: var(--teal);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.hum-time-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  font-family: 'Barlow Condensed', sans-serif;
+  margin-bottom: 18px;
+}
+.hum-waveform {
+  width: 100%;
+  height: 36px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+.hum-wave-bar {
+  width: 3px;
+  border-radius: 2px;
+  background: var(--teal);
+  opacity: 0.5;
+  transition: height 0.1s;
+}
+.hum-wave-bar.active { opacity: 0.9; }
+.hum-start-btn {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  padding: 14px 36px;
+  background: rgba(13,148,136,0.12);
+  border: 1px solid var(--teal);
+  color: var(--teal);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.hum-start-btn:hover { background: rgba(13,148,136,0.2); }
+.hum-start-btn.running { background: rgba(13,148,136,0.2); }
+.hum-start-btn:active { transform: scale(0.97); }
+
+/* ── LUNG CAPACITY CHALLENGE ── */
+.lung-section {
+  margin: 0 20px 32px;
+}
+.lung-panel {
+  background: var(--surface);
+  border: 1px solid var(--border-amber);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.lung-header {
+  padding: 18px 18px 14px;
+  background: var(--amber-dim);
+  border-bottom: 1px solid var(--border);
+}
+.lung-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  color: var(--amber);
+  margin-bottom: 4px;
+}
+.lung-desc {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.6;
+}
+.lung-body {
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.lung-gauge-wrap {
+  width: 100%;
+  position: relative;
+}
+.lung-gauge-track {
+  height: 20px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.lung-gauge-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 10px;
+  background: linear-gradient(to right, var(--teal), var(--amber), var(--ember));
+  transition: width 0.1s linear;
+}
+.lung-gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--dimmer);
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.lung-best {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  color: var(--amber);
+  line-height: 1;
+}
+.lung-best-label {
+  font-size: 11px;
+  color: var(--dimmer);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-family: 'Barlow Condensed', sans-serif;
+  text-align: center;
+}
+.lung-btn {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  padding: 14px 28px;
+  background: var(--amber-soft);
+  border: 1px solid var(--border-amber);
+  color: var(--amber);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 100%;
+}
+.lung-btn:hover { background: rgba(245,158,11,0.22); }
+.lung-btn:active { transform: scale(0.97); }
+.lung-instruction {
+  font-size: 14px;
+  color: var(--dim);
+  text-align: center;
+  line-height: 1.5;
+  min-height: 40px;
+}
+.lung-instruction strong { color: var(--white); }
+
+/* ── BENEFITS STRIP ── */
+.benefits-section {
+  padding: 0 20px 32px;
+}
+.benefits-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  margin-bottom: 14px;
+  color: var(--dimmer);
+}
+.benefits-title em { color: var(--white); font-style: normal; }
+.benefit-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+.benefit-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.benefit-dot.amber { background: var(--amber); }
+.benefit-dot.ember { background: var(--ember); }
+.benefit-dot.teal  { background: var(--teal); }
+.benefit-text {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.6;
+}
+.benefit-text strong { color: var(--white); font-weight: 500; }
+
+/* Disclaimer */
+.disclaimer {
+  margin: 0 20px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 11px;
+  color: var(--dimmer);
+  line-height: 1.6;
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* Progress bar for exercises */
+.ex-progress-wrap {
+  padding: 0 18px 16px;
+}
+.ex-progress-track {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.ex-progress-fill {
+  height: 100%;
+  background: var(--amber);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+.ex-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--dimmer);
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+/* Streak / history */
+.streak-bar {
+  margin: 0 20px 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.streak-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  color: var(--ember);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.streak-info {}
+.streak-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+.streak-sub { font-size: 12px; color: var(--dimmer); line-height: 1.4; }
+.streak-days {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.streak-day {
+  width: 8px; height: 24px;
+  border-radius: 3px;
+  background: var(--surface3);
+}
+.streak-day.done { background: var(--ember); }
+.streak-day.today { background: var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     HERO
+═══════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-eyebrow">Vocal Strength Training</div>
+  <div class="hero-logo">LOUD<em>MOUTH</em></div>
+  <div class="hero-module">Breathwork &amp; Power</div>
+
+  <div class="hero-quote">
+    "What do you do when your <em>Loudmouth isn't loud enough?</em>"
+  </div>
+  <div class="hero-divider"></div>
+  <div class="hero-quote" style="font-size:clamp(13px,3vw,16px); margin-bottom:8px;">
+    "The difference between an amateur and a professional often isn't in the tone. <em>It's in the strength.</em>"
+  </div>
+  <div class="hero-sub" style="margin-top:14px;">
+    Professionals call it <strong>Dynamics.</strong> We call it having a Loudmouth.<br>
+    The most gorgeous voices never go anywhere because the singer never developed strength.<br><br>
+    <strong>There is only so much a soundboard can do for you.</strong>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     TRUTH CARDS
+═══════════════════════════════════ -->
+<div class="truth-section">
+
+  <div class="truth-card ember">
+    <div class="truth-label">The Hard Truth</div>
+    <div class="truth-text">
+      Oftentimes the most gorgeous voices <strong>never go anywhere</strong> — because the singer never develops strength. A voice without breath support is like a sports car with a small gas tank. Stunning on the driveway. <em>Useless on the highway.</em>
+    </div>
+  </div>
+
+  <div class="truth-card amber">
+    <div class="truth-label">What Strength Actually Means</div>
+    <div class="truth-text">
+      Vocal strength isn't about being louder. It's about <strong>control under pressure</strong> — sustaining a note through the whole phrase, hitting the chorus after two verses, finishing strong instead of fading. The diaphragm is a muscle. <em>You can train it.</em>
+    </div>
+  </div>
+
+  <div class="truth-card teal">
+    <div class="truth-label">Ancient Practice, Modern Science</div>
+    <div class="truth-text">
+      Monks, opera singers, and yogis have known for centuries what neuroscience is now confirming: <strong>intentional breathing and humming activate the vagal nerve</strong>, reduce performance anxiety, and improve vocal resonance. This isn't woo. <em>This is how professionals prepare.</em>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     STREAK
+═══════════════════════════════════ -->
+<div class="streak-bar">
+  <div class="streak-num">4</div>
+  <div class="streak-info">
+    <div class="streak-label">Day Streak</div>
+    <div class="streak-sub">10 min/day builds more than<br>1 hour per week</div>
+  </div>
+  <div class="streak-days">
+    <div class="streak-day done"></div>
+    <div class="streak-day done"></div>
+    <div class="streak-day done"></div>
+    <div class="streak-day done"></div>
+    <div class="streak-day today"></div>
+    <div class="streak-day"></div>
+    <div class="streak-day"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     LIVE EXERCISE PLAYER
+═══════════════════════════════════ -->
+<div class="section-head">
+  <div class="section-head-title">Today's Session</div>
+  <div class="section-head-sub">Box Breathing</div>
+</div>
+
+<div class="player-panel">
+  <div class="player-header">
+    <div class="player-title" id="player-ex-name">4-4-4-4 Box Breathing</div>
+    <div class="player-song">Rounds: <span id="player-rounds">0</span> / 8</div>
+  </div>
+
+  <div class="orb-wrap">
+    <div class="orb-outer">
+      <div class="orb-ring-3"></div>
+      <div class="orb-ring-2"></div>
+      <div class="orb-ring"></div>
+      <div class="orb-core" id="orb-core">
+        <div class="orb-instruction" id="orb-instruction">READY</div>
+        <div class="orb-count" id="orb-count">—</div>
+        <div class="orb-phase-sub" id="orb-sub">Press play</div>
+      </div>
+    </div>
+
+    <div class="phase-track">
+      <div class="phase-dots">
+        <div class="phase-dot inhale" id="pd-inhale"></div>
+        <div class="phase-dot hold" id="pd-hold"></div>
+        <div class="phase-dot exhale" id="pd-exhale"></div>
+        <div class="phase-dot hold2" id="pd-hold2"></div>
+      </div>
+      <div class="phase-labels">
+        <div class="phase-lbl inhale" id="pl-inhale">Inhale</div>
+        <div class="phase-lbl hold" id="pl-hold">Hold</div>
+        <div class="phase-lbl exhale" id="pl-exhale">Exhale</div>
+        <div class="phase-lbl hold2" id="pl-hold2">Hold</div>
+      </div>
+    </div>
+
+    <div class="ex-progress-wrap" style="width:100%;max-width:280px;padding:0;">
+      <div class="ex-progress-label">
+        <span>Session Progress</span>
+        <span id="prog-pct">0%</span>
+      </div>
+      <div class="ex-progress-track">
+        <div class="ex-progress-fill" id="prog-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="player-stats">
+    <div class="pstat">
+      <div class="pstat-num" id="stat-rounds">0</div>
+      <div class="pstat-label">Rounds</div>
+    </div>
+    <div class="pstat">
+      <div class="pstat-num" id="stat-time">0:00</div>
+      <div class="pstat-label">Elapsed</div>
+    </div>
+    <div class="pstat">
+      <div class="pstat-num" id="stat-phase">—</div>
+      <div class="pstat-label">Phase</div>
+    </div>
+  </div>
+
+  <div class="player-controls">
+    <button class="pctrl" onclick="prevExercise()" title="Previous">⏮</button>
+    <button class="pctrl start" id="main-play-btn" onclick="toggleBreathing()">▶</button>
+    <button class="pctrl" onclick="resetBreathing()" title="Reset">↺</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     EXERCISE LIBRARY
+═══════════════════════════════════ -->
+<div class="section-head" style="margin-top:8px;">
+  <div class="section-head-title">Exercise Library</div>
+</div>
+
+<div class="ex-tabs">
+  <button class="ex-tab active" onclick="filterEx('all', this)">All</button>
+  <button class="ex-tab" onclick="filterEx('breath', this)">Breathwork</button>
+  <button class="ex-tab" onclick="filterEx('lung', this)">Lung Power</button>
+  <button class="ex-tab" onclick="filterEx('hum', this)">Humming</button>
+  <button class="ex-tab" onclick="filterEx('warmup', this)">Warmups</button>
+</div>
+
+<div class="exercise-grid" id="exercise-grid">
+
+  <div class="ex-card" data-cat="breath" onclick="toggleExDetail(this)">
+    <div class="ex-header">
+      <div class="ex-icon breath">🌬️</div>
+      <div class="ex-info">
+        <div class="ex-name">Box Breathing</div>
+        <div class="ex-tag">Breathwork · Calm & Control</div>
+      </div>
+      <div class="ex-meta">
+        <div class="ex-duration">5 min</div>
+        <div class="ex-level level-beginner">Beginner</div>
+      </div>
+    </div>
+    <div class="ex-detail">
+      <div class="ex-detail-desc">
+        <strong>4 counts in. 4 counts hold. 4 counts out. 4 counts hold.</strong> Repeat.<br><br>
+        Used by Navy SEALs before high-stress operations and singers before stage fright takes hold. <em>Box breathing resets your nervous system in under two minutes.</em> Before you sing, this is your pre-flight checklist.
+      </div>
+      <button class="lung-btn" style="background:rgba(232,93,4,0.1);border-color:rgba(232,93,4,0.3);color:var(--ember);" onclick="loadExercise('box', event)">Start This Exercise →</button>
+    </div>
+  </div>
+
+  <div class="ex-card" data-cat="breath" onclick="toggleExDetail(this)">
+    <div class="ex-header">
+      <div class="ex-icon breath">💨</div>
+      <div class="ex-info">
+        <div class="ex-name">Diaphragmatic Breathing</div>
+        <div class="ex-tag">Breathwork · Foundation</div>
+      </div>
+      <div class="ex-meta">
+        <div class="ex-duration">4 min</div>
+        <div class="ex-level level-beginner">Beginner</div>
+      </div>
+    </div>
+    <div class="ex-detail">
+      <div class="ex-detail-desc">
+        <strong>Belly breathing, not chest breathing.</strong> Place one hand on your chest, one on your belly. Your belly should move — your chest should stay still.<br><br>
+        Most untrained singers breathe from the chest. This is the single most common reason voices tire out quickly. <em>The diaphragm is the engine. Learn to use it.</em>
+      </div>
+      <button class="lung-btn" style="background:rgba(232,93,4,0.1);border-color:rgba(232,93,4,0.3);color:var(--ember);" onclick="loadExercise('diaphragm', event)">Start This Exercise →</button>
+    </div>
+  </div>
+
+  <div class="ex-card" data-cat="lung" onclick="toggleExDetail(this)">
+    <div class="ex-header">
+      <div class="ex-icon lung">🫁</div>
+      <div class="ex-info">
+        <div class="ex-name">Sustained Tone Hold</div>
+        <div class="ex-tag">Lung Power · Endurance</div>
+      </div>
+      <div class="ex-meta">
+        <div class="ex-duration">3 min</div>
+        <div class="ex-level level-intermediate">Intermediate</div>
+      </div>
+    </div>
+    <div class="ex-detail">
+      <div class="ex-detail-desc">
+        Take a full diaphragmatic breath and hold a single comfortable note — <strong>see how long you can sustain it cleanly.</strong><br><br>
+        This directly trains the same muscles used when you hold a phrase across a long musical line. Most beginners get 8–12 seconds. Trained singers regularly hit 20–30 seconds. <em>Track your personal best and beat it.</em>
+      </div>
+      <button class="lung-btn" onclick="loadExercise('sustain', event)">Start This Exercise →</button>
+    </div>
+  </div>
+
+  <div class="ex-card" data-cat="lung" onclick="toggleExDetail(this)">
+    <div class="ex-header">
+      <div class="ex-icon lung">🔋</div>
+      <div class="ex-info">
+        <div class="ex-name">Straw Phonation</div>
+        <div class="ex-tag">Lung Power · Resistance Training</div>
+      </div>
+      <div class="ex-meta">
+        <div class="ex-duration">5 min</div>
+        <div class="ex-level level-intermediate">Intermediate</div>
+      </div>
+    </div>
+    <div class="ex-detail">
+      <div class="ex-detail-desc">
+        Hum or sing through a narrow straw. <strong>The resistance strengthens the vocal folds</strong> the same way resistance bands strengthen muscles — gently but effectively.<br><br>
+        Speech-language pathologists use this as a primary rehabilitation technique. It's also used by professionals to warm up without strain. <em>You need an actual straw. A coffee stirrer is even better.</em>
+      </div>
+      <button class="lung-btn" onclick="loadExercise('straw', event)">Start This Exercise →</button>
+    </div>
+  </div>
+
+  <div class="ex-card" data-cat="hum" onclick="toggleExDetail(this)">
+    <div class="ex-header">
+      <div class="ex-icon hum">〰️</div>
+      <div class="ex-info">
+        <div class="ex-name">Healing Hum — 528Hz</div>
+        <div class="ex-tag">Humming · Meditation · Resonance</div>
+      </div>
+      <div class="ex-meta">
+        <div class="ex-duration">10 min</div>
+        <div class="ex-level level-beginner">Beginner</div>
+      </div>
+    </div>
+    <div class="ex-detail">
+      <div class="ex-detail-desc">
+        Hum to a 528Hz reference tone. <strong>This frequency sits in the natural resonant range of the human chest cavity.</strong><br><br>
+        Ancient meditation traditions built entire practices around sustained humming. Modern research on bhramari (bee breath) shows measurable reductions in heart rate and cortisol. <em>For singers, it's also the single best passive vocal warm-up.</em> You're training resonance while you relax.
+      </div>
+      <button class="lung-btn" style="background:rgba(13,148,136,0.1);border-color:var(--border-teal);color:var(--teal);" onclick="loadExercise('hum528', event)">Start This Exercise →</button>
+    </div>
+  </div>
+
+  <div class="ex-card" data-cat="hum" onclick="toggleExDetail(this)">
+    <div class="ex-header">
+      <div class="ex-icon hum">🔔</div>
+      <div class="ex-info">
+        <div class="ex-name">Om / Resonance Hum</div>
+        <div class="ex-tag">Humming · Ancient Practice</div>
+      </div>
+      <div class="ex-meta">
+        <div class="ex-duration">7 min</div>
+        <div class="ex-level level-beginner">Beginner</div>
+      </div>
+    </div>
+    <div class="ex-detail">
+      <div class="ex-detail-desc">
+        Sustained "Mmm" hum — <strong>feel the vibration in your chest, not your throat.</strong> This is the foundational exercise in Sanskrit vocal traditions and is now a staple of professional vocal warm-up routines worldwide.<br><br>
+        <em>You're not meditating instead of singing. You're doing what every serious singer does before they open their mouth.</em>
+      </div>
+      <button class="lung-btn" style="background:rgba(13,148,136,0.1);border-color:var(--border-teal);color:var(--teal);" onclick="loadExercise('om', event)">Start This Exercise →</button>
+    </div>
+  </div>
+
+  <div class="ex-card" data-cat="warmup" onclick="toggleExDetail(this)">
+    <div class="ex-header">
+      <div class="ex-icon power">⚡</div>
+      <div class="ex-info">
+        <div class="ex-name">The Full Pre-Show Sequence</div>
+        <div class="ex-tag">Warmup · Complete Routine</div>
+      </div>
+      <div class="ex-meta">
+        <div class="ex-duration">12 min</div>
+        <div class="ex-level level-advanced">Pro</div>
+      </div>
+    </div>
+    <div class="ex-detail">
+      <div class="ex-detail-desc">
+        The complete sequence used before a performance: <strong>2 min diaphragmatic breathing → 2 min box breathing → 3 min straw phonation → 3 min 528Hz hum → 2 min scale warm-up.</strong><br><br>
+        <em>This is what professional warm-up actually looks like.</em> Karaoke singers who do this walk up to the mic with a different kind of confidence — because they've already done the work.
+      </div>
+      <button class="lung-btn" style="background:rgba(200,21,27,0.08);border-color:rgba(200,21,27,0.25);color:var(--red);" onclick="loadExercise('full', event)">Start Full Sequence →</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     HUMMING TIMER
+═══════════════════════════════════ -->
+<div class="section-head">
+  <div class="section-head-title">Humming Session</div>
+  <div class="section-head-sub">Pick your frequency</div>
+</div>
+
+<div class="hum-section">
+  <div class="hum-panel">
+    <div class="hum-header">
+      <div class="hum-title">Ancient Technique. Modern Science.</div>
+      <div class="hum-desc">
+        Select a frequency. Match it with your hum. <strong>Feel where the vibration lives</strong> — chest, throat, skull. That awareness is what separates trained singers from everyone else.
+      </div>
+    </div>
+
+    <div class="freq-grid">
+      <div class="freq-chip selected" onclick="selectFreq(this, 432, 'A4 — Warm & Grounding')">
+        <div class="freq-hz">432</div>
+        <div class="freq-name">Earth Tone</div>
+        <div class="freq-note">Grounding, warm, chest resonance</div>
+      </div>
+      <div class="freq-chip" onclick="selectFreq(this, 528, 'C5 — Chest Resonance')">
+        <div class="freq-hz">528</div>
+        <div class="freq-name">Heart Tone</div>
+        <div class="freq-note">Natural chest cavity resonance</div>
+      </div>
+      <div class="freq-chip" onclick="selectFreq(this, 639, 'Eb5 — Connection')">
+        <div class="freq-hz">639</div>
+        <div class="freq-name">Connection</div>
+        <div class="freq-note">Throat & facial resonance</div>
+      </div>
+    </div>
+
+    <div class="hum-timer">
+      <div class="hum-time-display" id="hum-time">5:00</div>
+      <div class="hum-time-label" id="hum-time-label">Session Length — Tap to change</div>
+      <div class="hum-waveform" id="hum-waveform">
+        <!-- generated by JS -->
+      </div>
+      <button class="hum-start-btn" id="hum-btn" onclick="toggleHum()">▶ Begin Humming</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     LUNG CAPACITY CHALLENGE
+═══════════════════════════════════ -->
+<div class="section-head">
+  <div class="section-head-title">Lung Capacity</div>
+  <div class="section-head-sub">Your personal best</div>
+</div>
+
+<div class="lung-section">
+  <div class="lung-panel">
+    <div class="lung-header">
+      <div class="lung-title">How Big Is Your Loudmouth?</div>
+      <div class="lung-desc">
+        Hold one note as long as you can. <strong>This is your vocal endurance score.</strong> Track it over time — it will grow, and when it does, everything about your singing changes.
+      </div>
+    </div>
+    <div class="lung-body">
+      <div style="text-align:center;">
+        <div class="lung-best" id="lung-best">—</div>
+        <div class="lung-best-label">Personal Best · Seconds</div>
+      </div>
+      <div class="lung-gauge-wrap">
+        <div class="lung-gauge-track">
+          <div class="lung-gauge-fill" id="lung-gauge"></div>
+        </div>
+        <div class="lung-gauge-labels">
+          <span>0s</span>
+          <span>Beginner 8s</span>
+          <span>Good 20s</span>
+          <span>Pro 30s+</span>
+        </div>
+      </div>
+      <div class="lung-instruction" id="lung-instruction">
+        Take a deep belly breath and tap <strong>Start</strong> when you begin your note.
+      </div>
+      <button class="lung-btn" id="lung-btn" onclick="toggleLungTest()">▶ Start Timing</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     BENEFITS
+═══════════════════════════════════ -->
+<div class="benefits-section">
+  <div class="benefits-title">Why This Works — <em>No Claims, Just Facts</em></div>
+
+  <div class="benefit-row">
+    <div class="benefit-dot amber"></div>
+    <div class="benefit-text"><strong>Stronger diaphragm = longer phrases.</strong> You stop running out of air mid-line. The notes at the end of phrases stay as strong as the ones at the beginning.</div>
+  </div>
+  <div class="benefit-row">
+    <div class="benefit-dot ember"></div>
+    <div class="benefit-text"><strong>Controlled breath = controlled nerves.</strong> Stage fright is partly physiological — shallow breathing triggers the stress response. Diaphragmatic breathing interrupts it.</div>
+  </div>
+  <div class="benefit-row">
+    <div class="benefit-dot teal"></div>
+    <div class="benefit-text"><strong>Humming warms the vocal folds gently.</strong> Cold folds are stiff folds. A 5-minute hum before singing is worth more than 20 minutes of scales.</div>
+  </div>
+  <div class="benefit-row">
+    <div class="benefit-dot amber"></div>
+    <div class="benefit-text"><strong>Resonance awareness changes your tone.</strong> When you know where your voice vibrates, you can direct it — chest for warmth, mask for brightness, skull for power.</div>
+  </div>
+  <div class="benefit-row">
+    <div class="benefit-dot ember"></div>
+    <div class="benefit-text"><strong>Daily practice beats weekend sessions.</strong> 10 minutes every day builds the muscle memory that 2 hours on Saturday cannot replicate.</div>
+  </div>
+</div>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer">
+  Breathwork and vocal exercises are for training and wellness purposes. LOUDMOUTH is not a medical application and does not provide medical advice. If you experience dizziness, pain, or discomfort during any exercise, stop immediately. Consult a healthcare professional before beginning any new physical practice.
+</div>
+
+<!-- ═══════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════ -->
+<script>
+
+// ─── BREATHING EXERCISE ENGINE ───────────────────────────────────
+
+const exercises = {
+  box:       { name: '4-4-4-4 Box Breathing',      phases: [4,4,4,4],  rounds: 8  },
+  diaphragm: { name: 'Diaphragmatic Breathing',     phases: [5,0,6,0],  rounds: 6  },
+  sustain:   { name: 'Sustained Tone Hold',         phases: [4,0,20,0], rounds: 5  },
+  straw:     { name: 'Straw Phonation',             phases: [3,0,15,0], rounds: 6  },
+  hum528:    { name: 'Healing Hum — 528Hz',         phases: [3,0,12,0], rounds: 10 },
+  om:        { name: 'Om / Resonance Hum',          phases: [3,0,10,0], rounds: 8  },
+  full:      { name: 'Full Pre-Show Sequence',      phases: [4,4,6,2],  rounds: 15 },
+};
+
+const phaseNames  = ['Inhale','Hold','Exhale','Hold'];
+const phaseColors = ['var(--ember)','var(--amber)','var(--teal)','var(--dimmer)'];
+const phaseSubs   = [
+  'through the nose',
+  'stay still',
+  'through the mouth',
+  'empty and still'
+];
+
+let breathState = {
+  running: false,
+  exKey: 'box',
+  phaseIdx: 0,
+  phaseCount: 0,
+  roundsDone: 0,
+  elapsed: 0,
+  tickInterval: null,
+  elapsedInterval: null,
+};
+
+function loadExercise(key, e) {
+  if (e) e.stopPropagation();
+  breathState.exKey = key;
+  resetBreathing();
+  const ex = exercises[key];
+  document.getElementById('player-ex-name').textContent = ex.name;
+  document.getElementById('player-rounds').textContent = ex.rounds;
+  // Scroll to player
+  document.querySelector('.player-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function toggleBreathing() {
+  if (breathState.running) {
+    pauseBreathing();
+  } else {
+    startBreathing();
+  }
+}
+
+function startBreathing() {
+  breathState.running = true;
+  document.getElementById('main-play-btn').textContent = '⏸';
+  document.getElementById('main-play-btn').classList.add('running');
+
+  if (breathState.phaseCount === 0) {
+    breathState.phaseIdx = 0;
+    breathState.phaseCount = 0;
+    breathState.roundsDone = 0;
+  }
+
+  runTick();
+  breathState.tickInterval = setInterval(runTick, 1000);
+
+  // Elapsed timer
+  breathState.elapsedInterval = setInterval(() => {
+    breathState.elapsed++;
+    const m = Math.floor(breathState.elapsed / 60);
+    const s = (breathState.elapsed % 60).toString().padStart(2, '0');
+    document.getElementById('stat-time').textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+function pauseBreathing() {
+  breathState.running = false;
+  clearInterval(breathState.tickInterval);
+  clearInterval(breathState.elapsedInterval);
+  document.getElementById('main-play-btn').textContent = '▶';
+  document.getElementById('main-play-btn').classList.remove('running');
+}
+
+function resetBreathing() {
+  pauseBreathing();
+  breathState.phaseIdx = 0;
+  breathState.phaseCount = 0;
+  breathState.roundsDone = 0;
+  breathState.elapsed = 0;
+
+  document.getElementById('orb-instruction').textContent = 'READY';
+  document.getElementById('orb-count').textContent = '—';
+  document.getElementById('orb-sub').textContent = 'Press play';
+  document.getElementById('orb-core').style.transform = '';
+
+  ['inhale','hold','exhale','hold2'].forEach(p => {
+    document.getElementById('pd-' + p).classList.remove('active');
+    document.getElementById('pl-' + p).classList.remove('active');
+  });
+
+  document.getElementById('stat-rounds').textContent = '0';
+  document.getElementById('stat-time').textContent = '0:00';
+  document.getElementById('stat-phase').textContent = '—';
+  document.getElementById('prog-fill').style.width = '0%';
+  document.getElementById('prog-pct').textContent = '0%';
+  document.getElementById('player-rounds').textContent = exercises[breathState.exKey].rounds;
+}
+
+function prevExercise() {
+  const keys = Object.keys(exercises);
+  const cur = keys.indexOf(breathState.exKey);
+  const prev = keys[(cur - 1 + keys.length) % keys.length];
+  loadExercise(prev);
+}
+
+function runTick() {
+  const ex = exercises[breathState.exKey];
+  const phases = ex.phases;
+  const phaseKeys = ['inhale','hold','exhale','hold2'];
+  const phaseNamesArr = phaseNames;
+
+  // Skip zero-duration phases
+  let phaseDur = phases[breathState.phaseIdx];
+  while (phaseDur === 0) {
+    breathState.phaseIdx = (breathState.phaseIdx + 1) % 4;
+    if (breathState.phaseIdx === 0) {
+      breathState.roundsDone++;
+      if (breathState.roundsDone >= ex.rounds) {
+        finishBreathing();
+        return;
+      }
+    }
+    phaseDur = phases[breathState.phaseIdx];
+  }
+
+  // First tick of a new phase
+  if (breathState.phaseCount === 0) {
+    breathState.phaseCount = phaseDur;
+
+    // Highlight active phase dots
+    ['inhale','hold','exhale','hold2'].forEach((p, i) => {
+      const isActive = i === breathState.phaseIdx;
+      document.getElementById('pd-' + p).classList.toggle('active', isActive);
+      document.getElementById('pl-' + p).classList.toggle('active', isActive);
+    });
+
+    document.getElementById('stat-phase').textContent = phaseNamesArr[breathState.phaseIdx];
+
+    // Orb scale: inhale = grow, exhale = shrink
+    const orb = document.getElementById('orb-core');
+    if (breathState.phaseIdx === 0) orb.style.transform = 'scale(1.12)';
+    else if (breathState.phaseIdx === 2) orb.style.transform = 'scale(0.9)';
+    else orb.style.transform = 'scale(1)';
+  }
+
+  document.getElementById('orb-instruction').textContent = phaseNamesArr[breathState.phaseIdx];
+  document.getElementById('orb-count').textContent = breathState.phaseCount;
+  document.getElementById('orb-sub').textContent = phaseSubs[breathState.phaseIdx];
+
+  // Count down
+  breathState.phaseCount--;
+
+  // Phase done
+  if (breathState.phaseCount < 0) {
+    breathState.phaseIdx = (breathState.phaseIdx + 1) % 4;
+    breathState.phaseCount = 0;
+
+    if (breathState.phaseIdx === 0) {
+      breathState.roundsDone++;
+      document.getElementById('stat-rounds').textContent = breathState.roundsDone;
+
+      const pct = Math.round((breathState.roundsDone / ex.rounds) * 100);
+      document.getElementById('prog-fill').style.width = pct + '%';
+      document.getElementById('prog-pct').textContent = pct + '%';
+
+      if (breathState.roundsDone >= ex.rounds) {
+        finishBreathing();
+        return;
+      }
+    }
+  }
+}
+
+function finishBreathing() {
+  pauseBreathing();
+  document.getElementById('orb-instruction').textContent = 'DONE';
+  document.getElementById('orb-count').textContent = '✓';
+  document.getElementById('orb-sub').textContent = 'Session complete';
+  document.getElementById('orb-core').style.transform = 'scale(1)';
+  document.getElementById('prog-fill').style.width = '100%';
+  document.getElementById('prog-pct').textContent = '100%';
+}
+
+// ─── EXERCISE DETAIL TOGGLE ──────────────────────────────────────
+function toggleExDetail(card) {
+  const isActive = card.classList.contains('active');
+  document.querySelectorAll('.ex-card').forEach(c => c.classList.remove('active'));
+  if (!isActive) card.classList.add('active');
+}
+
+// ─── FILTER EXERCISES ────────────────────────────────────────────
+function filterEx(cat, btn) {
+  document.querySelectorAll('.ex-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.ex-card').forEach(card => {
+    const show = cat === 'all' || card.dataset.cat === cat;
+    card.style.display = show ? '' : 'none';
+  });
+}
+
+// ─── HUMMING TIMER ───────────────────────────────────────────────
+let humState = { running: false, remaining: 300, interval: null, totalSecs: 300, freq: 432 };
+let humAudioCtx = null;
+let humOscillator = null;
+let humGain = null;
+
+// Build waveform bars
+const hw = document.getElementById('hum-waveform');
+for (let i = 0; i < 24; i++) {
+  const bar = document.createElement('div');
+  bar.className = 'hum-wave-bar';
+  bar.style.height = (6 + Math.abs(Math.sin(i * 0.5)) * 20) + 'px';
+  hw.appendChild(bar);
+}
+
+function selectFreq(chip, hz, label) {
+  document.querySelectorAll('.freq-chip').forEach(c => c.classList.remove('selected'));
+  chip.classList.add('selected');
+  humState.freq = hz;
+  if (humOscillator) humOscillator.frequency.setTargetAtTime(hz, humAudioCtx.currentTime, 0.1);
+}
+
+function toggleHum() {
+  if (humState.running) {
+    stopHum();
+  } else {
+    startHum();
+  }
+}
+
+function startHum() {
+  humState.running = true;
+  document.getElementById('hum-btn').textContent = '⏸ Pause';
+  document.getElementById('hum-btn').classList.add('running');
+
+  // Audio tone for reference pitch
+  try {
+    humAudioCtx = humAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    humOscillator = humAudioCtx.createOscillator();
+    humGain = humAudioCtx.createGain();
+    humOscillator.type = 'sine';
+    humOscillator.frequency.value = humState.freq;
+    humGain.gain.value = 0.08; // very soft reference tone
+    humOscillator.connect(humGain);
+    humGain.connect(humAudioCtx.destination);
+    humOscillator.start();
+  } catch(e) {}
+
+  // Animate wave bars
+  animateHumWave();
+
+  humState.interval = setInterval(() => {
+    humState.remaining = Math.max(0, humState.remaining - 1);
+    const m = Math.floor(humState.remaining / 60);
+    const s = (humState.remaining % 60).toString().padStart(2, '0');
+    document.getElementById('hum-time').textContent = `${m}:${s}`;
+    if (humState.remaining <= 0) stopHum();
+  }, 1000);
+}
+
+function stopHum() {
+  humState.running = false;
+  clearInterval(humState.interval);
+  document.getElementById('hum-btn').textContent = humState.remaining > 0 ? '▶ Resume' : '▶ Begin Humming';
+  document.getElementById('hum-btn').classList.remove('running');
+  if (humOscillator) { try { humOscillator.stop(); } catch(e) {} humOscillator = null; }
+  document.querySelectorAll('.hum-wave-bar').forEach(b => b.classList.remove('active'));
+}
+
+let humAnimFrame = null;
+function animateHumWave() {
+  if (!humState.running) return;
+  const bars = document.querySelectorAll('.hum-wave-bar');
+  const t = Date.now() / 1000;
+  bars.forEach((bar, i) => {
+    const h = 6 + Math.abs(Math.sin(t * 2 + i * 0.4)) * 22;
+    bar.style.height = h + 'px';
+    bar.classList.add('active');
+  });
+  humAnimFrame = requestAnimationFrame(animateHumWave);
+}
+
+// ─── LUNG CAPACITY TEST ──────────────────────────────────────────
+let lungState = { running: false, start: null, best: null, interval: null };
+
+function toggleLungTest() {
+  if (lungState.running) {
+    endLungTest();
+  } else {
+    startLungTest();
+  }
+}
+
+function startLungTest() {
+  lungState.running = true;
+  lungState.start = Date.now();
+  document.getElementById('lung-btn').textContent = '⏹ Stop — I\'m done';
+  document.getElementById('lung-btn').style.background = 'rgba(200,21,27,0.12)';
+  document.getElementById('lung-btn').style.borderColor = 'rgba(200,21,27,0.3)';
+  document.getElementById('lung-btn').style.color = 'var(--red)';
+  document.getElementById('lung-instruction').innerHTML = 'Hold that note… <strong>breathe through your diaphragm when you start</strong>';
+
+  lungState.interval = setInterval(() => {
+    const secs = ((Date.now() - lungState.start) / 1000).toFixed(1);
+    document.getElementById('lung-best').textContent = secs + 's';
+    const pct = Math.min(100, (parseFloat(secs) / 35) * 100);
+    document.getElementById('lung-gauge').style.width = pct + '%';
+  }, 100);
+}
+
+function endLungTest() {
+  lungState.running = false;
+  clearInterval(lungState.interval);
+  const secs = ((Date.now() - lungState.start) / 1000).toFixed(1);
+  const n = parseFloat(secs);
+
+  lungState.best = Math.max(lungState.best || 0, n);
+  document.getElementById('lung-best').textContent = lungState.best.toFixed(1) + 's';
+
+  let msg = '';
+  if (n < 8)  msg = 'That\'s a starting point. <strong>It will grow fast.</strong> Most singers double this in 3 weeks.';
+  else if (n < 15) msg = 'Solid. You\'re in beginner-to-intermediate range. <strong>Keep building.</strong>';
+  else if (n < 25) msg = 'That\'s genuinely good. You have real breath support working. <strong>Keep pushing.</strong>';
+  else msg = '<strong>Professional range.</strong> That\'s the kind of lung capacity that holds a crowd.';
+
+  document.getElementById('lung-instruction').innerHTML = `${n.toFixed(1)} seconds. ` + msg;
+  document.getElementById('lung-btn').textContent = '▶ Try Again';
+  document.getElementById('lung-btn').style.background = '';
+  document.getElementById('lung-btn').style.borderColor = '';
+  document.getElementById('lung-btn').style.color = '';
+}
+
+</script>
+</body>
+</html>

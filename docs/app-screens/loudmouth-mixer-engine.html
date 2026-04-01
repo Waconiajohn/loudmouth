@@ -1,0 +1,2880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>LOUDMOUTH — Mixer Engine + Social Share</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════
+   LOUDMOUTH — VAS Mixer Engine + Social Share
+   Design: Industrial brutalist / recording studio console
+   Palette: Matte black, blood red, amber signal, chrome
+══════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #060606;
+  --surface: #0f0f0f;
+  --surface2: #161616;
+  --surface3: #1e1e1e;
+  --red: #c8151b;
+  --red-hot: #ff2020;
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,0.18);
+  --green: #16a34a;
+  --green-bright: #22c55e;
+  --blue: #3b82f6;
+  --white: #f4f0ea;
+  --dim: rgba(244,240,234,0.5);
+  --dimmer: rgba(244,240,234,0.60);
+  --dimmest: rgba(244,240,234,0.35);
+  --border: rgba(255,255,255,0.07);
+  --border-bright: rgba(255,255,255,0.14);
+  --chrome: rgba(255,255,255,0.06);
+  --vu-green: #00e676;
+  --vu-yellow: #ffea00;
+  --vu-red: #ff1744;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Noise texture overlay */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999;
+  opacity: 0.6;
+}
+
+/* ── PAGE LAYOUT ── */
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 0 80px;
+  position: relative;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 0;
+  margin-bottom: 24px;
+}
+.topbar-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.06em;
+  color: var(--white);
+}
+.topbar-logo em { color: var(--red); font-style: normal; }
+.topbar-song {
+  text-align: right;
+}
+.song-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+.song-artist {
+  font-size: 11px;
+  color: var(--dimmer);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── SECTION LABELS ── */
+.section-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  padding: 0 20px;
+  margin-bottom: 10px;
+}
+
+/* ═══════════════════════════════════
+   VU METER
+═══════════════════════════════════ */
+.vu-panel {
+  margin: 0 20px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.vu-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.vu-channel {
+  flex: 1;
+}
+.vu-channel-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+.vu-channel-label .vu-db {
+  font-variant-numeric: tabular-nums;
+  color: var(--amber);
+}
+.vu-bar-track {
+  height: 12px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+.vu-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.05s linear;
+  position: relative;
+}
+/* Segmented VU gradient: green → yellow → red */
+.vu-bar-fill.vu-mic {
+  background: linear-gradient(to right,
+    var(--vu-green) 0%, var(--vu-green) 60%,
+    var(--vu-yellow) 60%, var(--vu-yellow) 80%,
+    var(--vu-red) 80%, var(--vu-red) 100%
+  );
+  box-shadow: 0 0 8px rgba(0,230,118,0.4);
+}
+.vu-bar-fill.vu-artist {
+  background: linear-gradient(to right,
+    var(--amber) 0%, var(--amber) 65%,
+    #f97316 65%, #f97316 85%,
+    var(--vu-red) 85%, var(--vu-red) 100%
+  );
+  box-shadow: 0 0 8px rgba(245,158,11,0.35);
+}
+.vu-bar-fill.vu-mix {
+  background: linear-gradient(to right,
+    var(--blue) 0%, var(--blue) 55%,
+    #8b5cf6 55%, #8b5cf6 80%,
+    var(--vu-red) 80%
+  );
+  box-shadow: 0 0 8px rgba(59,130,246,0.4);
+}
+.vu-peak-line {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.vu-peak-line.show { opacity: 0.7; }
+
+/* Clipping indicator */
+.vu-clip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: 'Barlow Condensed', sans-serif;
+  color: var(--dimmer);
+}
+.vu-clip-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--surface3);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: all 0.1s;
+}
+.vu-clip-dot.hot {
+  background: var(--red-hot);
+  box-shadow: 0 0 8px var(--red-hot);
+}
+
+/* ═══════════════════════════════════
+   THE MIXER — MAIN SLIDER
+═══════════════════════════════════ */
+.mixer-panel {
+  margin: 0 20px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Console-style channel strip header */
+.mixer-header {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.mix-channel {
+  flex: 1;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mix-channel + .mix-channel {
+  border-left: 1px solid var(--border);
+}
+.mix-ch-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.mix-ch-label.you { color: var(--vu-green); }
+.mix-ch-label.artist { color: var(--amber); }
+.mix-ch-vol {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  line-height: 1;
+  transition: all 0.1s;
+}
+.mix-ch-vol.you { color: var(--vu-green); }
+.mix-ch-vol.artist { color: var(--amber); }
+.mix-ch-desc {
+  font-size: 10px;
+  color: var(--dimmer);
+  letter-spacing: 0.04em;
+}
+
+/* VAS SLIDER BODY */
+.vas-body {
+  padding: 20px 20px 16px;
+}
+
+.vas-tier-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.vas-tier-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  transition: color 0.3s;
+}
+.vas-tier-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  animation: tier-pulse 2s ease-in-out infinite;
+}
+@keyframes tier-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.6); }
+}
+
+/* CUSTOM SLIDER STYLING */
+.vas-track-wrap {
+  position: relative;
+  margin-bottom: 10px;
+}
+.vas-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-bottom: 8px;
+}
+.vas-slider-labels .left { color: var(--vu-green); opacity: 0.7; }
+.vas-slider-labels .right { color: var(--amber); opacity: 0.7; }
+
+/* The actual range input — fully custom */
+.vas-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 48px;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+}
+
+/* Custom track using ::before on wrapper */
+.vas-track-bg {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 8px;
+  transform: translateY(-50%);
+  border-radius: 4px;
+  overflow: hidden;
+  pointer-events: none;
+  background: rgba(255,255,255,0.06);
+}
+.vas-track-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--vu-green), var(--amber));
+  border-radius: 4px;
+  transition: width 0.05s;
+  box-shadow: 0 0 12px rgba(245,158,11,0.3);
+}
+
+.vas-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--amber);
+  border: 3px solid var(--surface);
+  box-shadow:
+    0 0 0 1px rgba(245,158,11,0.3),
+    0 4px 16px rgba(0,0,0,0.6),
+    0 0 20px rgba(245,158,11,0.3);
+  cursor: grab;
+  transition: box-shadow 0.15s, transform 0.1s;
+  position: relative;
+  z-index: 2;
+}
+.vas-range::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.15);
+  box-shadow:
+    0 0 0 2px rgba(245,158,11,0.5),
+    0 6px 24px rgba(0,0,0,0.8),
+    0 0 30px rgba(245,158,11,0.55);
+}
+.vas-range::-moz-range-thumb {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--amber);
+  border: 3px solid var(--surface);
+  cursor: grab;
+}
+
+/* Blend description */
+.vas-description {
+  font-size: 13px;
+  color: var(--dim);
+  text-align: center;
+  line-height: 1.5;
+  min-height: 40px;
+  padding: 0 8px;
+  transition: opacity 0.2s;
+}
+.vas-description strong { color: var(--white); }
+
+/* Fine-tune nudge buttons */
+.vas-nudge {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.nudge-btn {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface3);
+  color: var(--dim);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.nudge-btn:hover { border-color: var(--border-bright); color: var(--white); }
+.nudge-btn:active { transform: scale(0.95); }
+
+/* ═══════════════════════════════════
+   INDIVIDUAL CHANNEL FADERS
+═══════════════════════════════════ */
+.faders-panel {
+  margin: 0 20px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+.fader-channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.fader-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+}
+.fader-label.you { color: var(--vu-green); }
+.fader-label.artist { color: var(--amber); }
+.fader-label.reverb { color: var(--blue); }
+
+/* Vertical fader */
+.fader-wrap {
+  position: relative;
+  height: 100px;
+  width: 32px;
+  display: flex;
+  justify-content: center;
+}
+.fader-track-bg {
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: 6px;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+}
+.fader-track-fill {
+  position: absolute;
+  left: 50%; bottom: 0;
+  width: 6px;
+  transform: translateX(-50%);
+  border-radius: 3px;
+  transition: height 0.05s;
+}
+.fader-track-fill.you { background: var(--vu-green); box-shadow: 0 0 8px rgba(0,230,118,0.3); }
+.fader-track-fill.artist { background: var(--amber); box-shadow: 0 0 8px rgba(245,158,11,0.3); }
+.fader-track-fill.reverb { background: var(--blue); box-shadow: 0 0 8px rgba(59,130,246,0.3); }
+
+.fader-input {
+  -webkit-appearance: slider-vertical;
+  appearance: slider-vertical;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 32px;
+  height: 100px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+}
+.fader-thumb {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 12px;
+  background: #2a2a2a;
+  border: 1px solid rgba(245,158,11,0.35);
+  border-radius: 3px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  pointer-events: none;
+  transition: bottom 0.05s;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 3px,
+    rgba(245,158,11,0.12) 3px,
+    rgba(245,158,11,0.12) 4px
+  );
+}
+.fader-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  color: var(--dim);
+}
+
+/* ═══════════════════════════════════
+   EQ STRIP
+═══════════════════════════════════ */
+.eq-panel {
+  margin: 0 20px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.eq-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.eq-toggle {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--dimmer);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.eq-toggle.on {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: rgba(59,130,246,0.1);
+}
+.eq-bands {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+.eq-band {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.eq-freq {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+}
+.eq-fader-wrap {
+  height: 80px;
+  width: 24px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+.eq-fader-track {
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: 4px;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.05);
+  border-radius: 2px;
+}
+.eq-fader-track::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+}
+.eq-range {
+  -webkit-appearance: slider-vertical;
+  appearance: slider-vertical;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 24px;
+  height: 80px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+}
+.eq-indicator {
+  position: absolute;
+  left: 50%;
+  width: 22px; height: 8px;
+  background: var(--blue);
+  border-radius: 2px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 6px rgba(59,130,246,0.4);
+  pointer-events: none;
+  transition: top 0.05s;
+}
+.eq-db {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  color: var(--dim);
+}
+
+/* ═══════════════════════════════════
+   EFFECTS RACK
+═══════════════════════════════════ */
+.effects-panel {
+  margin: 0 20px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.effect-cell {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.effect-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.effect-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.effect-toggle {
+  width: 28px; height: 16px;
+  background: var(--surface3);
+  border-radius: 8px;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.effect-toggle::after {
+  content: '';
+  position: absolute;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--dimmer);
+  top: 2px; left: 2px;
+  transition: left 0.2s, background 0.2s;
+}
+.effect-toggle.on {
+  background: rgba(59,130,246,0.25);
+  border-color: var(--blue);
+}
+.effect-toggle.on::after {
+  left: 14px;
+  background: var(--blue);
+  box-shadow: 0 0 6px var(--blue);
+}
+.effect-knob-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.effect-knob-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  position: relative;
+}
+.effect-knob-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--blue);
+  width: 30%;
+  transition: width 0.1s;
+}
+.effect-range {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  inset: -8px 0;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+.effect-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 6px rgba(59,130,246,0.5);
+}
+.effect-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  color: var(--dim);
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ═══════════════════════════════════
+   TRANSPORT / PLAYBACK
+═══════════════════════════════════ */
+.transport-panel {
+  margin: 0 20px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+}
+.transport-time {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.t-current {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--amber);
+  letter-spacing: 0.04em;
+}
+.t-sep { color: var(--dimmer); font-size: 20px; }
+.t-total {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  color: var(--dimmer);
+}
+.transport-waveform {
+  height: 40px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+.transport-waveform-canvas {
+  width: 100%; height: 100%;
+  display: block;
+}
+.transport-progress {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 28%;
+  background: rgba(245,158,11,0.08);
+  border-right: 2px solid var(--amber);
+  transition: width 0.1s linear;
+  pointer-events: none;
+}
+.transport-btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.tbtn {
+  font-size: 14px;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(245,158,11,0.2);
+  background: rgba(245,158,11,0.06);
+  color: rgba(245,158,11,0.65);
+  cursor: pointer;
+  transition: all 0.12s;
+  display: flex; align-items: center; justify-content: center;
+}
+.tbtn:hover {
+  border-color: rgba(245,158,11,0.45);
+  background: rgba(245,158,11,0.12);
+  color: var(--amber);
+}
+.tbtn:active { transform: scale(0.92); }
+.tbtn.play {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+  font-size: 18px;
+  box-shadow: 0 4px 20px rgba(200,21,27,0.35);
+}
+.tbtn.play:hover { background: var(--red-hot); box-shadow: 0 4px 28px rgba(255,32,32,0.45); }
+.tbtn.rec {
+  border-color: rgba(200,21,27,0.3);
+  background: rgba(200,21,27,0.06);
+  color: var(--red);
+  position: relative;
+}
+.tbtn.rec:hover {
+  border-color: rgba(200,21,27,0.5);
+  background: rgba(200,21,27,0.12);
+}
+.tbtn.rec.recording {
+  background: rgba(200,21,27,0.15);
+  border-color: var(--red);
+  animation: rec-pulse 1s ease-in-out infinite;
+}
+.tbtn.rec .rec-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+}
+.tbtn.rec.recording .rec-dot {
+  box-shadow: 0 0 10px var(--red-hot);
+}
+@keyframes rec-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,21,27,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(200,21,27,0); }
+}
+
+/* ═══════════════════════════════════
+   RECORDING STATUS BANNER
+═══════════════════════════════════ */
+.rec-banner {
+  margin: 0 20px 20px;
+  background: rgba(200,21,27,0.08);
+  border: 1px solid rgba(200,21,27,0.3);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+}
+.rec-banner.active { display: flex; }
+.rec-banner-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--red-hot);
+  flex-shrink: 0;
+  box-shadow: 0 0 10px var(--red-hot);
+  animation: rec-dot-blink 0.8s ease-in-out infinite;
+}
+@keyframes rec-dot-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+.rec-banner-text {
+  flex: 1;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.rec-banner-time {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  color: var(--red-hot);
+  letter-spacing: 0.04em;
+}
+
+/* ═══════════════════════════════════
+   SOCIAL SHARE MODAL
+═══════════════════════════════════ */
+.share-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(12px);
+  z-index: 1000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+.share-overlay.open { display: flex; }
+
+.share-sheet {
+  width: 100%;
+  max-width: 480px;
+  background: #0e0e0e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px 24px 0 0;
+  padding: 0 0 40px;
+  animation: sheet-up 0.35s cubic-bezier(0.34,1.3,0.64,1);
+}
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.sheet-handle {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 0;
+  margin-bottom: 8px;
+}
+.sheet-handle-bar {
+  width: 40px; height: 4px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 2px;
+}
+
+/* SHARE CLIP PREVIEW CARD */
+.share-clip-card {
+  margin: 0 20px 20px;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  aspect-ratio: 9/5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+/* Waveform visualization in the card */
+.clip-waveform {
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+}
+.clip-waveform-svg {
+  width: 100%; height: 100%;
+}
+
+.clip-card-top {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.clip-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.06em;
+}
+.clip-logo em { color: var(--red); font-style: normal; }
+.clip-score-badge {
+  background: var(--amber);
+  color: #000;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.clip-card-mid {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.clip-score-vs {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.clip-score-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  line-height: 1;
+}
+.clip-score-num.you { color: var(--vu-green); }
+.clip-score-num.artist { color: var(--amber); opacity: 0.6; }
+.clip-vs-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--dimmer);
+}
+.clip-win-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  color: var(--vu-green);
+}
+
+.clip-card-bot {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.clip-song-info .clip-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+.clip-song-info .clip-artist {
+  font-size: 11px;
+  color: var(--dimmer);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.clip-vas-info {
+  text-align: right;
+}
+.clip-vas-bar-wrap {
+  width: 80px;
+  margin-bottom: 3px;
+}
+.clip-vas-bar-bg {
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.clip-vas-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--vu-green), var(--amber));
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+.clip-vas-label {
+  font-size: 10px;
+  color: var(--dimmer);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'Barlow Condensed', sans-serif;
+}
+
+/* PLAYBACK BAR in share card */
+.clip-playback {
+  margin: 0 20px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.clip-play-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--red);
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 12px rgba(200,21,27,0.4);
+  transition: all 0.12s;
+}
+.clip-play-btn:active { transform: scale(0.92); }
+.clip-progress-wrap {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+.clip-progress-fill {
+  height: 100%;
+  background: var(--amber);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.1s;
+}
+.clip-duration {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  color: var(--dimmer);
+  min-width: 36px;
+  text-align: right;
+}
+
+/* SHARE TARGETS */
+.share-section-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  padding: 0 20px;
+  margin-bottom: 10px;
+}
+
+.share-targets {
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.share-target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 12px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  transition: all 0.15s;
+}
+.share-target:hover { border-color: var(--border-bright); background: var(--surface3); }
+.share-target:active { transform: scale(0.94); }
+.share-target-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.share-target-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+/* Platform colors */
+.st-instagram .share-target-icon { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+.st-tiktok    .share-target-icon { background: #000; border: 1px solid rgba(255,255,255,0.15); }
+.st-message   .share-target-icon { background: #2196F3; }
+.st-copy      .share-target-icon { background: var(--surface3); border: 1px solid var(--border); color: var(--dim); font-size: 16px; }
+
+/* SEND TO FRIEND */
+.send-friend-section {
+  padding: 0 20px;
+  margin-bottom: 16px;
+}
+.send-friend-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-bottom: 10px;
+}
+.friends-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.friends-row::-webkit-scrollbar { display: none; }
+.friend-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.friend-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  border: 2px solid var(--border);
+  background: var(--surface2);
+  position: relative;
+  transition: all 0.15s;
+}
+.friend-chip:active .friend-avatar { transform: scale(0.9); }
+.friend-chip.selected .friend-avatar {
+  border-color: var(--vu-green);
+  box-shadow: 0 0 12px rgba(0,230,118,0.3);
+}
+.friend-check {
+  position: absolute;
+  bottom: -2px; right: -2px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--vu-green);
+  border: 2px solid var(--bg);
+  display: none;
+  align-items: center; justify-content: center;
+  font-size: 8px;
+  color: #000;
+}
+.friend-chip.selected .friend-check { display: flex; }
+.friend-name {
+  font-size: 10px;
+  color: var(--dimmer);
+  text-align: center;
+  max-width: 48px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* SEND BUTTON */
+.share-send-row {
+  padding: 0 20px;
+  display: flex;
+  gap: 10px;
+}
+.share-send-btn {
+  flex: 1;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  padding: 16px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 4px 16px rgba(200,21,27,0.3);
+}
+.share-send-btn:active { transform: scale(0.97); }
+.share-cancel-btn {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 16px 20px;
+  background: transparent;
+  color: var(--dim);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+/* LINK GENERATED STATE */
+.link-generated {
+  margin: 0 20px 16px;
+  background: rgba(0,230,118,0.06);
+  border: 1px solid rgba(0,230,118,0.2);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+.link-generated.show { display: flex; }
+.link-url {
+  flex: 1;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  color: var(--vu-green);
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.link-copy-btn {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(0,230,118,0.12);
+  border: 1px solid rgba(0,230,118,0.3);
+  color: var(--vu-green);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.12s;
+}
+.link-copy-btn.copied {
+  background: var(--vu-green);
+  color: #000;
+}
+
+/* ── SHARE TRIGGER ── */
+.share-trigger-panel {
+  margin: 0 20px;
+}
+.share-trigger-btn {
+  width: 100%;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  padding: 18px;
+  background: transparent;
+  color: var(--white);
+  border: 1px solid var(--border-bright);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.share-trigger-btn .stb-icon { font-size: 20px; }
+.share-trigger-btn:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.2);
+}
+/* Share is always available — any score is worth sharing */
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(15,15,15,0.95);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: var(--white);
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 2000;
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+/* ═══════════════════════════════════
+   LONG-PRESS TOOLTIP SYSTEM
+   Hold any labeled control ~500ms to
+   see a plain-English explanation.
+   Zero clutter for people who know.
+═══════════════════════════════════ */
+
+.lp-tooltip {
+  position: fixed;
+  z-index: 9000;
+  max-width: 260px;
+  min-width: 180px;
+  background: #0a0a0a;
+  border: 1px solid rgba(245,158,11,0.35);
+  border-radius: 12px;
+  padding: 0;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px) scale(0.97);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.7),
+    0 0 0 1px rgba(255,255,255,0.04) inset;
+}
+.lp-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Arrow pointing down toward the element */
+.lp-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px; height: 12px;
+  background: #0a0a0a;
+  border-right: 1px solid rgba(245,158,11,0.35);
+  border-bottom: 1px solid rgba(245,158,11,0.35);
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+  transform: translateX(-50%) rotate(45deg);
+}
+/* Arrow pointing up (when tooltip is below) */
+.lp-tooltip.tip-below::after {
+  bottom: auto;
+  top: -7px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.lp-tip-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.lp-tip-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.lp-tip-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+.lp-tip-body {
+  padding: 10px 14px 12px;
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.55;
+}
+.lp-tip-body strong {
+  color: var(--white);
+  font-weight: 500;
+}
+.lp-tip-body em {
+  color: var(--amber);
+  font-style: normal;
+}
+
+/* Hold-progress ring on the element being held */
+.lp-holding {
+  position: relative;
+}
+.lp-holding::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid transparent;
+  border-top-color: var(--amber);
+  animation: lp-spin 0.5s linear forwards;
+  pointer-events: none;
+  z-index: 10;
+}
+@keyframes lp-spin {
+  from { transform: rotate(0deg); opacity: 0.6; }
+  to   { transform: rotate(360deg); opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-logo">LOUD<em>MOUTH</em></div>
+    <div class="topbar-song">
+      <div class="song-name">Take Me to Church</div>
+      <div class="song-artist">Hozier · Original Master</div>
+    </div>
+  </div>
+
+  <!-- VU METERS -->
+  <div class="section-label">Signal Levels</div>
+  <div class="vu-panel" data-tip="vu-meters">
+    <div class="vu-row">
+      <div class="vu-channel">
+        <div class="vu-channel-label">
+          <span>Your Mic</span>
+          <span class="vu-db" id="vu-mic-db">-∞</span>
+        </div>
+        <div class="vu-bar-track">
+          <div class="vu-bar-fill vu-mic" id="vu-mic-fill"></div>
+          <div class="vu-peak-line" id="vu-mic-peak"></div>
+        </div>
+      </div>
+      <div class="vu-channel">
+        <div class="vu-channel-label">
+          <span>Artist</span>
+          <span class="vu-db" id="vu-art-db">-18</span>
+        </div>
+        <div class="vu-bar-track">
+          <div class="vu-bar-fill vu-artist" id="vu-art-fill" style="width:42%"></div>
+        </div>
+      </div>
+      <div class="vu-channel">
+        <div class="vu-channel-label">
+          <span>Mix Out</span>
+          <span class="vu-db" id="vu-mix-db">-12</span>
+        </div>
+        <div class="vu-bar-track">
+          <div class="vu-bar-fill vu-mix" id="vu-mix-fill" style="width:58%"></div>
+          <div class="vu-peak-line" id="vu-mix-peak"></div>
+        </div>
+      </div>
+    </div>
+    <div class="vu-clip">
+      <div class="vu-clip-dot" id="clip-dot"></div>
+      <span>Clip</span>
+      <span style="flex:1"></span>
+      <span style="font-size:9px;color:var(--dimmest);">MIC ACTIVE: <span id="mic-status" style="color:var(--dimmer)">OFF</span></span>
+    </div>
+  </div>
+
+  <!-- MAIN VAS MIXER -->
+  <div class="section-label">Vocal Assist Slider</div>
+  <div class="mixer-panel">
+    <div class="mixer-header">
+      <div class="mix-channel">
+        <div class="mix-ch-label you">You</div>
+        <div class="mix-ch-vol you" id="you-pct">70%</div>
+        <div class="mix-ch-desc">Your mic signal</div>
+      </div>
+      <div class="mix-channel">
+        <div class="mix-ch-label artist">Artist</div>
+        <div class="mix-ch-vol artist" id="artist-pct">30%</div>
+        <div class="mix-ch-desc">Hozier vocal stem</div>
+      </div>
+    </div>
+    <div class="vas-body">
+      <div class="vas-tier-badge">
+        <div class="vas-tier-dot"></div>
+        <div class="vas-tier-name" id="tier-name">FRONT MAN</div>
+        <div class="vas-tier-dot"></div>
+      </div>
+
+      <div class="vas-track-wrap">
+        <div class="vas-slider-labels">
+          <span class="left">← All You</span>
+          <span class="right">Full Assist →</span>
+        </div>
+        <!-- The fill track underneath -->
+        <div class="vas-track-bg">
+          <div class="vas-track-fill" id="vas-track-fill" style="width:30%"></div>
+        </div>
+        <input
+          type="range"
+          class="vas-range"
+          id="vas-slider"
+          min="0" max="100" value="30"
+          oninput="onVasInput(this.value)"
+          data-tip="vas-slider"
+        >
+      </div>
+
+      <div class="vas-description" id="vas-desc">
+        Mostly you — <strong>a whisper of Hozier</strong> riding behind your voice.
+      </div>
+
+      <div class="vas-nudge">
+        <button class="nudge-btn" onclick="nudgeVas(-10)" data-tip="nudge">− 10%</button>
+        <button class="nudge-btn" onclick="nudgeVas(-5)" data-tip="nudge">− 5%</button>
+        <button class="nudge-btn" onclick="nudgeVas(+5)" data-tip="nudge">+ 5%</button>
+        <button class="nudge-btn" onclick="nudgeVas(+10)" data-tip="nudge">+ 10%</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHANNEL FADERS -->
+  <div class="section-label">Channel Faders</div>
+  <div class="faders-panel">
+    <!-- Your Mic -->
+    <div class="fader-channel">
+      <div class="fader-label you">Your Mic</div>
+      <div class="fader-wrap">
+        <div class="fader-track-bg"></div>
+        <div class="fader-track-fill you" id="fade-you-fill" style="height:80%"></div>
+        <div class="fader-thumb" id="fade-you-thumb" style="bottom:calc(80% - 6px)"></div>
+        <input type="range" class="fader-input" id="fade-you"
+          min="0" max="100" value="80" orient="vertical"
+          oninput="onFaderInput('you', this.value)"
+          data-tip="fader-mic">
+      </div>
+      <div class="fader-val" id="fade-you-val">0</div>
+    </div>
+    <!-- Artist -->
+    <div class="fader-channel">
+      <div class="fader-label artist">Artist</div>
+      <div class="fader-wrap">
+        <div class="fader-track-bg"></div>
+        <div class="fader-track-fill artist" id="fade-art-fill" style="height:60%"></div>
+        <div class="fader-thumb" id="fade-art-thumb" style="bottom:calc(60% - 6px)"></div>
+        <input type="range" class="fader-input" id="fade-art"
+          min="0" max="100" value="60" orient="vertical"
+          oninput="onFaderInput('artist', this.value)"
+          data-tip="fader-artist">
+      </div>
+      <div class="fader-val" id="fade-art-val">0</div>
+    </div>
+    <!-- Reverb/FX -->
+    <div class="fader-channel">
+      <div class="fader-label reverb">Reverb</div>
+      <div class="fader-wrap">
+        <div class="fader-track-bg"></div>
+        <div class="fader-track-fill reverb" id="fade-rev-fill" style="height:25%"></div>
+        <div class="fader-thumb" id="fade-rev-thumb" style="bottom:calc(25% - 6px)"></div>
+        <input type="range" class="fader-input" id="fade-rev"
+          min="0" max="100" value="25" orient="vertical"
+          oninput="onFaderInput('reverb', this.value)"
+          data-tip="fader-reverb">
+      </div>
+      <div class="fader-val" id="fade-rev-val">0</div>
+    </div>
+  </div>
+
+  <!-- EQ STRIP -->
+  <div class="section-label">EQ — Your Voice</div>
+  <div class="eq-panel">
+    <div class="eq-title">
+      <span>5-Band Parametric</span>
+      <button class="eq-toggle on" id="eq-toggle" onclick="toggleEq()" data-tip="eq-toggle">ON</button>
+    </div>
+    <div class="eq-bands" id="eq-bands">
+      <!-- bands generated by JS -->
+    </div>
+  </div>
+
+  <!-- EFFECTS RACK -->
+  <div class="section-label">Effects</div>
+  <div class="effects-panel">
+    <div class="effect-cell" data-tip="fx-reverb">
+      <div class="effect-header">
+        <span class="effect-name">Reverb</span>
+        <div class="effect-toggle on" id="fx-reverb-toggle" onclick="toggleEffect('reverb')"></div>
+      </div>
+      <div class="effect-knob-wrap">
+        <div class="effect-knob-track">
+          <div class="effect-knob-fill" id="fx-reverb-fill" style="width:25%"></div>
+          <input type="range" class="effect-range" min="0" max="100" value="25"
+            oninput="onEffectInput('reverb', this.value)">
+        </div>
+        <div class="effect-val" id="fx-reverb-val">25%</div>
+      </div>
+    </div>
+    <div class="effect-cell" data-tip="fx-delay">
+      <div class="effect-header">
+        <span class="effect-name">Delay</span>
+        <div class="effect-toggle" id="fx-delay-toggle" onclick="toggleEffect('delay')"></div>
+      </div>
+      <div class="effect-knob-wrap">
+        <div class="effect-knob-track">
+          <div class="effect-knob-fill" id="fx-delay-fill" style="width:15%"></div>
+          <input type="range" class="effect-range" min="0" max="100" value="15"
+            oninput="onEffectInput('delay', this.value)">
+        </div>
+        <div class="effect-val" id="fx-delay-val">15%</div>
+      </div>
+    </div>
+    <div class="effect-cell" data-tip="fx-pitch">
+      <div class="effect-header">
+        <span class="effect-name">Pitch Correct</span>
+        <div class="effect-toggle on" id="fx-pitch-toggle" onclick="toggleEffect('pitch')"></div>
+      </div>
+      <div class="effect-knob-wrap">
+        <div class="effect-knob-track">
+          <div class="effect-knob-fill" id="fx-pitch-fill" style="width:40%"></div>
+          <input type="range" class="effect-range" min="0" max="100" value="40"
+            oninput="onEffectInput('pitch', this.value)">
+        </div>
+        <div class="effect-val" id="fx-pitch-val">40%</div>
+      </div>
+    </div>
+    <div class="effect-cell" data-tip="fx-comp">
+      <div class="effect-header">
+        <span class="effect-name">Compression</span>
+        <div class="effect-toggle on" id="fx-comp-toggle" onclick="toggleEffect('comp')"></div>
+      </div>
+      <div class="effect-knob-wrap">
+        <div class="effect-knob-track">
+          <div class="effect-knob-fill" id="fx-comp-fill" style="width:55%"></div>
+          <input type="range" class="effect-range" min="0" max="100" value="55"
+            oninput="onEffectInput('comp', this.value)">
+        </div>
+        <div class="effect-val" id="fx-comp-val">55%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSPORT -->
+  <div class="section-label">Transport</div>
+  <div class="transport-panel">
+    <div class="transport-time">
+      <div class="t-current" id="t-current">1:24</div>
+      <div class="t-sep">/</div>
+      <div class="t-total">3:48</div>
+    </div>
+    <div class="transport-waveform" onclick="seekTransport(event)">
+      <canvas class="transport-waveform-canvas" id="waveform-canvas"></canvas>
+      <div class="transport-progress" id="transport-progress"></div>
+    </div>
+    <div class="transport-btns">
+      <button class="tbtn" onclick="skipBack()" data-tip="skip-back">⏮</button>
+      <button class="tbtn" onclick="toggleMic()" id="mic-btn" data-tip="mic">🎙️</button>
+      <button class="tbtn play" onclick="togglePlay()" id="play-btn" data-tip="play">▶</button>
+      <button class="tbtn rec" onclick="toggleRecording()" id="rec-btn" data-tip="record">
+        <div class="rec-dot"></div>
+      </button>
+      <button class="tbtn" onclick="skipForward()" data-tip="skip-fwd">⏭</button>
+    </div>
+  </div>
+
+  <!-- RECORDING BANNER -->
+  <div class="rec-banner" id="rec-banner">
+    <div class="rec-banner-dot"></div>
+    <div class="rec-banner-text">Recording Mix</div>
+    <div class="rec-banner-time" id="rec-time">0:00</div>
+  </div>
+
+  <!-- SHARE TRIGGER -->
+  <div class="section-label">Share</div>
+  <div class="share-trigger-panel">
+    <button class="share-trigger-btn" id="share-btn" onclick="openShare()">
+      <span class="stb-icon">📤</span>
+      Share This Performance
+    </button>
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--dimmer);font-family:'Barlow Condensed',sans-serif;letter-spacing:0.1em;text-transform:uppercase;">
+      Every performance is worth sharing
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- ═══════════════════════════════════════
+     SOCIAL SHARE BOTTOM SHEET
+═══════════════════════════════════════ -->
+<div class="share-overlay" id="share-overlay" onclick="handleOverlayClick(event)">
+  <div class="share-sheet" id="share-sheet">
+    <div class="sheet-handle"><div class="sheet-handle-bar"></div></div>
+
+    <!-- CLIP PREVIEW CARD -->
+    <div class="share-clip-card" id="share-card">
+      <!-- Animated waveform bg -->
+      <div class="clip-waveform">
+        <svg class="clip-waveform-svg" viewBox="0 0 400 100" preserveAspectRatio="none">
+          <g id="waveform-svg-bars"></g>
+        </svg>
+      </div>
+
+      <div class="clip-card-top">
+        <div class="clip-logo">LOUD<em>MOUTH</em></div>
+        <div class="clip-score-badge" id="clip-score-badge">8.4 / 10</div>
+      </div>
+
+      <div class="clip-card-mid">
+        <div class="clip-score-vs">
+          <div class="clip-score-num you" id="clip-you-score">8.4</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 4px;">
+            <div class="clip-vs-label">VS</div>
+          </div>
+          <div class="clip-score-num artist" id="clip-art-score">7.9</div>
+        </div>
+        <div class="clip-win-text" id="clip-verdict">YOU WIN 🏆</div>
+      </div>
+
+      <div class="clip-card-bot">
+        <div class="clip-song-info">
+          <div class="clip-title">Take Me to Church</div>
+          <div class="clip-artist">Hozier</div>
+        </div>
+        <div class="clip-vas-info">
+          <div class="clip-vas-bar-wrap">
+            <div class="clip-vas-bar-bg">
+              <div class="clip-vas-bar-fill" id="clip-vas-fill" style="width:30%"></div>
+            </div>
+          </div>
+          <div class="clip-vas-label" id="clip-vas-label">30% Assist</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIP PLAYBACK (preview the recording) -->
+    <div class="clip-playback">
+      <button class="clip-play-btn" onclick="toggleClipPlay()" id="clip-play-btn">▶</button>
+      <div class="clip-progress-wrap" onclick="seekClip(event)">
+        <div class="clip-progress-fill" id="clip-progress"></div>
+      </div>
+      <div class="clip-duration" id="clip-duration">0:30</div>
+    </div>
+
+    <!-- LINK GENERATED -->
+    <div class="link-generated" id="link-gen">
+      <div class="link-url" id="link-url-text">myloudmouth.app/clip/abc123</div>
+      <button class="link-copy-btn" id="link-copy-btn" onclick="copyLink()">Copy</button>
+    </div>
+
+    <!-- SHARE TARGETS -->
+    <div class="share-section-label">Share to</div>
+    <div class="share-targets">
+      <div class="share-target st-instagram" onclick="shareTarget('instagram')">
+        <div class="share-target-icon">📸</div>
+        <div class="share-target-label">Instagram</div>
+      </div>
+      <div class="share-target st-tiktok" onclick="shareTarget('tiktok')">
+        <div class="share-target-icon">🎵</div>
+        <div class="share-target-label">TikTok</div>
+      </div>
+      <div class="share-target st-message" onclick="shareTarget('message')">
+        <div class="share-target-icon">💬</div>
+        <div class="share-target-label">Message</div>
+      </div>
+      <div class="share-target st-copy" onclick="shareTarget('copy')">
+        <div class="share-target-icon">🔗</div>
+        <div class="share-target-label">Copy Link</div>
+      </div>
+    </div>
+
+    <!-- SEND TO FRIEND -->
+    <div class="send-friend-section">
+      <div class="send-friend-title">Send directly to a friend</div>
+      <div class="friends-row" id="friends-row">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <!-- SEND / CANCEL -->
+    <div class="share-send-row">
+      <button class="share-send-btn" onclick="sendToFriends()" id="send-btn">Send</button>
+      <button class="share-cancel-btn" onclick="closeShare()">Cancel</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+//  LOUDMOUTH — VAS MIXER ENGINE + SOCIAL SHARE
+//  Full Web Audio API implementation + share system
+// ══════════════════════════════════════════════════════════════════
+
+// ─── STATE ───────────────────────────────────────────────────────
+const state = {
+  vasValue: 30,         // 0–100: 0 = all you, 100 = all artist
+  youGain: 0.80,        // 0–1
+  artistGain: 0.60,     // 0–1
+  reverbGain: 0.25,     // 0–1
+  isPlaying: false,
+  isMicActive: false,
+  isRecording: false,
+  recStart: null,
+  recDuration: 0,
+  recInterval: null,
+  playProgress: 28,     // percent, simulated
+  playInterval: null,
+  fx: { reverb: true, delay: false, pitch: true, comp: true },
+  eq: true,
+  eqBands: [80, 0, 0, 0, 0],  // dB per band (-12 to +12)
+  selectedFriends: new Set(),
+  score: { you: 8.4, artist: 7.9 },
+  clipPlaying: false,
+  clipProgress: 0,
+};
+
+// ─── WEB AUDIO GRAPH ─────────────────────────────────────────────
+let audioCtx = null;
+let micStream = null;
+let micSource = null;
+let micAnalyser = null;
+let artistGainNode = null;
+let youGainNode = null;
+let masterGainNode = null;
+let masterAnalyser = null;
+let reverbNode = null;
+let compressorNode = null;
+let eqNodes = [];
+let mediaRecorder = null;
+let recordedChunks = [];
+let vuAnimFrame = null;
+
+// Simulated artist audio (in production: AudioShake stem audio element)
+let artistAudio = null;
+
+async function initAudioContext() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // Master chain: masterGain → compressor → destination
+  masterGainNode = audioCtx.createGain();
+  masterGainNode.gain.value = 0.9;
+
+  compressorNode = audioCtx.createDynamicsCompressor();
+  compressorNode.threshold.value = -18;
+  compressorNode.knee.value = 8;
+  compressorNode.ratio.value = 4;
+  compressorNode.attack.value = 0.003;
+  compressorNode.release.value = 0.15;
+
+  masterAnalyser = audioCtx.createAnalyser();
+  masterAnalyser.fftSize = 512;
+  masterAnalyser.smoothingTimeConstant = 0.6;
+
+  masterGainNode.connect(compressorNode);
+  compressorNode.connect(masterAnalyser);
+  masterAnalyser.connect(audioCtx.destination);
+
+  // Reverb (ConvolverNode with synthetic IR)
+  reverbNode = audioCtx.createConvolver();
+  const irLen = audioCtx.sampleRate * 1.5; // 1.5s reverb tail
+  const ir = audioCtx.createBuffer(2, irLen, audioCtx.sampleRate);
+  for (let c = 0; c < 2; c++) {
+    const ch = ir.getChannelData(c);
+    for (let i = 0; i < irLen; i++) {
+      ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / irLen, 2.5);
+    }
+  }
+  reverbNode.buffer = ir;
+  const reverbGainNode = audioCtx.createGain();
+  reverbGainNode.gain.value = 0;
+  reverbNode.connect(reverbGainNode);
+  reverbGainNode.connect(masterGainNode);
+  state._reverbGainNode = reverbGainNode;
+
+  // Artist gain branch
+  artistGainNode = audioCtx.createGain();
+  artistGainNode.gain.value = computeArtistGain();
+  artistGainNode.connect(masterGainNode);
+  artistGainNode.connect(reverbNode);
+  // In production: connect AudioShake vocal stem AudioBufferSourceNode here
+
+  console.log('[LOUDMOUTH] Audio context initialized. Sample rate:', audioCtx.sampleRate);
+}
+
+async function initMicrophone() {
+  await initAudioContext();
+  if (micStream) return; // already initialized
+
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        sampleRate: 44100,
+      }
+    });
+
+    micSource = audioCtx.createMediaStreamSource(micStream);
+
+    // EQ chain (5-band)
+    buildEqChain();
+
+    // Mic analyser for VU
+    micAnalyser = audioCtx.createAnalyser();
+    micAnalyser.fftSize = 256;
+    micAnalyser.smoothingTimeConstant = 0.5;
+    micSource.connect(eqNodes[0]);
+    eqNodes[eqNodes.length - 1].connect(micAnalyser);
+
+    // Mic gain
+    youGainNode = audioCtx.createGain();
+    youGainNode.gain.value = computeYouGain();
+    micAnalyser.connect(youGainNode);
+    youGainNode.connect(masterGainNode);
+    youGainNode.connect(reverbNode);
+
+    state.isMicActive = true;
+    document.getElementById('mic-status').textContent = 'ON';
+    document.getElementById('mic-status').style.color = 'var(--vu-green)';
+    document.getElementById('mic-btn').style.color = 'var(--vu-green)';
+
+    startVuMeters();
+    showToast('🎙 Mic active');
+  } catch (err) {
+    showToast('Mic access denied — VU meter simulated');
+    startVuMetersSimulated();
+    console.warn('[LOUDMOUTH] Mic error:', err.message);
+  }
+}
+
+function buildEqChain() {
+  // Clear old nodes
+  eqNodes.forEach(n => { try { n.disconnect(); } catch(e){} });
+  eqNodes = [];
+
+  const freqs = [80, 250, 1000, 4000, 12000];
+  const gains = state.eqBands;
+
+  freqs.forEach((freq, i) => {
+    const filter = audioCtx.createBiquadFilter();
+    if (i === 0) filter.type = 'lowshelf';
+    else if (i === freqs.length - 1) filter.type = 'highshelf';
+    else filter.type = 'peaking';
+    filter.frequency.value = freq;
+    filter.gain.value = state.eq ? gains[i] : 0;
+    filter.Q.value = 1.0;
+
+    if (eqNodes.length > 0) {
+      eqNodes[eqNodes.length - 1].connect(filter);
+    }
+    eqNodes.push(filter);
+  });
+}
+
+// ─── GAIN COMPUTATIONS ───────────────────────────────────────────
+// VAS slider: 0 = all you, 100 = all artist
+// at VAS=0: you=1.0, artist=0.0
+// at VAS=50: you=0.7, artist=0.7 (cross-fade)
+// at VAS=100: you=0.05, artist=1.0
+
+function computeYouGain() {
+  const v = state.vasValue / 100;
+  // Equal-power crossfade for you channel
+  const base = Math.cos(v * Math.PI / 2);
+  return Math.max(0.05, base) * state.youGain;
+}
+
+function computeArtistGain() {
+  const v = state.vasValue / 100;
+  // Equal-power crossfade for artist channel
+  const base = Math.sin(v * Math.PI / 2);
+  return base * state.artistGain;
+}
+
+// ─── VAS SLIDER ──────────────────────────────────────────────────
+const tierData = [
+  { max: 15,  name: 'LEGEND',       color: '#00e676', desc: 'Pure you. No safety net. <strong>This is your voice, uncut.</strong>' },
+  { max: 35,  name: 'FRONT MAN',    color: '#66bb6a', desc: 'Mostly you — <strong>a whisper of Hozier</strong> riding behind your voice.' },
+  { max: 65,  name: 'KARAOKE HERO', color: '#f5c400', desc: 'You and Hozier, <strong>side by side.</strong> Equal partners on this song.' },
+  { max: 85,  name: 'SHOWER SINGER',color: '#fb923c', desc: 'Hozier carries the melody. <strong>Your voice shapes it.</strong> Room sounds great.' },
+  { max: 101, name: 'TRAIN WRECK',  color: '#ff2020', desc: '<strong>Maximum assist.</strong> Hozier does the heavy lifting. No judgment. Start here.' },
+];
+
+function getTier(val) {
+  return tierData.find(t => val < t.max) || tierData[tierData.length - 1];
+}
+
+function onVasInput(val) {
+  val = parseInt(val);
+  state.vasValue = val;
+
+  // Update fill track
+  document.getElementById('vas-track-fill').style.width = val + '%';
+
+  // Channel percentages
+  const youPct = Math.round((1 - val/100) * 100);
+  const artPct = val;
+  document.getElementById('you-pct').textContent = youPct + '%';
+  document.getElementById('artist-pct').textContent = artPct + '%';
+
+  // Tier
+  const tier = getTier(val);
+  const tierEl = document.getElementById('tier-name');
+  tierEl.textContent = tier.name;
+  tierEl.style.color = tier.color;
+  document.getElementById('vas-desc').innerHTML = tier.desc;
+
+  // Apply to audio graph
+  if (youGainNode) {
+    youGainNode.gain.setTargetAtTime(computeYouGain(), audioCtx.currentTime, 0.02);
+  }
+  if (artistGainNode) {
+    artistGainNode.gain.setTargetAtTime(computeArtistGain(), audioCtx.currentTime, 0.02);
+  }
+
+  // Update VU simulation targets
+  state._vasTarget = val;
+}
+
+function nudgeVas(delta) {
+  const slider = document.getElementById('vas-slider');
+  const newVal = Math.max(0, Math.min(100, state.vasValue + delta));
+  slider.value = newVal;
+  onVasInput(newVal);
+
+  // Tactile bounce animation on thumb
+  slider.style.transition = 'transform 0.1s';
+  slider.style.transform = 'scale(1.08)';
+  setTimeout(() => { slider.style.transform = ''; }, 100);
+}
+
+// ─── CHANNEL FADERS ──────────────────────────────────────────────
+function onFaderInput(channel, val) {
+  val = parseInt(val);
+  const pct = val / 100;
+
+  const fill = document.getElementById(`fade-${channel === 'you' ? 'you' : channel === 'artist' ? 'art' : 'rev'}-fill`);
+  const thumb = document.getElementById(`fade-${channel === 'you' ? 'you' : channel === 'artist' ? 'art' : 'rev'}-thumb`);
+  const valEl = document.getElementById(`fade-${channel === 'you' ? 'you' : channel === 'artist' ? 'art' : 'rev'}-val`);
+
+  if (fill) fill.style.height = val + '%';
+  if (thumb) thumb.style.bottom = `calc(${val}% - 6px)`;
+
+  // dB display: 0 = -inf, 100 = +3dB
+  const db = val === 0 ? '-∞' : (20 * Math.log10(pct)).toFixed(1);
+  if (valEl) valEl.textContent = val === 0 ? '-∞' : db;
+
+  // Apply to audio
+  if (channel === 'you' && youGainNode) {
+    state.youGain = pct;
+    youGainNode.gain.setTargetAtTime(computeYouGain(), audioCtx.currentTime, 0.02);
+  }
+  if (channel === 'artist' && artistGainNode) {
+    state.artistGain = pct;
+    artistGainNode.gain.setTargetAtTime(computeArtistGain(), audioCtx.currentTime, 0.02);
+  }
+  if (channel === 'reverb' && state._reverbGainNode) {
+    state.reverbGain = pct;
+    state._reverbGainNode.gain.setTargetAtTime(pct * 0.4, audioCtx.currentTime, 0.05);
+  }
+}
+
+// ─── EQ ──────────────────────────────────────────────────────────
+const eqFreqs = [
+  { freq: '80Hz',   label: 'Low' },
+  { freq: '250Hz',  label: 'Lo-Mid' },
+  { freq: '1kHz',   label: 'Mid' },
+  { freq: '4kHz',   label: 'Hi-Mid' },
+  { freq: '12kHz',  label: 'High' },
+];
+
+function buildEqUI() {
+  const container = document.getElementById('eq-bands');
+  container.innerHTML = '';
+  eqFreqs.forEach((band, i) => {
+    const div = document.createElement('div');
+    div.className = 'eq-band';
+    div.innerHTML = `
+      <div class="eq-freq">${band.freq}</div>
+      <div class="eq-fader-wrap">
+        <div class="eq-fader-track"></div>
+        <div class="eq-indicator" id="eq-ind-${i}" style="top:calc(50% - 4px + ${-state.eqBands[i]/12 * 36}px)"></div>
+        <input type="range" class="eq-range" id="eq-range-${i}"
+          min="-12" max="12" value="${state.eqBands[i]}" orient="vertical"
+          oninput="onEqInput(${i}, this.value)">
+      </div>
+      <div class="eq-db" id="eq-db-${i}">${state.eqBands[i] >= 0 ? '+' : ''}${state.eqBands[i]}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function onEqInput(bandIdx, val) {
+  val = parseFloat(val);
+  state.eqBands[bandIdx] = val;
+
+  // Update indicator position
+  const ind = document.getElementById(`eq-ind-${bandIdx}`);
+  const centerPx = 36; // center of 80px track
+  const offset = -(val / 12) * centerPx;
+  if (ind) ind.style.top = `calc(50% - 4px + ${offset}px)`;
+
+  // Update db label
+  const dbEl = document.getElementById(`eq-db-${bandIdx}`);
+  if (dbEl) dbEl.textContent = (val >= 0 ? '+' : '') + val.toFixed(0);
+
+  // Apply to audio node
+  if (eqNodes[bandIdx] && state.eq) {
+    eqNodes[bandIdx].gain.setTargetAtTime(val, audioCtx.currentTime, 0.02);
+  }
+}
+
+function toggleEq() {
+  state.eq = !state.eq;
+  const btn = document.getElementById('eq-toggle');
+  btn.textContent = state.eq ? 'ON' : 'OFF';
+  btn.className = state.eq ? 'eq-toggle on' : 'eq-toggle';
+
+  eqNodes.forEach((node, i) => {
+    if (node) node.gain.setTargetAtTime(
+      state.eq ? state.eqBands[i] : 0,
+      audioCtx.currentTime, 0.02
+    );
+  });
+}
+
+// ─── EFFECTS ─────────────────────────────────────────────────────
+function toggleEffect(fx) {
+  state.fx[fx] = !state.fx[fx];
+  const el = document.getElementById(`fx-${fx}-toggle`);
+  el.className = state.fx[fx] ? 'effect-toggle on' : 'effect-toggle';
+
+  if (fx === 'reverb' && state._reverbGainNode) {
+    const val = state.fx[fx] ? state.reverbGain * 0.4 : 0;
+    state._reverbGainNode.gain.setTargetAtTime(val, audioCtx.currentTime, 0.05);
+  }
+  if (fx === 'comp' && compressorNode) {
+    compressorNode.ratio.value = state.fx[fx] ? 4 : 1;
+  }
+}
+
+function onEffectInput(fx, val) {
+  val = parseInt(val);
+  document.getElementById(`fx-${fx}-fill`).style.width = val + '%';
+  document.getElementById(`fx-${fx}-val`).textContent = val + '%';
+
+  if (fx === 'reverb' && state._reverbGainNode && state.fx.reverb) {
+    state.reverbGain = val / 100;
+    state._reverbGainNode.gain.setTargetAtTime(
+      (val / 100) * 0.4, audioCtx.currentTime, 0.05
+    );
+  }
+}
+
+// ─── MIC & PLAYBACK CONTROLS ─────────────────────────────────────
+async function toggleMic() {
+  if (!state.isMicActive) {
+    await initMicrophone();
+  } else {
+    // Mute/unmute
+    if (youGainNode) {
+      const isMuted = youGainNode.gain.value < 0.01;
+      youGainNode.gain.setTargetAtTime(isMuted ? computeYouGain() : 0, audioCtx.currentTime, 0.02);
+      document.getElementById('mic-btn').style.color = isMuted ? 'var(--vu-green)' : 'var(--dimmer)';
+    }
+  }
+}
+
+function togglePlay() {
+  state.isPlaying = !state.isPlaying;
+  const btn = document.getElementById('play-btn');
+  btn.textContent = state.isPlaying ? '⏸' : '▶';
+
+  if (state.isPlaying) {
+    // Resume audio context if suspended
+    if (audioCtx) audioCtx.resume();
+    startPlaybackSimulation();
+  } else {
+    stopPlaybackSimulation();
+  }
+}
+
+function skipBack() {
+  state.playProgress = Math.max(0, state.playProgress - 5 / 3.8 * 100);
+  updateTransport();
+}
+function skipForward() {
+  state.playProgress = Math.min(100, state.playProgress + 5 / 3.8 * 100);
+  updateTransport();
+}
+
+function startPlaybackSimulation() {
+  stopPlaybackSimulation();
+  state.playInterval = setInterval(() => {
+    state.playProgress = Math.min(100, state.playProgress + 0.1);
+    updateTransport();
+    if (state.playProgress >= 100) {
+      state.isPlaying = false;
+      document.getElementById('play-btn').textContent = '▶';
+      stopPlaybackSimulation();
+    }
+  }, 100);
+}
+
+function stopPlaybackSimulation() {
+  if (state.playInterval) { clearInterval(state.playInterval); state.playInterval = null; }
+}
+
+function updateTransport() {
+  document.getElementById('transport-progress').style.width = state.playProgress + '%';
+  const elapsed = (state.playProgress / 100) * 228; // 3:48 = 228s
+  document.getElementById('t-current').textContent = fmtTime(elapsed);
+}
+
+function seekTransport(e) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  state.playProgress = ((e.clientX - rect.left) / rect.width) * 100;
+  updateTransport();
+}
+
+// ─── RECORDING ───────────────────────────────────────────────────
+async function toggleRecording() {
+  if (!state.isRecording) {
+    await initAudioContext();
+    startRecording();
+  } else {
+    stopRecording();
+  }
+}
+
+function startRecording() {
+  state.isRecording = true;
+  state.recStart = Date.now();
+  recordedChunks = [];
+
+  const recBtn = document.getElementById('rec-btn');
+  recBtn.classList.add('recording');
+
+  document.getElementById('rec-banner').classList.add('active');
+
+  // MediaRecorder from destination stream
+  // In production: masterAnalyser.connect(audioCtx.createMediaStreamDestination())
+  // For demo purposes, record microphone if available
+  const streamToRecord = micStream || null;
+  if (streamToRecord) {
+    const dest = audioCtx.createMediaStreamDestination();
+    masterGainNode.connect(dest);
+    mediaRecorder = new MediaRecorder(dest.stream, { mimeType: 'audio/webm' });
+    mediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) recordedChunks.push(e.data);
+    };
+    mediaRecorder.start(100);
+  }
+
+  // Timer
+  state.recInterval = setInterval(() => {
+    state.recDuration = (Date.now() - state.recStart) / 1000;
+    document.getElementById('rec-time').textContent = fmtTime(state.recDuration);
+  }, 100);
+}
+
+function stopRecording() {
+  state.isRecording = false;
+  clearInterval(state.recInterval);
+
+  document.getElementById('rec-btn').classList.remove('recording');
+  document.getElementById('rec-banner').classList.remove('active');
+
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+  }
+
+  showToast('Recording saved — ' + fmtTime(state.recDuration));
+}
+
+// ─── VU METERS ───────────────────────────────────────────────────
+let _vuSimPhase = 0;
+let _micPeak = 0;
+let _mixPeak = 0;
+let _micPeakTimeout = null;
+let _mixPeakTimeout = null;
+
+function startVuMeters() {
+  if (vuAnimFrame) cancelAnimationFrame(vuAnimFrame);
+  function vuLoop() {
+    // Real mic analysis
+    const micData = new Uint8Array(micAnalyser.frequencyBinCount);
+    micAnalyser.getByteTimeDomainData(micData);
+    let micRms = 0;
+    for (let i = 0; i < micData.length; i++) {
+      const s = (micData[i] - 128) / 128;
+      micRms += s * s;
+    }
+    micRms = Math.sqrt(micRms / micData.length);
+
+    // Master output
+    const masterData = new Uint8Array(masterAnalyser.frequencyBinCount);
+    masterAnalyser.getByteTimeDomainData(masterData);
+    let masterRms = 0;
+    for (let i = 0; i < masterData.length; i++) {
+      const s = (masterData[i] - 128) / 128;
+      masterRms += s * s;
+    }
+    masterRms = Math.sqrt(masterRms / masterData.length);
+
+    updateVuDisplay(micRms, state.artistGain * 0.4, masterRms);
+    vuAnimFrame = requestAnimationFrame(vuLoop);
+  }
+  vuLoop();
+}
+
+function startVuMetersSimulated() {
+  if (vuAnimFrame) cancelAnimationFrame(vuAnimFrame);
+  function vuLoop() {
+    _vuSimPhase += 0.05;
+    const base = (Math.sin(_vuSimPhase) * 0.3 + 0.4) * 0.6;
+    const micLevel = base * 0.8 + Math.random() * 0.06;
+    const artLevel = (state.vasValue / 100) * 0.55 + Math.random() * 0.03;
+    const mixLevel = (micLevel * (1 - state.vasValue / 100 * 0.6) + artLevel) * 0.7;
+
+    updateVuDisplay(micLevel, artLevel, mixLevel);
+    vuAnimFrame = requestAnimationFrame(vuLoop);
+  }
+  vuLoop();
+}
+
+function updateVuDisplay(micLevel, artLevel, mixLevel) {
+  const mic  = Math.min(100, micLevel * 380);
+  const art  = Math.min(100, artLevel * 400);
+  const mix  = Math.min(100, mixLevel * 340);
+
+  document.getElementById('vu-mic-fill').style.width = mic + '%';
+  document.getElementById('vu-art-fill').style.width = art + '%';
+  document.getElementById('vu-mix-fill').style.width = mix + '%';
+
+  // Peak hold
+  if (mic > _micPeak) {
+    _micPeak = mic;
+    const el = document.getElementById('vu-mic-peak');
+    el.style.left = mic + '%';
+    el.classList.add('show');
+    clearTimeout(_micPeakTimeout);
+    _micPeakTimeout = setTimeout(() => {
+      _micPeak = 0;
+      el.classList.remove('show');
+    }, 1200);
+  }
+
+  // dB readout
+  const micDb = micLevel > 0.001 ? (20 * Math.log10(micLevel)).toFixed(1) : '-∞';
+  const mixDb = mixLevel > 0.001 ? (20 * Math.log10(mixLevel)).toFixed(1) : '-∞';
+  document.getElementById('vu-mic-db').textContent = micDb;
+  document.getElementById('vu-mix-db').textContent = mixDb;
+
+  // Clip indicator
+  document.getElementById('clip-dot').className = mix > 95 ? 'vu-clip-dot hot' : 'vu-clip-dot';
+}
+
+// ─── WAVEFORM CANVAS ─────────────────────────────────────────────
+function drawWaveform() {
+  const canvas = document.getElementById('waveform-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Fake waveform — in production, render from AudioBuffer
+  const bars = 80;
+  const barW = W / bars - 1;
+
+  for (let i = 0; i < bars; i++) {
+    const h = (0.15 + Math.abs(Math.sin(i * 0.35 + 0.9)) * 0.6 + Math.abs(Math.sin(i * 0.12)) * 0.25) * H;
+    const x = i * (W / bars);
+    const played = (x / W) * 100 < state.playProgress;
+
+    ctx.fillStyle = played
+      ? 'rgba(245,158,11,0.7)'
+      : 'rgba(255,255,255,0.12)';
+    ctx.beginPath();
+    ctx.roundRect(x, (H - h) / 2, barW, h, 2);
+    ctx.fill();
+  }
+}
+
+// ─── SHARE SYSTEM ────────────────────────────────────────────────
+const friendList = [
+  { name: 'Alex',    emoji: '🎸' },
+  { name: 'Jordan',  emoji: '🎤' },
+  { name: 'Sam',     emoji: '🎹' },
+  { name: 'Taylor',  emoji: '🥁' },
+  { name: 'Morgan',  emoji: '🎺' },
+  { name: 'Casey',   emoji: '🎻' },
+];
+
+function buildFriendsUI() {
+  const row = document.getElementById('friends-row');
+  row.innerHTML = '';
+  friendList.forEach((f, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'friend-chip';
+    chip.innerHTML = `
+      <div class="friend-avatar">
+        ${f.emoji}
+        <div class="friend-check">✓</div>
+      </div>
+      <div class="friend-name">${f.name}</div>
+    `;
+    chip.onclick = () => toggleFriend(chip, f.name);
+    row.appendChild(chip);
+  });
+}
+
+function toggleFriend(chip, name) {
+  if (state.selectedFriends.has(name)) {
+    state.selectedFriends.delete(name);
+    chip.classList.remove('selected');
+  } else {
+    state.selectedFriends.add(name);
+    chip.classList.add('selected');
+  }
+  updateSendBtn();
+}
+
+function updateSendBtn() {
+  const btn = document.getElementById('send-btn');
+  const n = state.selectedFriends.size;
+  btn.textContent = n > 0 ? `Send to ${n} Friend${n > 1 ? 's' : ''}` : 'Send';
+}
+
+function openShare() {
+  // Update share card with current state
+  document.getElementById('clip-vas-fill').style.width = state.vasValue + '%';
+  document.getElementById('clip-vas-label').textContent = state.vasValue + '% Assist';
+  document.getElementById('clip-you-score').textContent = state.score.you;
+  document.getElementById('clip-art-score').textContent = state.score.artist;
+  document.getElementById('clip-score-badge').textContent =
+    state.score.you + ' / 10';
+  document.getElementById('clip-verdict').textContent =
+    state.score.you >= state.score.artist
+      ? 'YOU WIN 🏆'
+      : state.score.you >= 7.0
+      ? 'SOLID EFFORT 🎤'
+      : state.score.you >= 5.0
+      ? 'KEEP GOING 🔥'
+      : 'BRAVE. VERY BRAVE 😅';
+
+  // Build waveform in card
+  buildShareCardWaveform();
+
+  document.getElementById('share-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeShare() {
+  document.getElementById('share-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('share-overlay')) closeShare();
+}
+
+function buildShareCardWaveform() {
+  const g = document.getElementById('waveform-svg-bars');
+  g.innerHTML = '';
+  for (let i = 0; i < 60; i++) {
+    const h = 20 + Math.abs(Math.sin(i * 0.3)) * 60 + Math.abs(Math.sin(i * 0.11)) * 20;
+    const x = (i / 60) * 400;
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', x);
+    rect.setAttribute('y', (100 - h) / 2);
+    rect.setAttribute('width', 4);
+    rect.setAttribute('height', h);
+    rect.setAttribute('rx', 2);
+    rect.setAttribute('fill', 'white');
+    g.appendChild(rect);
+  }
+}
+
+function shareTarget(platform) {
+  if (platform === 'copy') {
+    const fakeLink = 'myloudmouth.app/clip/' + Math.random().toString(36).slice(2, 8);
+    document.getElementById('link-url-text').textContent = fakeLink;
+    document.getElementById('link-gen').classList.add('show');
+    showToast('Link ready to copy!');
+    return;
+  }
+  if (platform === 'instagram') {
+    showToast('Opening Instagram…');
+    setTimeout(() => showToast('Story ready with your score card'), 1500);
+    return;
+  }
+  if (platform === 'tiktok') {
+    showToast('Opening TikTok…');
+    return;
+  }
+  if (platform === 'message') {
+    showToast('Opening Messages…');
+    return;
+  }
+}
+
+function copyLink() {
+  const url = document.getElementById('link-url-text').textContent;
+  // Copy to clipboard
+  navigator.clipboard?.writeText('https://' + url).catch(() => {});
+  const btn = document.getElementById('link-copy-btn');
+  btn.textContent = 'Copied!';
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = 'Copy';
+    btn.classList.remove('copied');
+  }, 2000);
+}
+
+function sendToFriends() {
+  if (state.selectedFriends.size === 0) {
+    showToast('Select a friend first');
+    return;
+  }
+  const names = Array.from(state.selectedFriends).join(', ');
+  showToast(`Sent to ${names}!`);
+  setTimeout(closeShare, 800);
+}
+
+let clipPlayInterval = null;
+function toggleClipPlay() {
+  state.clipPlaying = !state.clipPlaying;
+  const btn = document.getElementById('clip-play-btn');
+  btn.textContent = state.clipPlaying ? '⏸' : '▶';
+
+  if (state.clipPlaying) {
+    // Simulate 30s clip playback
+    clipPlayInterval = setInterval(() => {
+      state.clipProgress = Math.min(100, state.clipProgress + 100/300);
+      document.getElementById('clip-progress').style.width = state.clipProgress + '%';
+      const elapsed = (state.clipProgress / 100) * 30;
+      document.getElementById('clip-duration').textContent =
+        '0:' + Math.floor(30 - elapsed).toString().padStart(2,'0');
+      if (state.clipProgress >= 100) {
+        state.clipPlaying = false;
+        state.clipProgress = 0;
+        btn.textContent = '▶';
+        clearInterval(clipPlayInterval);
+      }
+    }, 100);
+  } else {
+    clearInterval(clipPlayInterval);
+  }
+}
+
+function seekClip(e) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  state.clipProgress = ((e.clientX - rect.left) / rect.width) * 100;
+  document.getElementById('clip-progress').style.width = state.clipProgress + '%';
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────
+let toastTimeout = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────
+function fmtTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60).toString().padStart(2, '0');
+  return `${m}:${sec}`;
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────
+buildEqUI();
+buildFriendsUI();
+drawWaveform();
+startVuMetersSimulated(); // Will upgrade to real when mic is granted
+
+// Kick off simulated playback state
+updateTransport();
+
+// Redraw waveform on resize
+window.addEventListener('resize', drawWaveform);
+
+// Initialize fader displays
+['you', 'art', 'rev'].forEach(ch => {
+  const id = ch === 'you' ? 'you' : ch === 'art' ? 'artist' : 'reverb';
+  const input = document.getElementById(`fade-${ch}`);
+  if (input) onFaderInput(id, input.value);
+});
+
+// ══════════════════════════════════════════════════════════════════
+//  LONG-PRESS TOOLTIP SYSTEM
+//  Hold any element with data-tip for 500ms → plain-English explain
+// ══════════════════════════════════════════════════════════════════
+
+const TIPS = {
+  'vu-meters': {
+    icon: '📊',
+    title: 'Signal Meters',
+    body: 'These bars show <strong>how loud each signal is in real time.</strong> Green = healthy level. Yellow = getting loud. Red = too hot — back off before it distorts. The peak dot freezes at the loudest recent spike.'
+  },
+  'vas-slider': {
+    icon: '🎚️',
+    title: 'Vocal Assist Slider',
+    body: 'The heart of LOUDMOUTH. Drag <em>left</em> and you hear mostly yourself. Drag <em>right</em> and the artist\'s real vocal blends in behind yours. Use it as a <strong>scaffold</strong> — start right, move left as you improve.'
+  },
+  'nudge': {
+    icon: '↔️',
+    title: 'Fine Tune Buttons',
+    body: 'Move the Vocal Assist Slider in small, precise steps — <strong>5% or 10% at a time.</strong> Useful mid-song when you want a small adjustment without hunting for the exact position on the big slider.'
+  },
+  'fader-mic': {
+    icon: '🎙️',
+    title: 'Your Mic Volume',
+    body: 'Controls <strong>how loud your voice is in the final mix.</strong> Think of it like the volume knob on a mixing board — just for your microphone. Pull it down if your voice is overwhelming the backing track.'
+  },
+  'fader-artist': {
+    icon: '🎤',
+    title: 'Artist Volume',
+    body: 'Controls <strong>how loud the artist\'s isolated vocal is.</strong> This works alongside the Vocal Assist Slider — the VAS sets the blend ratio, this fader sets the absolute level of their channel.'
+  },
+  'fader-reverb': {
+    icon: '🏛️',
+    title: 'Reverb Send Level',
+    body: '<strong>How much of your voice gets fed into the reverb effect.</strong> Think of it like choosing between singing in a closet (0%) or a concert hall (100%). More reverb = bigger, more polished sound.'
+  },
+  'eq-toggle': {
+    icon: '🎛️',
+    title: 'EQ On/Off',
+    body: '<strong>EQ (Equalizer) adjusts the tone of your voice</strong> — boosting or cutting specific frequencies. Turn it off to hear your completely unprocessed voice. Turn it on to shape it: warmer, brighter, thinner, fuller.'
+  },
+  'eq-band': {
+    icon: '〰️',
+    title: 'EQ Band',
+    body: '<strong>Each slider controls a different frequency range of your voice.</strong> Low (80Hz) = chest and warmth. Lo-Mid (250Hz) = body. Mid (1kHz) = presence. Hi-Mid (4kHz) = clarity. High (12kHz) = air and brightness. Push up to add, pull down to reduce.'
+  },
+  'fx-reverb': {
+    icon: '🏛️',
+    title: 'Reverb',
+    body: '<strong>Adds the sound of a room or space to your voice.</strong> A little makes you sound like you\'re in a studio. A lot makes you sound like you\'re in a cathedral. The slider controls how wet (drenched in reverb) vs dry (your raw voice) the sound is.'
+  },
+  'fx-delay': {
+    icon: '🔁',
+    title: 'Delay',
+    body: '<strong>Creates an echo effect</strong> — your voice repeats after a short time. Subtle amounts add depth and make your voice feel wider. Heavy delay creates that classic rock or U2 stadium echo. Off by default to keep the mix clean.'
+  },
+  'fx-pitch': {
+    icon: '🎯',
+    title: 'Pitch Correction',
+    body: '<strong>Gently nudges your voice toward the correct note</strong> when you\'re slightly off. Like Auto-Tune, but subtle — it doesn\'t make you sound robotic unless you crank it high. At 40% it just smooths out small pitch wobbles naturally.'
+  },
+  'fx-comp': {
+    icon: '⚖️',
+    title: 'Compression',
+    body: '<strong>Makes quiet parts louder and loud parts quieter</strong> — evening out the volume of your voice so it sits consistently in the mix. Professional vocals always use compression. It\'s why singers on records sound so controlled and present.'
+  },
+  'skip-back': {
+    icon: '⏮',
+    title: 'Skip Back 5s',
+    body: 'Jump back 5 seconds in the song. <strong>Great for re-doing a tricky section</strong> — missed your entrance on the chorus? Hit this and nail it on the replay.'
+  },
+  'skip-fwd': {
+    icon: '⏭',
+    title: 'Skip Forward 5s',
+    body: 'Jump ahead 5 seconds. <strong>Skip past the intro</strong> or get to the part of the song you actually want to practice without scrubbing.'
+  },
+  'mic': {
+    icon: '🎙️',
+    title: 'Microphone',
+    body: '<strong>Activates your phone\'s microphone</strong> so LOUDMOUTH can hear you sing. Your voice goes through the EQ, effects, and volume controls in real time. The app needs mic permission the first time — it never records without you pressing the red record button.'
+  },
+  'play': {
+    icon: '▶️',
+    title: 'Play / Pause',
+    body: '<strong>Starts or stops the backing track.</strong> The artist\'s instrumental plays through your speaker or headphones while you sing along. Press again to pause — the position stays where you left off.'
+  },
+  'record': {
+    icon: '⏺️',
+    title: 'Record Your Mix',
+    body: '<strong>Captures your voice blended with the backing track</strong> — exactly what you hear in your headphones. This is the recording you can share afterward. The mix includes all your effects and VAS settings. Press again to stop and save.'
+  },
+};
+
+// ── Tooltip DOM ──────────────────────────────────────────────────
+const tipEl = document.createElement('div');
+tipEl.className = 'lp-tooltip';
+tipEl.innerHTML = `
+  <div class="lp-tip-header">
+    <div class="lp-tip-icon" id="lp-icon"></div>
+    <div class="lp-tip-title" id="lp-title"></div>
+  </div>
+  <div class="lp-tip-body" id="lp-body"></div>
+`;
+document.body.appendChild(tipEl);
+
+// ── State ────────────────────────────────────────────────────────
+let lpTimer = null;
+let lpTarget = null;
+const LP_DELAY = 500; // ms
+
+// ── Position tooltip above (or below) the target ─────────────────
+function positionTip(target) {
+  const rect = target.getBoundingClientRect();
+  const tipW = 260;
+  const tipH = tipEl.offsetHeight || 120;
+  const margin = 12;
+  const arrowH = 10;
+
+  // Try above first
+  let top = rect.top - tipH - arrowH - margin;
+  let below = false;
+  if (top < 8) {
+    top = rect.bottom + arrowH + margin;
+    below = true;
+  }
+
+  // Horizontal: center on target, clamp to viewport
+  let left = rect.left + rect.width / 2 - tipW / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - tipW - 8));
+
+  // Reposition arrow to actually point at target center
+  const arrowLeft = (rect.left + rect.width / 2) - left;
+  const clampedArrow = Math.max(16, Math.min(arrowLeft, tipW - 16));
+  tipEl.style.setProperty('--arrow-left', clampedArrow + 'px');
+
+  tipEl.style.left = left + 'px';
+  tipEl.style.top  = top + 'px';
+  tipEl.classList.toggle('tip-below', below);
+}
+
+// Override arrow position with CSS variable
+const styleOverride = document.createElement('style');
+styleOverride.textContent = `
+  .lp-tooltip::after { left: var(--arrow-left, 50%) !important; transform: translateX(-50%) rotate(45deg) !important; }
+`;
+document.head.appendChild(styleOverride);
+
+// ── Show / Hide ──────────────────────────────────────────────────
+function showTip(target, key) {
+  // Look up EQ band dynamically
+  const tipKey = key === 'eq-band-dynamic' ? 'eq-band' : key;
+  const tip = TIPS[tipKey];
+  if (!tip) return;
+
+  document.getElementById('lp-icon').textContent  = tip.icon;
+  document.getElementById('lp-title').textContent = tip.title;
+  document.getElementById('lp-body').innerHTML    = tip.body;
+
+  tipEl.classList.remove('visible');
+  tipEl.style.left = '-9999px';
+  // Force layout so offsetHeight is correct
+  requestAnimationFrame(() => {
+    positionTip(target);
+    requestAnimationFrame(() => tipEl.classList.add('visible'));
+  });
+}
+
+function hideTip() {
+  tipEl.classList.remove('visible');
+}
+
+// ── Event Handlers ───────────────────────────────────────────────
+function findTipTarget(el) {
+  // Walk up the DOM to find nearest data-tip ancestor
+  let node = el;
+  while (node && node !== document.body) {
+    if (node.dataset && node.dataset.tip) return node;
+    node = node.parentElement;
+  }
+  return null;
+}
+
+// Dynamically add data-tip to EQ bands after they're generated
+function tagEqBands() {
+  document.querySelectorAll('.eq-band').forEach(b => {
+    b.dataset.tip = 'eq-band-dynamic';
+  });
+}
+
+// Pointer down — start hold timer
+document.addEventListener('pointerdown', e => {
+  const target = findTipTarget(e.target);
+  if (!target) return;
+
+  lpTarget = target;
+  clearTimeout(lpTimer);
+
+  // Visual hold indicator
+  target.classList.add('lp-holding');
+
+  lpTimer = setTimeout(() => {
+    const key = target.dataset.tip;
+    showTip(target, key);
+    // Light haptic if supported
+    if (navigator.vibrate) navigator.vibrate(12);
+  }, LP_DELAY);
+}, { passive: true });
+
+// Pointer up / cancel — clear timer, hide if not shown yet
+function cancelLp() {
+  clearTimeout(lpTimer);
+  if (lpTarget) {
+    lpTarget.classList.remove('lp-holding');
+    lpTarget = null;
+  }
+}
+
+document.addEventListener('pointerup',     cancelLp, { passive: true });
+document.addEventListener('pointercancel', cancelLp, { passive: true });
+
+// Pointer move — cancel if dragging (so sliders still work normally)
+document.addEventListener('pointermove', e => {
+  if (!lpTarget) return;
+  const rect = lpTarget.getBoundingClientRect();
+  const dx = e.clientX - (rect.left + rect.width / 2);
+  const dy = e.clientY - (rect.top  + rect.height / 2);
+  if (Math.sqrt(dx*dx + dy*dy) > 10) cancelLp();
+}, { passive: true });
+
+// Tap anywhere to dismiss tooltip
+document.addEventListener('pointerdown', e => {
+  if (tipEl.classList.contains('visible')) {
+    if (!tipEl.contains(e.target)) hideTip();
+  }
+}, { passive: true });
+
+// Tag EQ bands once built (called after buildEqUI)
+const _origBuildEqUI = buildEqUI;
+buildEqUI = function() {
+  _origBuildEqUI();
+  tagEqBands();
+};
+// Tag any already-built bands
+tagEqBands();
+</script>
+</body>
+</html>

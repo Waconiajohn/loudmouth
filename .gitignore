@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+.env.*
+
+# Runtime dirs — never commit audio files
+api/uploads/
+api/outputs/
+api/separated/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Office temp files
+~$*
+
+# Zip archives
+*.zip

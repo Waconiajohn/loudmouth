@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOUDMOUTH — Smart Lyric Display</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #080808;
+    --surface: #111111;
+    --border:  #1e1e1e;
+    --yellow:  #FFD600;
+    --orange:  #FF6B00;
+    --white:   #efefef;
+    --dim:     #2a2a2a;
+    --muted:   #3a3a3a;
+    --sung:    #333;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--yellow);
+    letter-spacing: 3px;
+  }
+
+  .song-meta {
+    text-align: right;
+  }
+
+  .song-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--white);
+    letter-spacing: 2px;
+  }
+
+  .song-artist {
+    font-size: 11px;
+    color: #555;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* ── Main Layout ── */
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── Lyric Stage ── */
+  .lyric-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ambient glow behind active word */
+  .lyric-stage::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(255,214,0,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .lyric-display {
+    position: relative;
+    z-index: 1;
+    line-height: 1.5;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 5vw, 56px);
+    letter-spacing: 3px;
+  }
+
+  .word {
+    display: inline-block;
+    margin-right: 0.25em;
+    margin-bottom: 0.1em;
+    transition: all 0.12s ease;
+    position: relative;
+    color: var(--muted);
+    cursor: default;
+  }
+
+  /* Upcoming word */
+  .word.upcoming {
+    color: #555;
+  }
+
+  /* Active word — currently being sung */
+  .word.active {
+    color: var(--yellow);
+    text-shadow:
+      0 0 20px rgba(255, 214, 0, 0.8),
+      0 0 40px rgba(255, 214, 0, 0.4),
+      0 0 80px rgba(255, 214, 0, 0.2);
+    transform: scale(1.08) translateY(-2px);
+  }
+
+  /* High energy word (short duration = fast = high energy) */
+  .word.active.punchy {
+    color: var(--orange);
+    text-shadow:
+      0 0 20px rgba(255, 107, 0, 0.9),
+      0 0 40px rgba(255, 107, 0, 0.5);
+    animation: punch 0.15s ease-out;
+  }
+
+  @keyframes punch {
+    0%   { transform: scale(1.2) translateY(-3px); }
+    100% { transform: scale(1.08) translateY(-2px); }
+  }
+
+  /* Already sung */
+  .word.sung {
+    color: var(--sung);
+    transform: scale(1);
+  }
+
+  /* Next few words glow faintly */
+  .word.next-1 { color: #484848; }
+  .word.next-2 { color: #3a3a3a; }
+  .word.next-3 { color: #2e2e2e; }
+
+  /* ── Progress Bar ── */
+  .progress-container {
+    padding: 0 60px 8px;
+    flex-shrink: 0;
+  }
+
+  .progress-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--yellow);
+    border-radius: 1px;
+    width: 0%;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px rgba(255,214,0,0.5);
+  }
+
+  /* ── Controls ── */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 60px 24px;
+    flex-shrink: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .play-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--yellow);
+    background: transparent;
+    color: var(--yellow);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .play-btn:hover {
+    background: var(--yellow);
+    color: var(--bg);
+  }
+
+  .time-display {
+    font-size: 12px;
+    color: #444;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    min-width: 100px;
+  }
+
+  .track-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #333;
+    flex: 1;
+    text-align: right;
+  }
+
+  /* ── Word counter badge ── */
+  .word-counter {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #333;
+    text-transform: uppercase;
+  }
+
+  /* ── Load Screen ── */
+  .load-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    z-index: 100;
+  }
+
+  .load-screen.hidden { display: none; }
+
+  .load-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: var(--yellow);
+    letter-spacing: 8px;
+    animation: flicker 2s infinite;
+  }
+
+  @keyframes flicker {
+    0%, 95%, 100% { opacity: 1; }
+    97% { opacity: 0.4; }
+  }
+
+  .load-instruction {
+    font-size: 11px;
+    color: #444;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .load-btn {
+    padding: 14px 32px;
+    background: var(--yellow);
+    color: var(--bg);
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 2px;
+  }
+
+  .load-btn:hover {
+    background: #ffe033;
+    transform: translateY(-2px);
+  }
+
+  .file-drop {
+    border: 1px dashed #333;
+    border-radius: 4px;
+    padding: 32px 48px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+
+  .file-drop:hover { border-color: #555; }
+  .file-drop.dragover { border-color: var(--yellow); }
+
+  .file-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+
+  .drop-hint {
+    font-size: 11px;
+    color: #444;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  /* ── Vocal Assist Slider ── */
+  .assist-panel {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 60px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .assist-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #444;
+    min-width: 120px;
+  }
+
+  .assist-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 2px;
+    background: var(--border);
+    outline: none;
+    border-radius: 1px;
+  }
+
+  .assist-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--yellow);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(255,214,0,0.5);
+  }
+
+  .assist-level {
+    font-size: 11px;
+    color: var(--yellow);
+    letter-spacing: 2px;
+    min-width: 80px;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<!-- Load Screen -->
+<div class="load-screen" id="loadScreen">
+  <div class="load-logo">LOUDMOUTH</div>
+  <div class="load-instruction">Smart Lyric Display — Load your lyric map to begin</div>
+
+  <div class="file-drop" id="fileDrop">
+    <input type="file" class="file-input" id="jsonInput" accept=".json">
+    <div style="font-size:32px; margin-bottom:8px;">📄</div>
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; color:#666;">
+      Drop Lyric Map JSON
+    </div>
+    <div class="drop-hint">From ~/thunderstruck/lyrics/</div>
+  </div>
+
+  <div style="font-size:10px; color:#333; letter-spacing:2px; text-transform:uppercase;">
+    — or load demo data —
+  </div>
+  <button class="load-btn" onclick="loadDemo()">▶ LOAD DEMO</button>
+</div>
+
+<!-- Main App -->
+<div class="header">
+  <div class="logo">LOUDMOUTH</div>
+  <div class="song-meta">
+    <div class="song-title" id="songTitle">—</div>
+    <div class="song-artist" id="songArtist">—</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="lyric-stage">
+    <div class="lyric-display" id="lyricDisplay"></div>
+  </div>
+</div>
+
+<div class="progress-container">
+  <div class="progress-bar" id="progressBar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<div class="assist-panel">
+  <div class="assist-label">🎤 Vocal Assist</div>
+  <input type="range" class="assist-slider" id="assistSlider" min="0" max="100" value="0">
+  <div class="assist-level" id="assistLevel">RAW — 0%</div>
+</div>
+
+<div class="controls">
+  <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+  <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
+  <audio id="audio" style="display:none"></audio>
+  <div class="track-label" id="trackLabel">BACKING TRACK</div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+
+let words        = [];
+let currentIndex = -1;
+let animFrame    = null;
+let duration     = 0;
+let songInfo     = {};
+
+const audio       = document.getElementById('audio');
+const lyricEl     = document.getElementById('lyricDisplay');
+const playBtn     = document.getElementById('playBtn');
+const progressFill= document.getElementById('progressFill');
+const timeDisplay = document.getElementById('timeDisplay');
+const assistSlider= document.getElementById('assistSlider');
+const assistLevel = document.getElementById('assistLevel');
+
+// ── Load JSON ──────────────────────────────────────────────────────────────
+
+document.getElementById('jsonInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => initLyrics(JSON.parse(ev.target.result), false);
+  reader.readAsText(file);
+});
+
+const fileDrop = document.getElementById('fileDrop');
+fileDrop.addEventListener('dragover', e => { e.preventDefault(); fileDrop.classList.add('dragover'); });
+fileDrop.addEventListener('dragleave', () => fileDrop.classList.remove('dragover'));
+fileDrop.addEventListener('drop', e => {
+  e.preventDefault();
+  fileDrop.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => initLyrics(JSON.parse(ev.target.result), false);
+  reader.readAsText(file);
+});
+
+function loadDemo() {
+  // Demo data using Down With The Sickness opening
+  const demo = {
+    song: {
+      title: "Down with the Sickness",
+      artist: "Disturbed",
+      genius_url: "https://genius.com/Disturbed-down-with-the-sickness-lyrics"
+    },
+    words: [
+      {"word":"Do","start":9.1,"end":9.74},
+      {"word":"you","start":9.74,"end":9.92},
+      {"word":"feel","start":9.92,"end":10.18},
+      {"word":"that?","start":10.18,"end":10.5},
+      {"word":"Oh,","start":19.12,"end":20.52},
+      {"word":"shit.","start":20.52,"end":20.94},
+      {"word":"Drowning","start":52.8,"end":53.4},
+      {"word":"deep","start":53.4,"end":53.8},
+      {"word":"in","start":53.8,"end":53.96},
+      {"word":"my","start":53.96,"end":54.1},
+      {"word":"sea","start":54.1,"end":54.6},
+      {"word":"of","start":54.6,"end":54.8},
+      {"word":"loathing","start":54.8,"end":55.4},
+      {"word":"Broken","start":55.4,"end":55.9},
+      {"word":"your","start":55.9,"end":56.2},
+      {"word":"servant","start":56.2,"end":56.8},
+      {"word":"I","start":56.8,"end":57.0},
+      {"word":"kneel","start":57.0,"end":57.6},
+      {"word":"Get","start":96.36,"end":96.6},
+      {"word":"up,","start":96.6,"end":96.8},
+      {"word":"come","start":96.8,"end":97.0},
+      {"word":"on,","start":97.0,"end":97.2},
+      {"word":"get","start":97.2,"end":97.4},
+      {"word":"down","start":97.4,"end":97.7},
+      {"word":"with","start":97.7,"end":97.9},
+      {"word":"the","start":97.9,"end":98.0},
+      {"word":"sickness","start":98.0,"end":98.8},
+    ]
+  };
+  initLyrics(demo);
+  audio.src = "http://localhost:8000/download/2fbbb816-8a4a-4bc4-af47-24da32fb31ca/backing";
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+
+function initLyrics(data, keepAudio) {
+  if (!keepAudio) audio.src = "http://localhost:8000/download/2fbbb816-8a4a-4bc4-af47-24da32fb31ca/backing";
+  words    = data.words || [];
+  songInfo = data.song  || {};
+
+  document.getElementById('songTitle').textContent  = songInfo.title  || 'Unknown';
+  document.getElementById('songArtist').textContent = songInfo.artist || 'Unknown';
+  document.getElementById('loadScreen').classList.add('hidden');
+
+  renderWords();
+}
+
+function renderWords() {
+  lyricEl.innerHTML = '';
+  words.forEach((w, i) => {
+    const span = document.createElement('span');
+    span.className   = 'word upcoming';
+    span.textContent = w.word;
+    span.dataset.index = i;
+    lyricEl.appendChild(span);
+  });
+}
+
+// ── Playback ───────────────────────────────────────────────────────────────
+
+function togglePlay() {
+  if (!audio.src || audio.src === window.location.href) {
+    // No audio loaded — run in demo/visual mode
+    if (audio.paused) {
+      startVisualDemo();
+      playBtn.textContent = '⏸';
+    } else {
+      stopVisualDemo();
+      playBtn.textContent = '▶';
+    }
+    return;
+  }
+
+  if (audio.paused) {
+    audio.play();
+    playBtn.textContent = '⏸';
+    startSyncLoop();
+  } else {
+    audio.pause();
+    playBtn.textContent = '▶';
+    cancelAnimationFrame(animFrame);
+  }
+}
+
+// Visual demo mode — simulates playback without audio
+let demoTime    = 0;
+let demoStart   = null;
+let demoRunning = false;
+
+function startVisualDemo() {
+  demoRunning = true;
+  demoStart   = performance.now() - demoTime * 1000;
+  requestAnimationFrame(demoLoop);
+}
+
+function stopVisualDemo() {
+  demoRunning = false;
+}
+
+function demoLoop(ts) {
+  if (!demoRunning) return;
+  demoTime = (ts - demoStart) / 1000;
+
+  const totalDuration = words.length > 0 ? words[words.length - 1].end + 1 : 60;
+  if (demoTime >= totalDuration) {
+    demoTime    = 0;
+    demoStart   = ts;
+    demoRunning = false;
+    playBtn.textContent = '▶';
+    renderWords();
+    return;
+  }
+
+  updateLyrics(demoTime);
+  updateProgress(demoTime, totalDuration);
+  requestAnimationFrame(demoLoop);
+}
+
+function startSyncLoop() {
+  function loop() {
+    updateLyrics(audio.currentTime);
+    updateProgress(audio.currentTime, audio.duration || 1);
+    animFrame = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+audio.addEventListener('ended', () => {
+  playBtn.textContent = '▶';
+  cancelAnimationFrame(animFrame);
+});
+
+// ── Core Sync ──────────────────────────────────────────────────────────────
+
+function updateLyrics(currentTime) {
+  const spans = lyricEl.querySelectorAll('.word');
+
+  spans.forEach((span, i) => {
+    const w = words[i];
+    span.className = 'word';
+
+    if (currentTime >= w.start && currentTime <= w.end) {
+      // Currently active
+      const wordDuration = w.end - w.start;
+      span.classList.add('active');
+      if (wordDuration < 0.25) span.classList.add('punchy');
+
+    } else if (currentTime > w.end) {
+      // Already sung
+      span.classList.add('sung');
+
+    } else {
+      // Upcoming — glow next few
+      const dist = i - getCurrentWordIndex(currentTime);
+      if      (dist === 1) span.classList.add('next-1');
+      else if (dist === 2) span.classList.add('next-2');
+      else if (dist === 3) span.classList.add('next-3');
+      else                 span.classList.add('upcoming');
+    }
+  });
+
+  // Scroll active word into view smoothly
+  const activeEl = lyricEl.querySelector('.word.active');
+  if (activeEl) {
+    activeEl.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+  }
+}
+
+function getCurrentWordIndex(currentTime) {
+  for (let i = words.length - 1; i >= 0; i--) {
+    if (currentTime >= words[i].start) return i;
+  }
+  return -1;
+}
+
+function updateProgress(current, total) {
+  const pct = Math.min((current / total) * 100, 100);
+  progressFill.style.width = pct + '%';
+  timeDisplay.textContent  = `${fmt(current)} / ${fmt(total)}`;
+}
+
+// Progress bar click to seek
+document.getElementById('progressBar').addEventListener('click', e => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct  = (e.clientX - rect.left) / rect.width;
+  const totalDuration = words.length > 0 ? words[words.length - 1].end + 1 : 60;
+
+  if (audio.src && audio.src !== window.location.href) {
+    audio.currentTime = pct * audio.duration;
+  } else {
+    demoTime  = pct * totalDuration;
+    demoStart = performance.now() - demoTime * 1000;
+  }
+});
+
+// ── Vocal Assist ───────────────────────────────────────────────────────────
+
+const assistLevels = [
+  { max: 10,  label: 'RAW' },
+  { max: 30,  label: 'POLISH' },
+  { max: 50,  label: 'ASSIST' },
+  { max: 75,  label: 'PRO' },
+  { max: 100, label: 'SHADOW' },
+];
+
+assistSlider.addEventListener('input', () => {
+  const val   = parseInt(assistSlider.value);
+  const level = assistLevels.find(l => val <= l.max) || assistLevels[4];
+  assistLevel.textContent = `${level.label} — ${val}%`;
+});
+
+// ── Utils ──────────────────────────────────────────────────────────────────
+
+function fmt(s) {
+  if (!s || isNaN(s)) return '0:00';
+  const m   = Math.floor(s / 60);
+  const sec = Math.floor(s % 60).toString().padStart(2, '0');
+  return `${m}:${sec}`;
+}
+</script>
+</body>
+</html>
