@@ -1,0 +1,1947 @@
+{
+  "song": {
+    "title": "Down with the Sickness",
+    "artist": "Disturbed",
+    "genius_url": "https://genius.com/Disturbed-down-with-the-sickness-lyrics",
+    "thumbnail": "https://images.genius.com/2e0bbeabcfd01753a2d43ccbb4882266.300x300x1.jpg",
+    "song_id": 97449
+  },
+  "words": [
+    {
+      "word": "Do",
+      "start": 9.1,
+      "end": 9.74
+    },
+    {
+      "word": "you",
+      "start": 9.74,
+      "end": 9.92
+    },
+    {
+      "word": "feel",
+      "start": 9.92,
+      "end": 10.18
+    },
+    {
+      "word": "that?",
+      "start": 10.18,
+      "end": 10.5
+    },
+    {
+      "word": "Oh,",
+      "start": 19.12,
+      "end": 20.52
+    },
+    {
+      "word": "shit.",
+      "start": 20.52,
+      "end": 20.94
+    },
+    {
+      "word": "Oh,",
+      "start": 29.1,
+      "end": 30.02
+    },
+    {
+      "word": "ha,",
+      "start": 31.36,
+      "end": 31.66
+    },
+    {
+      "word": "ha,",
+      "start": 31.72,
+      "end": 31.88
+    },
+    {
+      "word": "ha,",
+      "start": 31.88,
+      "end": 32.48
+    },
+    {
+      "word": "ha.",
+      "start": 32.8,
+      "end": 32.8
+    },
+    {
+      "word": "Oh,",
+      "start": 41.5,
+      "end": 42.02
+    },
+    {
+      "word": "ha,",
+      "start": 42.02,
+      "end": 42.28
+    },
+    {
+      "word": "ha,",
+      "start": 42.42,
+      "end": 42.56
+    },
+    {
+      "word": "ha,",
+      "start": 42.56,
+      "end": 43.62
+    },
+    {
+      "word": "ha,",
+      "start": 43.62,
+      "end": 43.76
+    },
+    {
+      "word": "ha.",
+      "start": 45.08,
+      "end": 52.8
+    },
+    {
+      "word": "Browning",
+      "start": 52.8,
+      "end": 54.18
+    },
+    {
+      "word": "deep",
+      "start": 54.18,
+      "end": 54.68
+    },
+    {
+      "word": "in",
+      "start": 54.68,
+      "end": 55.44
+    },
+    {
+      "word": "my",
+      "start": 55.44,
+      "end": 55.84
+    },
+    {
+      "word": "sea",
+      "start": 55.84,
+      "end": 56.56
+    },
+    {
+      "word": "alone,",
+      "start": 56.56,
+      "end": 57.32
+    },
+    {
+      "word": "broken",
+      "start": 57.8,
+      "end": 59.42
+    },
+    {
+      "word": "to",
+      "start": 59.42,
+      "end": 59.76
+    },
+    {
+      "word": "your",
+      "start": 59.76,
+      "end": 59.94
+    },
+    {
+      "word": "servant's",
+      "start": 59.94,
+      "end": 61.24
+    },
+    {
+      "word": "eye.",
+      "start": 61.24,
+      "end": 61.56
+    },
+    {
+      "word": "Will",
+      "start": 63.02,
+      "end": 63.22
+    },
+    {
+      "word": "you",
+      "start": 63.22,
+      "end": 63.38
+    },
+    {
+      "word": "give",
+      "start": 63.38,
+      "end": 63.58
+    },
+    {
+      "word": "it",
+      "start": 63.58,
+      "end": 63.72
+    },
+    {
+      "word": "to",
+      "start": 63.72,
+      "end": 63.88
+    },
+    {
+      "word": "me?",
+      "start": 63.88,
+      "end": 64.1
+    },
+    {
+      "word": "It",
+      "start": 64.46,
+      "end": 64.7
+    },
+    {
+      "word": "seems",
+      "start": 64.7,
+      "end": 65.04
+    },
+    {
+      "word": "that",
+      "start": 65.04,
+      "end": 65.26
+    },
+    {
+      "word": "the",
+      "start": 65.26,
+      "end": 65.46
+    },
+    {
+      "word": "left",
+      "start": 65.46,
+      "end": 65.84
+    },
+    {
+      "word": "of",
+      "start": 65.84,
+      "end": 66.24
+    },
+    {
+      "word": "my",
+      "start": 66.24,
+      "end": 66.66
+    },
+    {
+      "word": "human",
+      "start": 66.66,
+      "end": 67.32
+    },
+    {
+      "word": "side",
+      "start": 67.32,
+      "end": 68.14
+    },
+    {
+      "word": "is",
+      "start": 68.14,
+      "end": 68.68
+    },
+    {
+      "word": "slowly",
+      "start": 68.68,
+      "end": 69.22
+    },
+    {
+      "word": "changing",
+      "start": 69.22,
+      "end": 70.0
+    },
+    {
+      "word": "in",
+      "start": 70.0,
+      "end": 72.24
+    },
+    {
+      "word": "me.",
+      "start": 72.24,
+      "end": 72.9
+    },
+    {
+      "word": "Will",
+      "start": 73.78,
+      "end": 73.88
+    },
+    {
+      "word": "you",
+      "start": 73.88,
+      "end": 74.02
+    },
+    {
+      "word": "give",
+      "start": 74.02,
+      "end": 74.24
+    },
+    {
+      "word": "it",
+      "start": 74.24,
+      "end": 74.38
+    },
+    {
+      "word": "to",
+      "start": 74.38,
+      "end": 74.56
+    },
+    {
+      "word": "me?",
+      "start": 74.56,
+      "end": 74.8
+    },
+    {
+      "word": "Looking",
+      "start": 74.8,
+      "end": 75.64
+    },
+    {
+      "word": "at",
+      "start": 75.64,
+      "end": 76.0
+    },
+    {
+      "word": "my",
+      "start": 76.0,
+      "end": 76.48
+    },
+    {
+      "word": "over",
+      "start": 76.48,
+      "end": 77.0
+    },
+    {
+      "word": "-inflation,",
+      "start": 77.0,
+      "end": 77.9
+    },
+    {
+      "word": "when",
+      "start": 78.28,
+      "end": 78.64
+    },
+    {
+      "word": "suddenly",
+      "start": 78.64,
+      "end": 79.24
+    },
+    {
+      "word": "it",
+      "start": 79.24,
+      "end": 79.98
+    },
+    {
+      "word": "changes.",
+      "start": 79.98,
+      "end": 83.38
+    },
+    {
+      "word": "Oh,",
+      "start": 83.88,
+      "end": 84.58
+    },
+    {
+      "word": "now",
+      "start": 84.7,
+      "end": 85.04
+    },
+    {
+      "word": "there",
+      "start": 85.04,
+      "end": 85.68
+    },
+    {
+      "word": "is",
+      "start": 85.68,
+      "end": 86.18
+    },
+    {
+      "word": "no",
+      "start": 86.18,
+      "end": 86.6
+    },
+    {
+      "word": "turning",
+      "start": 86.6,
+      "end": 87.38
+    },
+    {
+      "word": "back",
+      "start": 87.38,
+      "end": 88.0
+    },
+    {
+      "word": "now.",
+      "start": 88.0,
+      "end": 88.8
+    },
+    {
+      "word": "You've",
+      "start": 89.22,
+      "end": 89.52
+    },
+    {
+      "word": "broken",
+      "start": 89.52,
+      "end": 89.94
+    },
+    {
+      "word": "up",
+      "start": 89.94,
+      "end": 90.38
+    },
+    {
+      "word": "the",
+      "start": 90.38,
+      "end": 90.66
+    },
+    {
+      "word": "demons.",
+      "start": 90.66,
+      "end": 91.38
+    },
+    {
+      "word": "Get",
+      "start": 93.08,
+      "end": 93.56
+    },
+    {
+      "word": "me!",
+      "start": 93.56,
+      "end": 94.04
+    },
+    {
+      "word": "Get",
+      "start": 96.36,
+      "end": 96.64
+    },
+    {
+      "word": "up,",
+      "start": 96.64,
+      "end": 96.8
+    },
+    {
+      "word": "come",
+      "start": 96.98,
+      "end": 97.08
+    },
+    {
+      "word": "on,",
+      "start": 97.08,
+      "end": 97.28
+    },
+    {
+      "word": "get",
+      "start": 97.3,
+      "end": 97.4
+    },
+    {
+      "word": "down",
+      "start": 97.4,
+      "end": 97.68
+    },
+    {
+      "word": "with",
+      "start": 97.68,
+      "end": 97.92
+    },
+    {
+      "word": "the",
+      "start": 97.92,
+      "end": 98.1
+    },
+    {
+      "word": "sickness.",
+      "start": 98.1,
+      "end": 98.42
+    },
+    {
+      "word": "Get",
+      "start": 127.06,
+      "end": 127.9
+    },
+    {
+      "word": "up,",
+      "start": 127.9,
+      "end": 127.98
+    },
+    {
+      "word": "come",
+      "start": 127.98,
+      "end": 127.98
+    },
+    {
+      "word": "on,",
+      "start": 127.98,
+      "end": 128.4
+    },
+    {
+      "word": "get",
+      "start": 128.4,
+      "end": 128.4
+    },
+    {
+      "word": "down",
+      "start": 128.4,
+      "end": 128.4
+    },
+    {
+      "word": "with",
+      "start": 128.4,
+      "end": 128.4
+    },
+    {
+      "word": "the",
+      "start": 128.4,
+      "end": 128.4
+    },
+    {
+      "word": "sickness.",
+      "start": 128.4,
+      "end": 128.4
+    },
+    {
+      "word": "Will",
+      "start": 131.62,
+      "end": 132.58
+    },
+    {
+      "word": "you",
+      "start": 132.58,
+      "end": 132.74
+    },
+    {
+      "word": "give",
+      "start": 132.74,
+      "end": 132.94
+    },
+    {
+      "word": "it",
+      "start": 132.94,
+      "end": 133.04
+    },
+    {
+      "word": "to",
+      "start": 133.04,
+      "end": 133.24
+    },
+    {
+      "word": "me?",
+      "start": 133.24,
+      "end": 133.48
+    },
+    {
+      "word": "It",
+      "start": 134.0,
+      "end": 134.0
+    },
+    {
+      "word": "seems",
+      "start": 134.0,
+      "end": 134.34
+    },
+    {
+      "word": "that",
+      "start": 134.34,
+      "end": 134.7
+    },
+    {
+      "word": "all",
+      "start": 134.7,
+      "end": 135.2
+    },
+    {
+      "word": "that",
+      "start": 135.2,
+      "end": 135.6
+    },
+    {
+      "word": "was",
+      "start": 135.6,
+      "end": 135.92
+    },
+    {
+      "word": "good",
+      "start": 135.92,
+      "end": 136.48
+    },
+    {
+      "word": "has",
+      "start": 136.48,
+      "end": 137.0
+    },
+    {
+      "word": "died",
+      "start": 137.0,
+      "end": 137.6
+    },
+    {
+      "word": "at",
+      "start": 137.6,
+      "end": 138.1
+    },
+    {
+      "word": "the",
+      "start": 138.1,
+      "end": 138.28
+    },
+    {
+      "word": "sticking",
+      "start": 138.28,
+      "end": 138.84
+    },
+    {
+      "word": "in",
+      "start": 138.84,
+      "end": 141.5
+    },
+    {
+      "word": "me.",
+      "start": 141.5,
+      "end": 142.06
+    },
+    {
+      "word": "Will",
+      "start": 143.16,
+      "end": 143.24
+    },
+    {
+      "word": "you",
+      "start": 143.24,
+      "end": 143.38
+    },
+    {
+      "word": "give",
+      "start": 143.38,
+      "end": 143.6
+    },
+    {
+      "word": "it",
+      "start": 143.6,
+      "end": 143.76
+    },
+    {
+      "word": "to",
+      "start": 143.76,
+      "end": 143.92
+    },
+    {
+      "word": "me?",
+      "start": 143.92,
+      "end": 144.14
+    },
+    {
+      "word": "It",
+      "start": 144.46,
+      "end": 144.64
+    },
+    {
+      "word": "seems",
+      "start": 144.64,
+      "end": 144.96
+    },
+    {
+      "word": "you're",
+      "start": 144.96,
+      "end": 145.46
+    },
+    {
+      "word": "having",
+      "start": 145.46,
+      "end": 146.1
+    },
+    {
+      "word": "some",
+      "start": 146.1,
+      "end": 146.64
+    },
+    {
+      "word": "trouble",
+      "start": 146.64,
+      "end": 147.48
+    },
+    {
+      "word": "in",
+      "start": 147.48,
+      "end": 147.98
+    },
+    {
+      "word": "dealing",
+      "start": 147.98,
+      "end": 148.48
+    },
+    {
+      "word": "with",
+      "start": 148.48,
+      "end": 149.0
+    },
+    {
+      "word": "these",
+      "start": 149.0,
+      "end": 149.34
+    },
+    {
+      "word": "changes,",
+      "start": 149.34,
+      "end": 150.12
+    },
+    {
+      "word": "living",
+      "start": 150.52,
+      "end": 150.98
+    },
+    {
+      "word": "with",
+      "start": 150.98,
+      "end": 151.52
+    },
+    {
+      "word": "these",
+      "start": 151.52,
+      "end": 152.0
+    },
+    {
+      "word": "changes.",
+      "start": 152.0,
+      "end": 152.78
+    },
+    {
+      "word": "Oh,",
+      "start": 152.78,
+      "end": 154.06
+    },
+    {
+      "word": "now",
+      "start": 154.08,
+      "end": 154.38
+    },
+    {
+      "word": "the",
+      "start": 154.38,
+      "end": 154.72
+    },
+    {
+      "word": "world",
+      "start": 154.72,
+      "end": 155.18
+    },
+    {
+      "word": "is",
+      "start": 155.18,
+      "end": 155.66
+    },
+    {
+      "word": "a",
+      "start": 155.66,
+      "end": 156.0
+    },
+    {
+      "word": "scary",
+      "start": 156.0,
+      "end": 156.74
+    },
+    {
+      "word": "place",
+      "start": 156.74,
+      "end": 157.56
+    },
+    {
+      "word": "now",
+      "start": 157.56,
+      "end": 158.02
+    },
+    {
+      "word": "that",
+      "start": 158.02,
+      "end": 158.36
+    },
+    {
+      "word": "you've",
+      "start": 158.36,
+      "end": 158.84
+    },
+    {
+      "word": "broken",
+      "start": 158.84,
+      "end": 159.32
+    },
+    {
+      "word": "up",
+      "start": 159.32,
+      "end": 159.76
+    },
+    {
+      "word": "the",
+      "start": 159.76,
+      "end": 160.14
+    },
+    {
+      "word": "demons.",
+      "start": 160.14,
+      "end": 160.76
+    },
+    {
+      "word": "Get",
+      "start": 162.5,
+      "end": 162.94
+    },
+    {
+      "word": "me!",
+      "start": 162.94,
+      "end": 163.38
+    },
+    {
+      "word": "Get",
+      "start": 165.66,
+      "end": 166.0
+    },
+    {
+      "word": "up,",
+      "start": 166.0,
+      "end": 166.18
+    },
+    {
+      "word": "come",
+      "start": 166.4,
+      "end": 166.46
+    },
+    {
+      "word": "on,",
+      "start": 166.46,
+      "end": 166.68
+    },
+    {
+      "word": "get",
+      "start": 166.7,
+      "end": 166.78
+    },
+    {
+      "word": "down",
+      "start": 166.78,
+      "end": 167.1
+    },
+    {
+      "word": "with",
+      "start": 167.1,
+      "end": 167.3
+    },
+    {
+      "word": "the",
+      "start": 167.3,
+      "end": 167.48
+    },
+    {
+      "word": "sickness.",
+      "start": 167.48,
+      "end": 167.8
+    },
+    {
+      "word": "Get",
+      "start": 190.76,
+      "end": 191.22
+    },
+    {
+      "word": "me",
+      "start": 191.22,
+      "end": 191.32
+    },
+    {
+      "word": "when",
+      "start": 191.32,
+      "end": 191.52
+    },
+    {
+      "word": "I",
+      "start": 191.52,
+      "end": 191.7
+    },
+    {
+      "word": "dream.",
+      "start": 191.7,
+      "end": 192.08
+    },
+    {
+      "word": "Get",
+      "start": 196.04,
+      "end": 196.52
+    },
+    {
+      "word": "me",
+      "start": 196.52,
+      "end": 196.72
+    },
+    {
+      "word": "when",
+      "start": 196.72,
+      "end": 196.82
+    },
+    {
+      "word": "I",
+      "start": 196.82,
+      "end": 197.02
+    },
+    {
+      "word": "dream.",
+      "start": 197.02,
+      "end": 197.4
+    },
+    {
+      "word": "Get",
+      "start": 201.04,
+      "end": 201.52
+    },
+    {
+      "word": "me",
+      "start": 201.52,
+      "end": 202.0
+    },
+    {
+      "word": "when",
+      "start": 202.0,
+      "end": 202.12
+    },
+    {
+      "word": "I",
+      "start": 202.12,
+      "end": 202.36
+    },
+    {
+      "word": "dream.",
+      "start": 202.36,
+      "end": 202.74
+    },
+    {
+      "word": "Get",
+      "start": 206.48,
+      "end": 206.96
+    },
+    {
+      "word": "me",
+      "start": 206.96,
+      "end": 207.44
+    },
+    {
+      "word": "when",
+      "start": 207.44,
+      "end": 207.5
+    },
+    {
+      "word": "I",
+      "start": 207.5,
+      "end": 207.74
+    },
+    {
+      "word": "dream!",
+      "start": 207.74,
+      "end": 208.14
+    },
+    {
+      "word": "No,",
+      "start": 208.38,
+      "end": 208.66
+    },
+    {
+      "word": "honey,",
+      "start": 208.8,
+      "end": 208.96
+    },
+    {
+      "word": "don't",
+      "start": 209.32,
+      "end": 209.62
+    },
+    {
+      "word": "do",
+      "start": 209.62,
+      "end": 209.8
+    },
+    {
+      "word": "it",
+      "start": 209.8,
+      "end": 209.92
+    },
+    {
+      "word": "again!",
+      "start": 209.92,
+      "end": 210.26
+    },
+    {
+      "word": "Don't",
+      "start": 210.78,
+      "end": 211.0
+    },
+    {
+      "word": "do",
+      "start": 211.0,
+      "end": 211.2
+    },
+    {
+      "word": "it",
+      "start": 211.2,
+      "end": 211.32
+    },
+    {
+      "word": "again!",
+      "start": 211.32,
+      "end": 211.62
+    },
+    {
+      "word": "I'll",
+      "start": 212.0,
+      "end": 212.22
+    },
+    {
+      "word": "be",
+      "start": 212.22,
+      "end": 212.34
+    },
+    {
+      "word": "a",
+      "start": 212.34,
+      "end": 212.5
+    },
+    {
+      "word": "good",
+      "start": 212.5,
+      "end": 212.68
+    },
+    {
+      "word": "boy!",
+      "start": 212.68,
+      "end": 213.08
+    },
+    {
+      "word": "I'll",
+      "start": 213.48,
+      "end": 213.68
+    },
+    {
+      "word": "be",
+      "start": 213.68,
+      "end": 213.86
+    },
+    {
+      "word": "a",
+      "start": 213.86,
+      "end": 214.0
+    },
+    {
+      "word": "good",
+      "start": 214.0,
+      "end": 214.22
+    },
+    {
+      "word": "boy!",
+      "start": 214.22,
+      "end": 214.6
+    },
+    {
+      "word": "I",
+      "start": 214.92,
+      "end": 215.18
+    },
+    {
+      "word": "promise!",
+      "start": 215.18,
+      "end": 215.72
+    },
+    {
+      "word": "No,",
+      "start": 216.2,
+      "end": 216.4
+    },
+    {
+      "word": "mommy,",
+      "start": 216.48,
+      "end": 216.7
+    },
+    {
+      "word": "don't",
+      "start": 216.8,
+      "end": 217.02
+    },
+    {
+      "word": "hit",
+      "start": 217.02,
+      "end": 217.22
+    },
+    {
+      "word": "me!",
+      "start": 217.22,
+      "end": 217.42
+    },
+    {
+      "word": "Ow!",
+      "start": 217.66,
+      "end": 217.84
+    },
+    {
+      "word": "I'd",
+      "start": 217.84,
+      "end": 218.7
+    },
+    {
+      "word": "have",
+      "start": 218.7,
+      "end": 218.84
+    },
+    {
+      "word": "to",
+      "start": 218.84,
+      "end": 219.02
+    },
+    {
+      "word": "hit",
+      "start": 219.02,
+      "end": 219.16
+    },
+    {
+      "word": "me",
+      "start": 219.16,
+      "end": 219.26
+    },
+    {
+      "word": "like",
+      "start": 219.26,
+      "end": 219.48
+    },
+    {
+      "word": "that,",
+      "start": 219.48,
+      "end": 219.76
+    },
+    {
+      "word": "mommy!",
+      "start": 219.94,
+      "end": 220.1
+    },
+    {
+      "word": "Don't",
+      "start": 220.3,
+      "end": 220.74
+    },
+    {
+      "word": "do",
+      "start": 220.74,
+      "end": 221.08
+    },
+    {
+      "word": "it!",
+      "start": 221.08,
+      "end": 221.26
+    },
+    {
+      "word": "You're",
+      "start": 221.44,
+      "end": 221.6
+    },
+    {
+      "word": "hurting",
+      "start": 221.6,
+      "end": 221.8
+    },
+    {
+      "word": "me!",
+      "start": 221.8,
+      "end": 222.08
+    },
+    {
+      "word": "Ow!",
+      "start": 222.26,
+      "end": 222.46
+    },
+    {
+      "word": "Why",
+      "start": 222.82,
+      "end": 223.2
+    },
+    {
+      "word": "do",
+      "start": 223.2,
+      "end": 223.34
+    },
+    {
+      "word": "you",
+      "start": 223.34,
+      "end": 223.34
+    },
+    {
+      "word": "have",
+      "start": 223.34,
+      "end": 223.44
+    },
+    {
+      "word": "to",
+      "start": 223.44,
+      "end": 223.54
+    },
+    {
+      "word": "be",
+      "start": 223.54,
+      "end": 223.72
+    },
+    {
+      "word": "such",
+      "start": 223.72,
+      "end": 224.02
+    },
+    {
+      "word": "a",
+      "start": 224.02,
+      "end": 224.26
+    },
+    {
+      "word": "bitch?",
+      "start": 224.26,
+      "end": 224.52
+    },
+    {
+      "word": "Why",
+      "start": 224.78,
+      "end": 225.04
+    },
+    {
+      "word": "don't",
+      "start": 225.04,
+      "end": 225.18
+    },
+    {
+      "word": "you?",
+      "start": 225.18,
+      "end": 225.44
+    },
+    {
+      "word": "Why",
+      "start": 225.74,
+      "end": 225.86
+    },
+    {
+      "word": "don't",
+      "start": 225.86,
+      "end": 225.96
+    },
+    {
+      "word": "you",
+      "start": 225.96,
+      "end": 226.0
+    },
+    {
+      "word": "just",
+      "start": 226.0,
+      "end": 226.16
+    },
+    {
+      "word": "fuck",
+      "start": 226.16,
+      "end": 226.3
+    },
+    {
+      "word": "up",
+      "start": 226.3,
+      "end": 226.54
+    },
+    {
+      "word": "and",
+      "start": 226.54,
+      "end": 226.72
+    },
+    {
+      "word": "die?",
+      "start": 226.72,
+      "end": 227.1
+    },
+    {
+      "word": "Why",
+      "start": 227.42,
+      "end": 227.64
+    },
+    {
+      "word": "can't",
+      "start": 227.64,
+      "end": 227.84
+    },
+    {
+      "word": "you",
+      "start": 227.84,
+      "end": 227.94
+    },
+    {
+      "word": "just",
+      "start": 227.94,
+      "end": 228.12
+    },
+    {
+      "word": "fuck",
+      "start": 228.12,
+      "end": 228.3
+    },
+    {
+      "word": "up",
+      "start": 228.3,
+      "end": 228.48
+    },
+    {
+      "word": "and",
+      "start": 228.48,
+      "end": 228.7
+    },
+    {
+      "word": "die?",
+      "start": 228.7,
+      "end": 229.14
+    },
+    {
+      "word": "Why",
+      "start": 229.48,
+      "end": 229.64
+    },
+    {
+      "word": "can't",
+      "start": 229.64,
+      "end": 229.86
+    },
+    {
+      "word": "you",
+      "start": 229.86,
+      "end": 229.96
+    },
+    {
+      "word": "just",
+      "start": 229.96,
+      "end": 230.18
+    },
+    {
+      "word": "leave",
+      "start": 230.18,
+      "end": 230.34
+    },
+    {
+      "word": "me",
+      "start": 230.34,
+      "end": 230.46
+    },
+    {
+      "word": "and",
+      "start": 230.46,
+      "end": 230.74
+    },
+    {
+      "word": "die?",
+      "start": 230.74,
+      "end": 231.14
+    },
+    {
+      "word": "Never",
+      "start": 231.5,
+      "end": 231.74
+    },
+    {
+      "word": "stick",
+      "start": 231.74,
+      "end": 232.0
+    },
+    {
+      "word": "your",
+      "start": 232.0,
+      "end": 232.22
+    },
+    {
+      "word": "hand",
+      "start": 232.22,
+      "end": 232.46
+    },
+    {
+      "word": "in",
+      "start": 232.46,
+      "end": 232.66
+    },
+    {
+      "word": "my",
+      "start": 232.66,
+      "end": 232.88
+    },
+    {
+      "word": "face,",
+      "start": 232.88,
+      "end": 233.18
+    },
+    {
+      "word": "I",
+      "start": 233.26,
+      "end": 233.4
+    },
+    {
+      "word": "can't",
+      "start": 233.4,
+      "end": 233.84
+    },
+    {
+      "word": "bitch!",
+      "start": 233.84,
+      "end": 234.02
+    },
+    {
+      "word": "Fuck",
+      "start": 234.54,
+      "end": 234.9
+    },
+    {
+      "word": "you!",
+      "start": 234.9,
+      "end": 235.32
+    },
+    {
+      "word": "I",
+      "start": 235.9,
+      "end": 236.2
+    },
+    {
+      "word": "don't",
+      "start": 236.2,
+      "end": 236.46
+    },
+    {
+      "word": "need",
+      "start": 236.46,
+      "end": 236.6
+    },
+    {
+      "word": "this",
+      "start": 236.6,
+      "end": 236.84
+    },
+    {
+      "word": "shit!",
+      "start": 236.84,
+      "end": 237.18
+    },
+    {
+      "word": "You",
+      "start": 237.48,
+      "end": 237.7
+    },
+    {
+      "word": "stupid,",
+      "start": 237.7,
+      "end": 238.18
+    },
+    {
+      "word": "sadistic,",
+      "start": 238.28,
+      "end": 238.98
+    },
+    {
+      "word": "abusive",
+      "start": 239.02,
+      "end": 239.54
+    },
+    {
+      "word": "fucking",
+      "start": 239.54,
+      "end": 240.12
+    },
+    {
+      "word": "whore!",
+      "start": 240.12,
+      "end": 240.66
+    },
+    {
+      "word": "Would",
+      "start": 241.0,
+      "end": 241.14
+    },
+    {
+      "word": "you",
+      "start": 241.14,
+      "end": 241.26
+    },
+    {
+      "word": "like",
+      "start": 241.26,
+      "end": 241.42
+    },
+    {
+      "word": "to",
+      "start": 241.42,
+      "end": 241.56
+    },
+    {
+      "word": "see",
+      "start": 241.56,
+      "end": 241.72
+    },
+    {
+      "word": "how",
+      "start": 241.72,
+      "end": 241.88
+    },
+    {
+      "word": "it",
+      "start": 241.88,
+      "end": 242.02
+    },
+    {
+      "word": "feels,",
+      "start": 242.02,
+      "end": 242.38
+    },
+    {
+      "word": "mommy?",
+      "start": 242.6,
+      "end": 242.8
+    },
+    {
+      "word": "Here",
+      "start": 243.12,
+      "end": 243.26
+    },
+    {
+      "word": "it",
+      "start": 243.26,
+      "end": 243.42
+    },
+    {
+      "word": "comes,",
+      "start": 243.42,
+      "end": 243.54
+    },
+    {
+      "word": "get",
+      "start": 243.66,
+      "end": 243.78
+    },
+    {
+      "word": "ready",
+      "start": 243.78,
+      "end": 244.0
+    },
+    {
+      "word": "to",
+      "start": 244.0,
+      "end": 244.18
+    },
+    {
+      "word": "die!",
+      "start": 244.18,
+      "end": 244.54
+    },
+    {
+      "word": "Oh",
+      "start": 254.88,
+      "end": 255.28
+    },
+    {
+      "word": "!eyster,",
+      "start": 255.28,
+      "end": 255.68
+    },
+    {
+      "word": "come",
+      "start": 255.86,
+      "end": 255.86
+    },
+    {
+      "word": "on.",
+      "start": 255.86,
+      "end": 255.86
+    },
+    {
+      "word": "Get",
+      "start": 255.86,
+      "end": 255.96
+    },
+    {
+      "word": "up!",
+      "start": 255.96,
+      "end": 256.2
+    },
+    {
+      "word": "Come",
+      "start": 256.36,
+      "end": 256.52
+    },
+    {
+      "word": "on,",
+      "start": 256.52,
+      "end": 256.7
+    },
+    {
+      "word": "get",
+      "start": 256.72,
+      "end": 256.82
+    },
+    {
+      "word": "down",
+      "start": 256.82,
+      "end": 257.12
+    },
+    {
+      "word": "with",
+      "start": 257.12,
+      "end": 257.34
+    },
+    {
+      "word": "the",
+      "start": 257.34,
+      "end": 257.5
+    },
+    {
+      "word": "sickness!",
+      "start": 257.5,
+      "end": 257.82
+    },
+    {
+      "word": "Get",
+      "start": 258.36,
+      "end": 258.68
+    },
+    {
+      "word": "up!",
+      "start": 258.68,
+      "end": 258.84
+    },
+    {
+      "word": "Come",
+      "start": 258.98,
+      "end": 259.16
+    },
+    {
+      "word": "on,",
+      "start": 259.16,
+      "end": 259.36
+    },
+    {
+      "word": "get",
+      "start": 259.38,
+      "end": 259.48
+    },
+    {
+      "word": "down",
+      "start": 259.48,
+      "end": 259.78
+    },
+    {
+      "word": "with",
+      "start": 259.78,
+      "end": 260.02
+    },
+    {
+      "word": "the",
+      "start": 260.02,
+      "end": 260.2
+    },
+    {
+      "word": "sickness!",
+      "start": 260.2,
+      "end": 260.5
+    },
+    {
+      "word": "Get",
+      "start": 261.14,
+      "end": 261.34
+    },
+    {
+      "word": "up!",
+      "start": 261.34,
+      "end": 261.54
+    },
+    {
+      "word": "Come",
+      "start": 261.74,
+      "end": 261.82
+    },
+    {
+      "word": "on,",
+      "start": 261.82,
+      "end": 262.02
+    },
+    {
+      "word": "get",
+      "start": 262.04,
+      "end": 262.14
+    },
+    {
+      "word": "down",
+      "start": 262.14,
+      "end": 262.48
+    },
+    {
+      "word": "with",
+      "start": 262.48,
+      "end": 262.68
+    },
+    {
+      "word": "the",
+      "start": 262.68,
+      "end": 262.86
+    },
+    {
+      "word": "sickness!",
+      "start": 262.86,
+      "end": 263.18
+    },
+    {
+      "word": "Get",
+      "start": 263.52,
+      "end": 263.76
+    },
+    {
+      "word": "up!",
+      "start": 263.76,
+      "end": 263.82
+    },
+    {
+      "word": "get",
+      "start": 263.92,
+      "end": 263.92
+    },
+    {
+      "word": "down",
+      "start": 263.92,
+      "end": 263.92
+    },
+    {
+      "word": "with",
+      "start": 263.92,
+      "end": 263.92
+    },
+    {
+      "word": "the",
+      "start": 263.92,
+      "end": 263.92
+    },
+    {
+      "word": "sickness.",
+      "start": 263.92,
+      "end": 263.92
+    },
+    {
+      "word": "Open",
+      "start": 263.92,
+      "end": 263.92
+    },
+    {
+      "word": "up,",
+      "start": 263.92,
+      "end": 264.24
+    },
+    {
+      "word": "y",
+      "start": 264.42,
+      "end": 264.52
+    },
+    {
+      "word": "'all!",
+      "start": 264.52,
+      "end": 264.6
+    },
+    {
+      "word": "A",
+      "start": 264.76,
+      "end": 264.88
+    },
+    {
+      "word": "Asians",
+      "start": 264.88,
+      "end": 265.24
+    },
+    {
+      "word": "never",
+      "start": 265.24,
+      "end": 265.64
+    },
+    {
+      "word": "wanna",
+      "start": 265.64,
+      "end": 265.88
+    },
+    {
+      "word": "make!",
+      "start": 265.88,
+      "end": 266.2
+    },
+    {
+      "word": "Get",
+      "start": 266.34,
+      "end": 266.68
+    },
+    {
+      "word": "up!",
+      "start": 266.68,
+      "end": 266.88
+    },
+    {
+      "word": "Come",
+      "start": 267.06,
+      "end": 267.14
+    },
+    {
+      "word": "on,",
+      "start": 267.14,
+      "end": 267.36
+    },
+    {
+      "word": "get",
+      "start": 267.4,
+      "end": 267.48
+    },
+    {
+      "word": "down",
+      "start": 267.48,
+      "end": 267.8
+    },
+    {
+      "word": "with",
+      "start": 267.8,
+      "end": 268.0
+    },
+    {
+      "word": "the",
+      "start": 268.0,
+      "end": 268.14
+    },
+    {
+      "word": "sickness!",
+      "start": 268.14,
+      "end": 268.44
+    },
+    {
+      "word": "You",
+      "start": 268.68,
+      "end": 268.82
+    },
+    {
+      "word": "motherfuck!",
+      "start": 268.82,
+      "end": 269.04
+    },
+    {
+      "word": "Get",
+      "start": 269.14,
+      "end": 269.3
+    },
+    {
+      "word": "up!",
+      "start": 269.3,
+      "end": 269.5
+    },
+    {
+      "word": "Come",
+      "start": 269.68,
+      "end": 269.82
+    },
+    {
+      "word": "on,",
+      "start": 269.82,
+      "end": 270.04
+    },
+    {
+      "word": "get",
+      "start": 270.06,
+      "end": 270.16
+    },
+    {
+      "word": "down",
+      "start": 270.16,
+      "end": 270.48
+    },
+    {
+      "word": "with",
+      "start": 270.48,
+      "end": 270.64
+    },
+    {
+      "word": "the",
+      "start": 270.64,
+      "end": 270.82
+    },
+    {
+      "word": "sickness!",
+      "start": 270.82,
+      "end": 271.06
+    },
+    {
+      "word": "You",
+      "start": 271.34,
+      "end": 271.48
+    },
+    {
+      "word": "fuck",
+      "start": 271.48,
+      "end": 271.64
+    },
+    {
+      "word": "or",
+      "start": 271.64,
+      "end": 271.82
+    },
+    {
+      "word": "you're",
+      "start": 271.82,
+      "end": 271.98
+    },
+    {
+      "word": "not?",
+      "start": 271.98,
+      "end": 272.16
+    },
+    {
+      "word": "Come",
+      "start": 272.36,
+      "end": 272.52
+    },
+    {
+      "word": "on,",
+      "start": 272.52,
+      "end": 272.7
+    },
+    {
+      "word": "get",
+      "start": 272.8,
+      "end": 272.84
+    },
+    {
+      "word": "down",
+      "start": 272.84,
+      "end": 273.16
+    },
+    {
+      "word": "with",
+      "start": 273.16,
+      "end": 273.36
+    },
+    {
+      "word": "the",
+      "start": 273.36,
+      "end": 273.48
+    },
+    {
+      "word": "sickness!",
+      "start": 273.48,
+      "end": 273.82
+    },
+    {
+      "word": "Badness",
+      "start": 274.24,
+      "end": 274.64
+    },
+    {
+      "word": "has",
+      "start": 274.64,
+      "end": 274.9
+    },
+    {
+      "word": "now",
+      "start": 274.9,
+      "end": 275.2
+    },
+    {
+      "word": "come",
+      "start": 275.2,
+      "end": 275.5
+    },
+    {
+      "word": "over",
+      "start": 275.5,
+      "end": 275.74
+    },
+    {
+      "word": "me!",
+      "start": 275.74,
+      "end": 276.08
+    },
+    {
+      "word": "you",
+      "start": 277.84,
+      "end": 278.7
+    }
+  ],
+  "total_words": 387
+}
