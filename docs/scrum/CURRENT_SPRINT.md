@@ -3,70 +3,66 @@
 **Started:** 2026-03-31
 
 ## Stories This Sprint
-1. [x] Supabase Schema Deployment — **DONE** — 11 tables deployed, client + types + queries created
-2. [x] Basic UI (Library, Sing, Scores, Profile tabs) — **DONE** — 4 tabs with dark theme, Library loads from DB
-3. [x] Audio POC (Pitch Detection) — **DONE** — YIN algorithm verified on iPhone at 22ms latency
-4. [ ] Live Microphone Capture — **NOT STARTED** — blocked on Xcode install
-5. [ ] User Authentication (Supabase Auth + Apple Sign-In) — **NOT STARTED**
+1. [x] Supabase Schema Deployment — **DONE**
+2. [x] Basic UI (Library, Sing, Scores, Profile tabs) — **DONE**
+3. [x] Audio POC (Pitch Detection) — **DONE** — YIN at 22ms on iPhone
+4. [x] Live Microphone Capture — **DONE** — expo-av recording + PCM decode
+5. [x] Simultaneous Speaker + Mic — **DONE** — native Swift module forces speaker routing
+6. [x] Scoring Engine + Lyric Map — **DONE** — session results with coverage + stability scores
+7. [ ] User Authentication (Supabase Auth + Apple Sign-In) — **NOT STARTED**
 
-## What's Proven
-- Pitch detection pipeline works end-to-end on a real iPhone
-- YIN (pitchfinder, pure JS) runs at 22ms/frame — well under 50ms target
-- Supabase connection works, songs load from DB
+## Sprint 1 Complete — Ready for Sprint 2
 
-## What's Blocked
-- **Xcode**: User is updating macOS to 26.2, then installing Xcode (~12GB). Once done, we can do local dev builds.
+### What's Proven
+- Pitch detection on real iPhone voice: YIN algorithm via pitchfinder
+- Simultaneous speaker output + mic recording (native Swift module)
+- Scoring engine aligns pitch samples to lyric map word timings
+- Session results: composite score, coverage, pitch stability
+- Full audio pipeline: record → decode → detect → score
 
-## Next Session Pick-Up Point (After Xcode Is Installed)
+### What Was Hard
+- expo-av resets iOS audio session to earpiece on every prepareToRecordAsync (known bug since 2022)
+- react-native-audio-api AudioRecorder doesn't deliver buffers on iOS physical devices (bug #721)
+- Solution: native Swift module calling AVAudioSession.overrideOutputAudioPort(.speaker)
+- SDK upgrade from 52→54 caused cascading dependency issues (React 18→19, RN 0.76→0.81)
 
-### Step 1: Prebuild the Expo project
-```bash
-cd ~/loudmouth
-npx expo prebuild
-```
-This generates the `ios/` and `android/` native directories.
+## Next Session: Sprint 2 — AudioShake Integration
 
-### Step 2: Install native audio library
-```bash
-npx expo install react-native-audio-api
-# OR
-npx expo install expo-audio-stream
-```
-Then re-run `npx expo prebuild` to link the native module.
+### Pick-Up Point
+1. Create Supabase Edge Function `separate-stems` that proxies to AudioShake API
+2. AudioShake API key: `ashke_8c39361eea4daddc8ff51dc4af3bfad5e8f9af02930c912224fd6a26a6b249e2`
+   - Currently hardcoded in `api/main.py` (v1 prototype)
+   - Must be stored as Supabase secret, never in client code
+3. Build song import flow: user picks MP3 → upload to Edge Function → AudioShake separates → store stems
+4. Play the instrumental stem as the backing track during singing sessions
+5. Extract target pitch values from the vocal stem for pitch accuracy scoring
 
-### Step 3: Build and run on device
-- Plug iPhone into Mac via USB
-- Open `ios/loudmouth.xcworkspace` in Xcode
-- Select your iPhone as build target
-- Hit Build & Run (Cmd+R)
-- OR from terminal: `npx expo run:ios --device`
+### Sprint 2 Stories (Proposed)
+1. [ ] Edge Function: `separate-stems` — proxy to AudioShake with hash-based dedup
+2. [ ] Song Import UI — document picker → upload → processing status
+3. [ ] Backing Track Playback — play instrumental stem through speaker during session
+4. [ ] Pitch Target Extraction — analyze vocal stem for per-word target pitches
+5. [ ] Full Scoring — compare user pitch against artist pitch (the 40% weight)
+6. [ ] User Authentication — Supabase Auth + Apple Sign-In
 
-### Step 4: Wire live mic capture
-- Replace mock mode in `app/(tabs)/sing.tsx` with real mic input
-- Use react-native-audio-api: MediaStreamSourceNode → AnalyserNode → getFloatTimeDomainData → pitchfinder YIN
-- Test that pitch detection works on real voice
-
-### Step 5: Add simultaneous playback
-- Play backing track while recording mic
-- Use expo-audio with `playAndRecord` audio session category
-
-### Step 6: Score against lyric map
-- Load `data/lyric-maps/Disturbed - Down With The Sickness_lyric_map.json`
-- Compare detected pitch per word against target pitch from lyric map
-- Display per-word accuracy + composite score
-
-## Out of Scope (Explicitly)
-- AudioShake integration (needs API key confirmation)
-- Scoring engine full implementation (requires audio pipeline first)
-- Payments / RevenueCat (Phase 2)
-- AI Coaching (Phase 3)
+### AudioShake Integration Notes
+- API base: `https://api.audioshake.ai`
+- Models: `vocals` (vocal stem) + `no_vocals` (instrumental/backing track)
+- Flow from v1 prototype (`api/main.py`):
+  1. Upload audio file → get asset ID
+  2. Create separation task with asset ID + target models
+  3. Poll task status until complete
+  4. Download stem URLs
+- Hash-based dedup: hash the audio file, check `song_stems` table before calling AudioShake
+- Stems stored in Supabase Storage with signed URLs
 
 ## Technical Notes
-- **SDK version**: Expo 54, React 19.1, React Native 0.81.5
+- **SDK**: Expo 54, React 19.1, React Native 0.81.5
 - **Supabase project**: qslrhgtkxxhesazipcbs
-- **Dev server**: `npx expo start --tunnel --clear` (tunnel mode required, LAN didn't work)
-- **Expo Go**: Works for JS-only screens (Library, Profile). Native audio needs dev build.
-- **Node.js**: v22.11.0 — consider upgrading to ^22.13.0 (SDK 54 recommended)
-- **Apple Music Store**: All user-facing copy should say "Apple Music Store" not "iTunes"
-- **eas.json**: Updated with `development` profile for physical device (simulator: false)
-- **Pitch detection POC**: `app/(tabs)/sing.tsx` — mock mode generates test tones, proves YIN pipeline works
+- **Dev server**: `npx expo start` (Metro) + Xcode Cmd+R for native builds
+- **Native module**: `modules/my-module/` — Swift module for iOS speaker routing
+- **Lyric map**: `data/lyric-maps/Disturbed - Down With The Sickness_lyric_map.json`
+- **Scoring engine**: `lib/scoring/engine.ts` — coverage + stability scoring
+- **Apple Music Store**: User-facing copy should say "Apple Music Store" not "iTunes"
+- **Node.js PATH**: `/usr/local/bin` must be in PATH (added to ~/.zshrc after macOS update)
+- **GitHub auth**: `gh auth login` was configured this session
