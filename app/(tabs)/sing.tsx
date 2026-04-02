@@ -6,12 +6,11 @@ import {
   StyleSheet,
   ScrollView,
   useWindowDimensions,
-  Alert,
-  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Audio } from "expo-av";
 import { decodeAudioData } from "react-native-audio-api";
+import MyModule from "../../modules/my-module";
 import {
   frequencyToNote,
   getCentsAccuracy,
@@ -26,13 +25,18 @@ import {
 import { colors, spacing, fontSize, borderRadius } from "@/constants/theme";
 
 /**
- * Audio Proof of Concept — Pitch Detection Pipeline
+ * Audio POC — Pitch Detection + Speaker Playback
  *
- * Mock mode: synthetic sine waves → YIN → note display (works in Expo Go)
- * Live mode: real microphone → AudioRecorder → YIN → note display (requires dev build)
+ * Strategy:
+ * 1. Native Swift module (MyModule) calls AVAudioSession.overrideOutputAudioPort(.speaker)
+ * 2. expo-av handles recording (proven to capture audio)
+ * 3. react-native-audio-api decodes recorded audio to PCM
+ * 4. YIN pitch detection runs on the PCM samples
+ * 5. After each recording cycle, forceSpeaker() re-applies speaker routing
+ *
+ * This solves the expo-av earpiece bug by overriding at the native level.
  */
 
-// C major scale from C4 to C5
 const TEST_FREQUENCIES = [
   261.63, 293.66, 329.63, 349.23, 392.0, 440.0, 493.88, 523.25,
 ];
@@ -57,11 +61,13 @@ export default function SingScreen() {
   const [lastLatency, setLastLatency] = useState(0);
   const [liveError, setLiveError] = useState<string | null>(null);
   const [debugInfo, setDebugInfo] = useState<string>("");
+  const [isPlayingTone, setIsPlayingTone] = useState(false);
 
   const detectorRef = useRef(createPitchDetector());
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const tickRef = useRef(0);
   const recordingRef = useRef<Audio.Recording | null>(null);
+  const soundRef = useRef<Audio.Sound | null>(null);
   const liveActiveRef = useRef(false);
 
   const resetDisplay = useCallback(() => {
@@ -70,6 +76,7 @@ export default function SingScreen() {
     setCurrentNote(null);
     setRawFrequency(null);
     setLiveError(null);
+    setDebugInfo("");
   }, []);
 
   const processPitchBuffer = useCallback((buffer: Float32Array) => {
@@ -89,16 +96,21 @@ export default function SingScreen() {
     }
   }, []);
 
-  const cleanup = useCallback(() => {
+  // --- Cleanup ---
+  const cleanup = useCallback(async () => {
     liveActiveRef.current = false;
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    if (soundRef.current) {
+      try { await soundRef.current.stopAsync(); } catch { /* ok */ }
+      try { await soundRef.current.unloadAsync(); } catch { /* ok */ }
+      soundRef.current = null;
+    }
+    setIsPlayingTone(false);
     if (recordingRef.current) {
-      try {
-        recordingRef.current.stopAndUnloadAsync();
-      } catch { /* ok */ }
+      try { await recordingRef.current.stopAndUnloadAsync(); } catch { /* ok */ }
       recordingRef.current = null;
     }
   }, []);
@@ -123,16 +135,80 @@ export default function SingScreen() {
     }, 100);
   }, [cleanup, resetDisplay, processPitchBuffer]);
 
+  // --- Toggle test tone (uses expo-av Sound with WAV data URI) ---
+  const toggleTone = useCallback(async () => {
+    if (soundRef.current) {
+      try { await soundRef.current.stopAsync(); } catch { /* ok */ }
+      try { await soundRef.current.unloadAsync(); } catch { /* ok */ }
+      soundRef.current = null;
+      setIsPlayingTone(false);
+      return;
+    }
+
+    try {
+      // Force speaker before playing
+      await MyModule.forceSpeaker();
+
+      // Generate a 3-second 440Hz WAV
+      const numSamples = SAMPLE_RATE * 3;
+      const header = 44;
+      const dataSize = numSamples * 2;
+      const buf = new ArrayBuffer(header + dataSize);
+      const view = new DataView(buf);
+      const writeStr = (o: number, s: string) => {
+        for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i));
+      };
+      writeStr(0, "RIFF");
+      view.setUint32(4, header + dataSize - 8, true);
+      writeStr(8, "WAVE");
+      writeStr(12, "fmt ");
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true);
+      view.setUint32(24, SAMPLE_RATE, true);
+      view.setUint32(28, SAMPLE_RATE * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeStr(36, "data");
+      view.setUint32(40, dataSize, true);
+      for (let i = 0; i < numSamples; i++) {
+        const sample = Math.sin((2 * Math.PI * 440 * i) / SAMPLE_RATE) * 0.4;
+        view.setInt16(header + i * 2, Math.round(sample * 32767), true);
+      }
+      const bytes = new Uint8Array(buf);
+      let binary = "";
+      for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i] ?? 0);
+      }
+      const base64 = btoa(binary);
+      const uri = `data:audio/wav;base64,${base64}`;
+
+      const { sound } = await Audio.Sound.createAsync(
+        { uri },
+        { shouldPlay: true, isLooping: true, volume: 1.0 },
+      );
+      soundRef.current = sound;
+      setIsPlayingTone(true);
+
+      // Re-force speaker after sound starts (expo-av may have reset it)
+      await MyModule.forceSpeaker();
+      const route = MyModule.getCurrentRoute();
+      setDebugInfo((prev) => `${prev} | Route: ${route}`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setDebugInfo(`Tone error: ${msg}`);
+    }
+  }, []);
+
   // --- Live Mic Mode ---
-  // Records 0.6s clips with expo-av (proven working), decodes to PCM
-  // with react-native-audio-api's decodeAudioData, runs YIN pitch detection.
   const startLive = useCallback(async () => {
-    cleanup();
+    await cleanup();
     setState("live");
     resetDisplay();
     liveActiveRef.current = true;
 
     try {
+      // Request mic permission
       const { granted } = await Audio.requestPermissionsAsync();
       if (!granted) {
         setLiveError("Mic permission denied.");
@@ -140,12 +216,20 @@ export default function SingScreen() {
         return;
       }
 
+      // Activate karaoke session via native module (speaker + mic)
+      const sessionResult = await MyModule.activateKaraokeSession();
+      setDebugInfo(`Session: ${sessionResult} | Route: ${MyModule.getCurrentRoute()}`);
+
+      // Enable recording in expo-av
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
-      });
+      } as Parameters<typeof Audio.setAudioModeAsync>[0]);
 
-      setDebugInfo("Recording...");
+      // Force speaker AGAIN after expo-av's setAudioModeAsync
+      await MyModule.forceSpeaker();
+      setDebugInfo(`After setAudioMode: ${MyModule.getCurrentRoute()}`);
+
       let cycle = 0;
 
       while (liveActiveRef.current) {
@@ -156,8 +240,12 @@ export default function SingScreen() {
           await rec.prepareToRecordAsync(
             Audio.RecordingOptionsPresets.HIGH_QUALITY as Parameters<typeof rec.prepareToRecordAsync>[0],
           );
+
+          // Force speaker after prepareToRecordAsync (this is where expo-av resets it)
+          await MyModule.forceSpeaker();
+
           await rec.startAsync();
-          await new Promise((r) => setTimeout(r, 600));
+          await new Promise((r) => setTimeout(r, 300));
 
           if (!liveActiveRef.current) {
             try { await rec.stopAndUnloadAsync(); } catch { /* ok */ }
@@ -171,25 +259,30 @@ export default function SingScreen() {
           recordingRef.current = null;
           cycle++;
 
+          // Force speaker after stop (before next cycle)
+          await MyModule.forceSpeaker();
+
           if (db <= -50 || !uri) {
-            setDebugInfo(`#${cycle} | ${db.toFixed(0)} dB | too quiet`);
+            setDebugInfo(
+              `#${cycle} | ${db.toFixed(0)} dB | quiet | ${MyModule.getCurrentRoute()}`,
+            );
             continue;
           }
 
-          // Decode audio file to PCM samples
+          // Decode audio to PCM
           const audioBuffer = await decodeAudioData(uri, SAMPLE_RATE);
           const samples = audioBuffer.getChannelData(0);
 
           setDebugInfo(
-            `#${cycle} | ${db.toFixed(0)} dB | ${samples.length} samples`,
+            `#${cycle} | ${db.toFixed(0)} dB | ${samples.length} samples | ${MyModule.getCurrentRoute()}`,
           );
 
-          if (samples.length >= BUFFER_SIZE) {
-            const mid = Math.max(
-              0,
-              Math.floor(samples.length / 2) - BUFFER_SIZE / 2,
+          const numChunks = Math.min(3, Math.floor(samples.length / BUFFER_SIZE));
+          for (let c = 0; c < numChunks; c++) {
+            const offset = Math.floor(
+              (samples.length - BUFFER_SIZE) * c / Math.max(1, numChunks - 1),
             );
-            processPitchBuffer(samples.slice(mid, mid + BUFFER_SIZE));
+            processPitchBuffer(samples.slice(offset, offset + BUFFER_SIZE));
           }
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
@@ -209,7 +302,7 @@ export default function SingScreen() {
     setState("idle");
   }, [cleanup]);
 
-  useEffect(() => cleanup, [cleanup]);
+  useEffect(() => { return () => { cleanup(); }; }, [cleanup]);
 
   // Derived display values
   const accuracy = currentNote ? getCentsAccuracy(currentNote.cents) : null;
@@ -243,7 +336,6 @@ export default function SingScreen() {
         <Text style={styles.title}>AUDIO POC</Text>
         <Text style={styles.subtitle}>Pitch Detection Pipeline</Text>
 
-        {/* Main Pitch Display */}
         <View style={styles.pitchCard}>
           {currentNote ? (
             <>
@@ -256,9 +348,7 @@ export default function SingScreen() {
               <Text style={[styles.centsText, { color: accentColor }]}>
                 {centsText}
               </Text>
-              <View
-                style={[styles.accuracyBadge, { borderColor: accentColor }]}
-              >
+              <View style={[styles.accuracyBadge, { borderColor: accentColor }]}>
                 <Text style={[styles.accuracyLabel, { color: accentColor }]}>
                   {accuracy?.label}
                 </Text>
@@ -271,7 +361,6 @@ export default function SingScreen() {
           )}
         </View>
 
-        {/* Cents Accuracy Bar */}
         <View style={styles.centsBar}>
           <Text style={styles.centsBarEdge}>{"\u266D"}</Text>
           <View style={[styles.centsBarOuter, { width: barWidth }]}>
@@ -281,10 +370,7 @@ export default function SingScreen() {
               <View
                 style={[
                   styles.centsBarDot,
-                  {
-                    left: indicatorLeft - 7,
-                    backgroundColor: accentColor,
-                  },
+                  { left: indicatorLeft - 7, backgroundColor: accentColor },
                 ]}
               />
             )}
@@ -292,7 +378,6 @@ export default function SingScreen() {
           <Text style={styles.centsBarEdge}>{"\u266F"}</Text>
         </View>
 
-        {/* Stats Row */}
         <View style={styles.statsRow}>
           <View style={styles.stat}>
             <Text style={styles.statValue}>{sampleCount}</Text>
@@ -310,23 +395,18 @@ export default function SingScreen() {
           </View>
         </View>
 
-        {/* Debug Info */}
         {debugInfo !== "" && (
-          <View style={styles.errorBox}>
-            <Text style={[styles.errorText, { color: colors.yellow }]}>
-              {debugInfo}
-            </Text>
+          <View style={styles.debugBox}>
+            <Text style={styles.debugText}>{debugInfo}</Text>
           </View>
         )}
 
-        {/* Error Display */}
         {liveError && (
           <View style={styles.errorBox}>
             <Text style={styles.errorText}>{liveError}</Text>
           </View>
         )}
 
-        {/* Controls */}
         <View style={styles.controls}>
           {state === "idle" ? (
             <>
@@ -338,7 +418,6 @@ export default function SingScreen() {
                 <Text style={styles.buttonText}>Mock Mode</Text>
                 <Text style={styles.buttonHint}>Synthetic test tones</Text>
               </TouchableOpacity>
-
               <TouchableOpacity
                 style={[styles.button, styles.liveButton]}
                 onPress={startLive}
@@ -349,17 +428,43 @@ export default function SingScreen() {
               </TouchableOpacity>
             </>
           ) : (
-            <TouchableOpacity
-              style={[styles.button, styles.stopButton]}
-              onPress={stop}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.buttonText}>Stop</Text>
-            </TouchableOpacity>
+            <View style={{ gap: spacing.sm, flex: 1 }}>
+              <View style={{ flexDirection: "row", gap: spacing.sm }}>
+                <TouchableOpacity
+                  style={[styles.button, styles.stopButton]}
+                  onPress={stop}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.buttonText}>Stop</Text>
+                </TouchableOpacity>
+                {state === "live" && (
+                  <TouchableOpacity
+                    style={[
+                      styles.button,
+                      {
+                        backgroundColor: isPlayingTone ? colors.yellow : colors.surface2,
+                        borderWidth: 1,
+                        borderColor: colors.yellow,
+                      },
+                    ]}
+                    onPress={toggleTone}
+                    activeOpacity={0.7}
+                  >
+                    <Text
+                      style={[
+                        styles.buttonText,
+                        { color: isPlayingTone ? colors.bg : colors.white },
+                      ]}
+                    >
+                      {isPlayingTone ? "Tone ON" : "Play A4"}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
           )}
         </View>
 
-        {/* Note History */}
         {noteHistory.length > 0 && (
           <View style={styles.historySection}>
             <Text style={styles.historyTitle}>Note History</Text>
@@ -389,15 +494,14 @@ export default function SingScreen() {
           </View>
         )}
 
-        {/* Info */}
         <View style={styles.infoBox}>
           <Text style={styles.infoTitle}>
             {state === "live" ? "Live mic active" : "What this proves"}
           </Text>
           <Text style={styles.infoText}>
             {state === "live"
-              ? "Sing a note and watch the pitch detection respond in real-time. Try holding a steady note to see accuracy. The YIN algorithm analyzes your voice ~10 times per second."
-              : "Mock mode tests the pipeline with synthetic tones. Live mode captures real microphone audio via react-native-audio-api and runs YIN pitch detection on each buffer."}
+              ? "Singing is detected via expo-av recording. Tap Play A4 to hear a tone through the main speaker. A native Swift module forces speaker routing after each recording cycle."
+              : "Mock mode tests with synthetic tones. Live mode uses expo-av for mic capture + a native iOS module for speaker routing + pitch detection via YIN algorithm."}
           </Text>
         </View>
       </ScrollView>
@@ -406,229 +510,46 @@ export default function SingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.bg,
-  },
-  scroll: {
-    padding: spacing.lg,
-    paddingBottom: spacing.xxl,
-  },
-  title: {
-    color: colors.red,
-    fontSize: fontSize.xxl,
-    fontWeight: "800",
-    textAlign: "center",
-    letterSpacing: 4,
-  },
-  subtitle: {
-    color: colors.dimmer,
-    fontSize: fontSize.md,
-    textAlign: "center",
-    marginBottom: spacing.lg,
-  },
-  pitchCard: {
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.lg,
-    borderWidth: 1,
-    borderColor: colors.border2,
-    padding: spacing.xl,
-    alignItems: "center",
-    minHeight: 180,
-    justifyContent: "center",
-  },
-  noteName: {
-    fontSize: 72,
-    fontWeight: "900",
-    letterSpacing: 2,
-  },
-  frequency: {
-    color: colors.dim,
-    fontSize: fontSize.lg,
-    marginTop: spacing.xs,
-  },
-  centsText: {
-    fontSize: fontSize.md,
-    marginTop: spacing.xs,
-    fontWeight: "600",
-  },
-  accuracyBadge: {
-    marginTop: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
-  },
-  accuracyLabel: {
-    fontSize: fontSize.sm,
-    fontWeight: "700",
-    letterSpacing: 1,
-  },
-  placeholder: {
-    color: colors.dimmest,
-    fontSize: fontSize.xxl,
-    fontWeight: "600",
-  },
-  centsBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: spacing.lg,
-    gap: spacing.sm,
-  },
-  centsBarEdge: {
-    color: colors.dimmest,
-    fontSize: fontSize.lg,
-    width: 20,
-    textAlign: "center",
-  },
-  centsBarOuter: {
-    height: 20,
-    position: "relative",
-  },
-  centsBarTrack: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 8,
-    height: 4,
-    backgroundColor: colors.surface2,
-    borderRadius: 2,
-  },
-  centsBarCenter: {
-    position: "absolute",
-    left: "50%",
-    top: 3,
-    width: 2,
-    height: 14,
-    backgroundColor: colors.dimmest,
-    marginLeft: -1,
-  },
-  centsBarDot: {
-    position: "absolute",
-    top: 3,
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-  },
-  statsRow: {
-    flexDirection: "row",
-    marginTop: spacing.lg,
-    gap: spacing.sm,
-  },
-  stat: {
-    flex: 1,
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.md,
-    padding: spacing.md,
-    alignItems: "center",
-  },
-  statValue: {
-    color: colors.white,
-    fontSize: fontSize.lg,
-    fontWeight: "700",
-  },
-  statLabel: {
-    color: colors.dimmest,
-    fontSize: fontSize.xs,
-    marginTop: 2,
-  },
-  errorBox: {
-    marginTop: spacing.md,
-    backgroundColor: "rgba(212, 32, 32, 0.15)",
-    borderRadius: borderRadius.md,
-    padding: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.red,
-  },
-  errorText: {
-    color: colors.redLight,
-    fontSize: fontSize.sm,
-  },
-  controls: {
-    flexDirection: "row",
-    gap: spacing.sm,
-    marginTop: spacing.lg,
-  },
-  button: {
-    flex: 1,
-    padding: spacing.md,
-    borderRadius: borderRadius.md,
-    alignItems: "center",
-  },
-  mockButton: {
-    backgroundColor: colors.surface2,
-    borderWidth: 1,
-    borderColor: colors.green,
-  },
-  liveButton: {
-    backgroundColor: colors.surface2,
-    borderWidth: 1,
-    borderColor: colors.red,
-  },
-  stopButton: {
-    backgroundColor: colors.red,
-  },
-  buttonText: {
-    color: colors.white,
-    fontSize: fontSize.lg,
-    fontWeight: "700",
-  },
-  buttonHint: {
-    color: colors.dimmer,
-    fontSize: fontSize.xs,
-    marginTop: 2,
-  },
-  disabledText: {
-    color: colors.dimmest,
-  },
-  historySection: {
-    marginTop: spacing.lg,
-  },
-  historyTitle: {
-    color: colors.dimmer,
-    fontSize: fontSize.sm,
-    fontWeight: "600",
-    marginBottom: spacing.sm,
-  },
-  historyRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.xs,
-  },
-  historyChip: {
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.sm,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-  },
-  historyChipActive: {
-    backgroundColor: colors.yellow,
-  },
-  historyChipText: {
-    color: colors.dimmer,
-    fontSize: fontSize.xs,
-    fontWeight: "600",
-  },
-  historyChipTextActive: {
-    color: colors.bg,
-  },
-  infoBox: {
-    marginTop: spacing.lg,
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.md,
-    padding: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  infoTitle: {
-    color: colors.yellow,
-    fontSize: fontSize.sm,
-    fontWeight: "700",
-    marginBottom: spacing.sm,
-  },
-  infoText: {
-    color: colors.dimmer,
-    fontSize: fontSize.sm,
-    lineHeight: 20,
-  },
+  container: { flex: 1, backgroundColor: colors.bg },
+  scroll: { padding: spacing.lg, paddingBottom: spacing.xxl },
+  title: { color: colors.red, fontSize: fontSize.xxl, fontWeight: "800", textAlign: "center", letterSpacing: 4 },
+  subtitle: { color: colors.dimmer, fontSize: fontSize.md, textAlign: "center", marginBottom: spacing.lg },
+  pitchCard: { backgroundColor: colors.surface, borderRadius: borderRadius.lg, borderWidth: 1, borderColor: colors.border2, padding: spacing.xl, alignItems: "center", minHeight: 180, justifyContent: "center" },
+  noteName: { fontSize: 72, fontWeight: "900", letterSpacing: 2 },
+  frequency: { color: colors.dim, fontSize: fontSize.lg, marginTop: spacing.xs },
+  centsText: { fontSize: fontSize.md, marginTop: spacing.xs, fontWeight: "600" },
+  accuracyBadge: { marginTop: spacing.sm, paddingHorizontal: spacing.md, paddingVertical: spacing.xs, borderRadius: borderRadius.full, borderWidth: 1 },
+  accuracyLabel: { fontSize: fontSize.sm, fontWeight: "700", letterSpacing: 1 },
+  placeholder: { color: colors.dimmest, fontSize: fontSize.xxl, fontWeight: "600" },
+  centsBar: { flexDirection: "row", alignItems: "center", marginTop: spacing.lg, gap: spacing.sm },
+  centsBarEdge: { color: colors.dimmest, fontSize: fontSize.lg, width: 20, textAlign: "center" },
+  centsBarOuter: { height: 20, position: "relative" },
+  centsBarTrack: { position: "absolute", left: 0, right: 0, top: 8, height: 4, backgroundColor: colors.surface2, borderRadius: 2 },
+  centsBarCenter: { position: "absolute", left: "50%", top: 3, width: 2, height: 14, backgroundColor: colors.dimmest, marginLeft: -1 },
+  centsBarDot: { position: "absolute", top: 3, width: 14, height: 14, borderRadius: 7 },
+  statsRow: { flexDirection: "row", marginTop: spacing.lg, gap: spacing.sm },
+  stat: { flex: 1, backgroundColor: colors.surface, borderRadius: borderRadius.md, padding: spacing.md, alignItems: "center" },
+  statValue: { color: colors.white, fontSize: fontSize.lg, fontWeight: "700" },
+  statLabel: { color: colors.dimmest, fontSize: fontSize.xs, marginTop: 2 },
+  debugBox: { marginTop: spacing.md, backgroundColor: "rgba(245, 196, 0, 0.1)", borderRadius: borderRadius.md, padding: spacing.md, borderWidth: 1, borderColor: "rgba(245, 196, 0, 0.3)" },
+  debugText: { color: colors.yellow, fontSize: fontSize.sm },
+  errorBox: { marginTop: spacing.md, backgroundColor: "rgba(212, 32, 32, 0.15)", borderRadius: borderRadius.md, padding: spacing.md, borderWidth: 1, borderColor: colors.red },
+  errorText: { color: colors.redLight, fontSize: fontSize.sm },
+  controls: { flexDirection: "row", gap: spacing.sm, marginTop: spacing.lg },
+  button: { flex: 1, padding: spacing.md, borderRadius: borderRadius.md, alignItems: "center" },
+  mockButton: { backgroundColor: colors.surface2, borderWidth: 1, borderColor: colors.green },
+  liveButton: { backgroundColor: colors.surface2, borderWidth: 1, borderColor: colors.red },
+  stopButton: { backgroundColor: colors.red },
+  buttonText: { color: colors.white, fontSize: fontSize.lg, fontWeight: "700" },
+  buttonHint: { color: colors.dimmer, fontSize: fontSize.xs, marginTop: 2 },
+  historySection: { marginTop: spacing.lg },
+  historyTitle: { color: colors.dimmer, fontSize: fontSize.sm, fontWeight: "600", marginBottom: spacing.sm },
+  historyRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs },
+  historyChip: { backgroundColor: colors.surface, borderRadius: borderRadius.sm, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
+  historyChipActive: { backgroundColor: colors.yellow },
+  historyChipText: { color: colors.dimmer, fontSize: fontSize.xs, fontWeight: "600" },
+  historyChipTextActive: { color: colors.bg },
+  infoBox: { marginTop: spacing.lg, backgroundColor: colors.surface, borderRadius: borderRadius.md, padding: spacing.md, borderWidth: 1, borderColor: colors.border },
+  infoTitle: { color: colors.yellow, fontSize: fontSize.sm, fontWeight: "700", marginBottom: spacing.sm },
+  infoText: { color: colors.dimmer, fontSize: fontSize.sm, lineHeight: 20 },
 });
