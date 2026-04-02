@@ -12,14 +12,18 @@
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.loudmouth.app",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "LOUDMOUTH needs microphone access to record your singing and score your performance.",
         "NSAppleMusicUsageDescription": "LOUDMOUTH needs access to your music library to import songs for karaoke.",
-        "UIBackgroundModes": ["audio"]
+        "UIBackgroundModes": [
+          "audio"
+        ]
       },
       "buildNumber": "1"
     },
@@ -54,7 +58,8 @@
             "targetSdkVersion": 34
           }
         }
-      ]
+      ],
+      "react-native-audio-api"
     ],
     "experiments": {
       "typedRoutes": true

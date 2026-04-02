@@ -6,8 +6,12 @@ import {
   StyleSheet,
   ScrollView,
   useWindowDimensions,
+  Alert,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Audio } from "expo-av";
+import { decodeAudioData } from "react-native-audio-api";
 import {
   frequencyToNote,
   getCentsAccuracy,
@@ -24,20 +28,14 @@ import { colors, spacing, fontSize, borderRadius } from "@/constants/theme";
 /**
  * Audio Proof of Concept — Pitch Detection Pipeline
  *
- * Mock mode: generates synthetic sine waves at known frequencies,
- * feeds them through the YIN pitch detector, and displays results.
- * Proves: audio buffer → YIN → frequency → note → UI works end-to-end.
- *
- * Live mode (TODO): captures real mic input via react-native-audio-api
- * or expo-audio-stream. Requires a dev build (npx expo prebuild).
+ * Mock mode: synthetic sine waves → YIN → note display (works in Expo Go)
+ * Live mode: real microphone → AudioRecorder → YIN → note display (requires dev build)
  */
 
-// C major scale from C4 to C5 — covers the middle vocal range
+// C major scale from C4 to C5
 const TEST_FREQUENCIES = [
   261.63, 293.66, 329.63, 349.23, 392.0, 440.0, 493.88, 523.25,
 ];
-
-// How many ticks (at 100ms each) to hold each test note
 const TICKS_PER_NOTE = 5;
 
 type ScreenState = "idle" | "mock" | "live";
@@ -57,65 +55,160 @@ export default function SingScreen() {
   const [noteHistory, setNoteHistory] = useState<string[]>([]);
   const [sampleCount, setSampleCount] = useState(0);
   const [lastLatency, setLastLatency] = useState(0);
+  const [liveError, setLiveError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<string>("");
 
   const detectorRef = useRef(createPitchDetector());
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const tickRef = useRef(0);
+  const recordingRef = useRef<Audio.Recording | null>(null);
+  const liveActiveRef = useRef(false);
 
-  const cleanup = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  }, []);
-
-  const startMock = useCallback(() => {
-    cleanup();
-    setState("mock");
-    tickRef.current = 0;
+  const resetDisplay = useCallback(() => {
     setSampleCount(0);
     setNoteHistory([]);
     setCurrentNote(null);
     setRawFrequency(null);
+    setLiveError(null);
+  }, []);
+
+  const processPitchBuffer = useCallback((buffer: Float32Array) => {
+    const t0 = performance.now();
+    const detected = detectorRef.current(buffer);
+    const latencyMs = performance.now() - t0;
+
+    if (detected !== null) {
+      const note = frequencyToNote(detected);
+      setRawFrequency(detected);
+      setCurrentNote(note);
+      setLastLatency(Math.round(latencyMs * 100) / 100);
+      if (note) {
+        setNoteHistory((prev) => [...prev.slice(-29), note.name]);
+      }
+      setSampleCount((prev) => prev + 1);
+    }
+  }, []);
+
+  const cleanup = useCallback(() => {
+    liveActiveRef.current = false;
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (recordingRef.current) {
+      try {
+        recordingRef.current.stopAndUnloadAsync();
+      } catch { /* ok */ }
+      recordingRef.current = null;
+    }
+  }, []);
+
+  // --- Mock Mode ---
+  const startMock = useCallback(() => {
+    cleanup();
+    setState("mock");
+    tickRef.current = 0;
+    resetDisplay();
 
     intervalRef.current = setInterval(() => {
-      // Cycle through the scale, holding each note for TICKS_PER_NOTE ticks
       const noteIndex =
         Math.floor(tickRef.current / TICKS_PER_NOTE) %
         TEST_FREQUENCIES.length;
       const baseFreq = TEST_FREQUENCIES[noteIndex] ?? 440;
-
-      // Add ±15 cents random drift for realism
       const centsDrift = Math.random() * 30 - 15;
       const driftedFreq = baseFreq * Math.pow(2, centsDrift / 1200);
-
       const buffer = generateTestTone(driftedFreq, SAMPLE_RATE, BUFFER_SIZE);
-
-      const t0 = performance.now();
-      const detected = detectorRef.current(buffer);
-      const latencyMs = performance.now() - t0;
-
-      if (detected !== null) {
-        const note = frequencyToNote(detected);
-        setRawFrequency(detected);
-        setCurrentNote(note);
-        setLastLatency(Math.round(latencyMs * 100) / 100);
-        if (note) {
-          setNoteHistory((prev) => [...prev.slice(-29), note.name]);
-        }
-        setSampleCount((prev) => prev + 1);
-      }
-
+      processPitchBuffer(buffer);
       tickRef.current++;
     }, 100);
-  }, [cleanup]);
+  }, [cleanup, resetDisplay, processPitchBuffer]);
+
+  // --- Live Mic Mode ---
+  // Records 0.6s clips with expo-av (proven working), decodes to PCM
+  // with react-native-audio-api's decodeAudioData, runs YIN pitch detection.
+  const startLive = useCallback(async () => {
+    cleanup();
+    setState("live");
+    resetDisplay();
+    liveActiveRef.current = true;
+
+    try {
+      const { granted } = await Audio.requestPermissionsAsync();
+      if (!granted) {
+        setLiveError("Mic permission denied.");
+        setState("idle");
+        return;
+      }
+
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+
+      setDebugInfo("Recording...");
+      let cycle = 0;
+
+      while (liveActiveRef.current) {
+        try {
+          const rec = new Audio.Recording();
+          recordingRef.current = rec;
+
+          await rec.prepareToRecordAsync(
+            Audio.RecordingOptionsPresets.HIGH_QUALITY as Parameters<typeof rec.prepareToRecordAsync>[0],
+          );
+          await rec.startAsync();
+          await new Promise((r) => setTimeout(r, 600));
+
+          if (!liveActiveRef.current) {
+            try { await rec.stopAndUnloadAsync(); } catch { /* ok */ }
+            break;
+          }
+
+          const status = await rec.getStatusAsync();
+          const db = status.metering ?? -160;
+          await rec.stopAndUnloadAsync();
+          const uri = rec.getURI();
+          recordingRef.current = null;
+          cycle++;
+
+          if (db <= -50 || !uri) {
+            setDebugInfo(`#${cycle} | ${db.toFixed(0)} dB | too quiet`);
+            continue;
+          }
+
+          // Decode audio file to PCM samples
+          const audioBuffer = await decodeAudioData(uri, SAMPLE_RATE);
+          const samples = audioBuffer.getChannelData(0);
+
+          setDebugInfo(
+            `#${cycle} | ${db.toFixed(0)} dB | ${samples.length} samples`,
+          );
+
+          if (samples.length >= BUFFER_SIZE) {
+            const mid = Math.max(
+              0,
+              Math.floor(samples.length / 2) - BUFFER_SIZE / 2,
+            );
+            processPitchBuffer(samples.slice(mid, mid + BUFFER_SIZE));
+          }
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          setDebugInfo(`#${cycle} err: ${msg}`);
+          await new Promise((r) => setTimeout(r, 300));
+        }
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      setLiveError(message);
+      setState("idle");
+    }
+  }, [cleanup, resetDisplay, processPitchBuffer]);
 
   const stop = useCallback(() => {
     cleanup();
     setState("idle");
   }, [cleanup]);
 
-  // Clean up interval on unmount
   useEffect(() => cleanup, [cleanup]);
 
   // Derived display values
@@ -129,8 +222,7 @@ export default function SingScreen() {
       ? `${currentNote.cents > 0 ? "+" : ""}${currentNote.cents} cents ${currentNote.cents > 0 ? "\u266F" : "\u266D"}`
       : "In tune";
 
-  // Cents bar: maps -50..+50 cents to pixel position
-  const barPadding = spacing.lg * 2 + 60; // container padding + label widths
+  const barPadding = spacing.lg * 2 + 60;
   const barWidth = screenWidth - barPadding;
   const indicatorLeft = currentNote
     ? Math.max(
@@ -148,7 +240,6 @@ export default function SingScreen() {
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
         <Text style={styles.title}>AUDIO POC</Text>
         <Text style={styles.subtitle}>Pitch Detection Pipeline</Text>
 
@@ -175,7 +266,7 @@ export default function SingScreen() {
             </>
           ) : (
             <Text style={styles.placeholder}>
-              {state === "idle" ? "Ready" : "Detecting..."}
+              {state === "idle" ? "Ready" : "Listening..."}
             </Text>
           )}
         </View>
@@ -184,11 +275,8 @@ export default function SingScreen() {
         <View style={styles.centsBar}>
           <Text style={styles.centsBarEdge}>{"\u266D"}</Text>
           <View style={[styles.centsBarOuter, { width: barWidth }]}>
-            {/* Track */}
             <View style={styles.centsBarTrack} />
-            {/* Center line */}
             <View style={styles.centsBarCenter} />
-            {/* Indicator dot */}
             {state !== "idle" && (
               <View
                 style={[
@@ -222,6 +310,22 @@ export default function SingScreen() {
           </View>
         </View>
 
+        {/* Debug Info */}
+        {debugInfo !== "" && (
+          <View style={styles.errorBox}>
+            <Text style={[styles.errorText, { color: colors.yellow }]}>
+              {debugInfo}
+            </Text>
+          </View>
+        )}
+
+        {/* Error Display */}
+        {liveError && (
+          <View style={styles.errorBox}>
+            <Text style={styles.errorText}>{liveError}</Text>
+          </View>
+        )}
+
         {/* Controls */}
         <View style={styles.controls}>
           {state === "idle" ? (
@@ -237,15 +341,11 @@ export default function SingScreen() {
 
               <TouchableOpacity
                 style={[styles.button, styles.liveButton]}
-                disabled
-                activeOpacity={0.4}
+                onPress={startLive}
+                activeOpacity={0.7}
               >
-                <Text style={[styles.buttonText, styles.disabledText]}>
-                  Live Mic
-                </Text>
-                <Text style={[styles.buttonHint, styles.disabledText]}>
-                  Requires dev build
-                </Text>
+                <Text style={styles.buttonText}>Live Mic</Text>
+                <Text style={styles.buttonHint}>Real microphone input</Text>
               </TouchableOpacity>
             </>
           ) : (
@@ -289,24 +389,15 @@ export default function SingScreen() {
           </View>
         )}
 
-        {/* What This Proves */}
+        {/* Info */}
         <View style={styles.infoBox}>
-          <Text style={styles.infoTitle}>What this proves</Text>
+          <Text style={styles.infoTitle}>
+            {state === "live" ? "Live mic active" : "What this proves"}
+          </Text>
           <Text style={styles.infoText}>
-            Mock mode generates sine waves at known musical frequencies (C4
-            through C5), adds realistic noise and pitch drift, then feeds
-            each buffer through the YIN pitch detection algorithm. The
-            detected frequency is converted to a musical note with cents
-            accuracy.
-          </Text>
-          <Text style={[styles.infoText, { marginTop: spacing.sm }]}>
-            This verifies the full scoring pipeline: audio buffer, pitch
-            detection, note identification, accuracy measurement, and UI
-            rendering all work end-to-end.
-          </Text>
-          <Text style={[styles.infoText, { marginTop: spacing.sm }]}>
-            Next: real microphone capture via react-native-audio-api or
-            expo-audio-stream. Requires a dev build (npx expo prebuild).
+            {state === "live"
+              ? "Sing a note and watch the pitch detection respond in real-time. Try holding a steady note to see accuracy. The YIN algorithm analyzes your voice ~10 times per second."
+              : "Mock mode tests the pipeline with synthetic tones. Live mode captures real microphone audio via react-native-audio-api and runs YIN pitch detection on each buffer."}
           </Text>
         </View>
       </ScrollView>
@@ -323,8 +414,6 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     paddingBottom: spacing.xxl,
   },
-
-  // Header
   title: {
     color: colors.red,
     fontSize: fontSize.xxl,
@@ -338,8 +427,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: spacing.lg,
   },
-
-  // Pitch Card
   pitchCard: {
     backgroundColor: colors.surface,
     borderRadius: borderRadius.lg,
@@ -382,8 +469,6 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xxl,
     fontWeight: "600",
   },
-
-  // Cents Bar
   centsBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -425,8 +510,6 @@ const styles = StyleSheet.create({
     height: 14,
     borderRadius: 7,
   },
-
-  // Stats
   statsRow: {
     flexDirection: "row",
     marginTop: spacing.lg,
@@ -449,8 +532,18 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xs,
     marginTop: 2,
   },
-
-  // Controls
+  errorBox: {
+    marginTop: spacing.md,
+    backgroundColor: "rgba(212, 32, 32, 0.15)",
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.red,
+  },
+  errorText: {
+    color: colors.redLight,
+    fontSize: fontSize.sm,
+  },
   controls: {
     flexDirection: "row",
     gap: spacing.sm,
@@ -468,9 +561,9 @@ const styles = StyleSheet.create({
     borderColor: colors.green,
   },
   liveButton: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surface2,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.red,
   },
   stopButton: {
     backgroundColor: colors.red,
@@ -488,8 +581,6 @@ const styles = StyleSheet.create({
   disabledText: {
     color: colors.dimmest,
   },
-
-  // History
   historySection: {
     marginTop: spacing.lg,
   },
@@ -521,8 +612,6 @@ const styles = StyleSheet.create({
   historyChipTextActive: {
     color: colors.bg,
   },
-
-  // Info
   infoBox: {
     marginTop: spacing.lg,
     backgroundColor: colors.surface,
