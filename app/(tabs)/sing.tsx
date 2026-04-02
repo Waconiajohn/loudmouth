@@ -23,6 +23,13 @@ import {
   BUFFER_SIZE,
 } from "@/lib/audio/pitch-detector";
 import { colors, spacing, fontSize, borderRadius } from "@/constants/theme";
+import {
+  scoreSession,
+  type PitchSample,
+  type SessionScore,
+  type WordTiming,
+} from "@/lib/scoring/engine";
+import lyricMapData from "../../data/lyric-maps/Disturbed - Down With The Sickness_lyric_map.json";
 
 /**
  * Audio POC — Pitch Detection + Speaker Playback
@@ -62,6 +69,8 @@ export default function SingScreen() {
   const [liveError, setLiveError] = useState<string | null>(null);
   const [debugInfo, setDebugInfo] = useState<string>("");
   const [isPlayingTone, setIsPlayingTone] = useState(false);
+  const [sessionResult, setSessionResult] = useState<SessionScore | null>(null);
+  const [currentWord, setCurrentWord] = useState<string | null>(null);
 
   const detectorRef = useRef(createPitchDetector());
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -69,6 +78,13 @@ export default function SingScreen() {
   const recordingRef = useRef<Audio.Recording | null>(null);
   const soundRef = useRef<Audio.Sound | null>(null);
   const liveActiveRef = useRef(false);
+  const sessionStartRef = useRef(0);
+  const pitchSamplesRef = useRef<PitchSample[]>([]);
+  const lyricWords: WordTiming[] = lyricMapData.words.map((w) => ({
+    word: w.word,
+    start: w.start,
+    end: w.end,
+  }));
 
   const resetDisplay = useCallback(() => {
     setSampleCount(0);
@@ -91,10 +107,26 @@ export default function SingScreen() {
       setLastLatency(Math.round(latencyMs * 100) / 100);
       if (note) {
         setNoteHistory((prev) => [...prev.slice(-29), note.name]);
+
+        // Record sample with timestamp for scoring
+        if (sessionStartRef.current > 0) {
+          const elapsed = (Date.now() - sessionStartRef.current) / 1000;
+          pitchSamplesRef.current.push({
+            frequency: detected,
+            note: note.name,
+            timestamp: elapsed,
+          });
+
+          // Update current word display
+          const active = lyricWords.find(
+            (w) => elapsed >= w.start - 0.2 && elapsed <= w.end + 0.2,
+          );
+          setCurrentWord(active ? active.word : null);
+        }
       }
       setSampleCount((prev) => prev + 1);
     }
-  }, []);
+  }, [lyricWords]);
 
   // --- Cleanup ---
   const cleanup = useCallback(async () => {
@@ -205,6 +237,10 @@ export default function SingScreen() {
     await cleanup();
     setState("live");
     resetDisplay();
+    setSessionResult(null);
+    setCurrentWord(null);
+    pitchSamplesRef.current = [];
+    sessionStartRef.current = Date.now();
     liveActiveRef.current = true;
 
     try {
@@ -233,7 +269,9 @@ export default function SingScreen() {
       let cycle = 0;
 
       while (liveActiveRef.current) {
+        if (!liveActiveRef.current) break;
         try {
+          if (!liveActiveRef.current) break;
           const rec = new Audio.Recording();
           recordingRef.current = rec;
 
@@ -298,9 +336,15 @@ export default function SingScreen() {
   }, [cleanup, resetDisplay, processPitchBuffer]);
 
   const stop = useCallback(() => {
+    // Score the session if we have pitch data
+    if (pitchSamplesRef.current.length > 0 && sessionStartRef.current > 0) {
+      const result = scoreSession(lyricWords, pitchSamplesRef.current);
+      setSessionResult(result);
+    }
+    sessionStartRef.current = 0;
     cleanup();
     setState("idle");
-  }, [cleanup]);
+  }, [cleanup, lyricWords]);
 
   useEffect(() => { return () => { cleanup(); }; }, [cleanup]);
 
@@ -335,6 +379,13 @@ export default function SingScreen() {
       >
         <Text style={styles.title}>AUDIO POC</Text>
         <Text style={styles.subtitle}>Pitch Detection Pipeline</Text>
+
+        {/* Current lyric word */}
+        {state === "live" && currentWord && (
+          <View style={styles.wordBanner}>
+            <Text style={styles.wordText}>{currentWord}</Text>
+          </View>
+        )}
 
         <View style={styles.pitchCard}>
           {currentNote ? (
@@ -494,14 +545,52 @@ export default function SingScreen() {
           </View>
         )}
 
+        {/* Session Results */}
+        {sessionResult && state === "idle" && (
+          <View style={styles.resultsBox}>
+            <Text style={styles.resultsTitle}>Session Results</Text>
+            <Text style={styles.resultsScore}>
+              {sessionResult.compositeScore.toFixed(1)} / 10
+            </Text>
+            <View style={styles.resultsRow}>
+              <View style={styles.resultsStat}>
+                <Text style={styles.resultsStatValue}>
+                  {sessionResult.sungWords}/{sessionResult.totalWords}
+                </Text>
+                <Text style={styles.resultsStatLabel}>Words sung</Text>
+              </View>
+              <View style={styles.resultsStat}>
+                <Text style={styles.resultsStatValue}>
+                  {Math.round(sessionResult.coverage * 100)}%
+                </Text>
+                <Text style={styles.resultsStatLabel}>Coverage</Text>
+              </View>
+              <View style={styles.resultsStat}>
+                <Text style={styles.resultsStatValue}>
+                  {sessionResult.avgStability.toFixed(1)}
+                </Text>
+                <Text style={styles.resultsStatLabel}>Stability</Text>
+              </View>
+            </View>
+            <Text style={styles.resultsDetail}>
+              Song: {lyricMapData.song.title} by {lyricMapData.song.artist}
+            </Text>
+            <Text style={styles.resultsDetail}>
+              Pitch samples: {pitchSamplesRef.current.length}
+            </Text>
+          </View>
+        )}
+
         <View style={styles.infoBox}>
           <Text style={styles.infoTitle}>
-            {state === "live" ? "Live mic active" : "What this proves"}
+            {state === "live"
+              ? `Singing: ${lyricMapData.song.title}`
+              : "How it works"}
           </Text>
           <Text style={styles.infoText}>
             {state === "live"
-              ? "Singing is detected via expo-av recording. Tap Play A4 to hear a tone through the main speaker. A native Swift module forces speaker routing after each recording cycle."
-              : "Mock mode tests with synthetic tones. Live mode uses expo-av for mic capture + a native iOS module for speaker routing + pitch detection via YIN algorithm."}
+              ? "Your pitch is matched to word timings from the lyric map. When you stop, you'll see a score based on coverage and pitch stability."
+              : "Live mode records your voice, detects pitch, and scores against the Down With The Sickness lyric map. Tap Play A4 during a session to test speaker output."}
           </Text>
         </View>
       </ScrollView>
@@ -552,4 +641,14 @@ const styles = StyleSheet.create({
   infoBox: { marginTop: spacing.lg, backgroundColor: colors.surface, borderRadius: borderRadius.md, padding: spacing.md, borderWidth: 1, borderColor: colors.border },
   infoTitle: { color: colors.yellow, fontSize: fontSize.sm, fontWeight: "700", marginBottom: spacing.sm },
   infoText: { color: colors.dimmer, fontSize: fontSize.sm, lineHeight: 20 },
+  wordBanner: { backgroundColor: colors.red, borderRadius: borderRadius.md, padding: spacing.md, marginBottom: spacing.md, alignItems: "center" },
+  wordText: { color: colors.white, fontSize: fontSize.xxl, fontWeight: "900", letterSpacing: 2 },
+  resultsBox: { marginTop: spacing.lg, backgroundColor: colors.surface, borderRadius: borderRadius.lg, padding: spacing.lg, borderWidth: 1, borderColor: colors.green, alignItems: "center" },
+  resultsTitle: { color: colors.green, fontSize: fontSize.sm, fontWeight: "700", letterSpacing: 2, marginBottom: spacing.sm },
+  resultsScore: { color: colors.white, fontSize: 56, fontWeight: "900" },
+  resultsRow: { flexDirection: "row", marginTop: spacing.md, gap: spacing.md },
+  resultsStat: { alignItems: "center", flex: 1 },
+  resultsStatValue: { color: colors.white, fontSize: fontSize.xl, fontWeight: "700" },
+  resultsStatLabel: { color: colors.dimmest, fontSize: fontSize.xs, marginTop: 2 },
+  resultsDetail: { color: colors.dimmer, fontSize: fontSize.xs, marginTop: spacing.sm },
 });
